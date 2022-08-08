@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="sbt: dev.zio:zio-json_3:0.3.0-RC10:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/dev/zio/zio-json_3/0.3.0-RC10/zio-json_3-0.3.0-RC10.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/dev/zio/zio-json_3/0.3.0-RC10/zio-json_3-0.3.0-RC10-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/dev/zio/zio-json_3/0.3.0-RC10/zio-json_3-0.3.0-RC10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

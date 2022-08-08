@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="sbt: com.softwaremill.magnolia1_3:magnolia_3:1.1.2:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/1.1.2/magnolia_3-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/1.1.2/magnolia_3-1.1.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/1.1.2/magnolia_3-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

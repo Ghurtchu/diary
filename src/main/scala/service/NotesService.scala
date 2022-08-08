@@ -4,6 +4,7 @@ import model._
 import zio._
 
 import java.time.Instant
+import java.util.Date
 
 object NotesService extends CRUD[Note]:
 
@@ -20,7 +21,7 @@ object NotesService extends CRUD[Note]:
       1,
       "first note",
       "note body",
-      java.util.Date.from(Instant.now()).toString,
+      Date.from(Instant.now()).toString,
       User(1, "Nika", "Ghurtchumelia")))
   }
 

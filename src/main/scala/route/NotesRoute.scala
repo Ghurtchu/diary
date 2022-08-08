@@ -12,6 +12,7 @@ import zio.json.EncoderOps
 object NotesRoute {
 
   val notesService: CRUD[Note] = NotesService
+  val searchService: SearchService[Note] = SearchServiceImpl
 
   def notes(): UIO[Response] = ZIO.succeed {
     Response.text(List(
@@ -23,7 +24,13 @@ object NotesRoute {
 
   def note(id: Int): Task[Response] =
     notesService.getById(id)
-      .foldZIO(_ => ZIO.succeed(Response.text("not found")),
-            note => ZIO.succeed(Response.json(note.toJsonPretty)))
-  
+      .fold(_ => Response.text("not found"),
+            note => Response.json(note.toJsonPretty))
+
+
+  def search(title: String): Task[Response] =
+    notesService.getByTitle(title)
+      .fold
+
+
 }

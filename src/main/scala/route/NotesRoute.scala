@@ -2,9 +2,8 @@ package route
 
 import java.util.Date
 import java.time.Instant
-
-import model._
-import service.{CRUD, NotesService}
+import model.*
+import service._
 import zio.*
 import zhttp.http.*
 import zio.json.EncoderOps
@@ -12,7 +11,7 @@ import zio.json.EncoderOps
 object NotesRoute {
 
   val notesService: CRUD[Note] = NotesService
-  val searchService: SearchService[Note] = SearchServiceImpl
+  val searchService: SearchService[Note] = NotesSearchService
 
   def notes(): UIO[Response] = ZIO.succeed {
     Response.text(List(
@@ -29,8 +28,9 @@ object NotesRoute {
 
 
   def search(title: String): Task[Response] =
-    notesService.getByTitle(title)
-      .fold
+    searchService.searchByTitle(title)
+      .fold(_ => Response.text("not found"),
+        note => Response.json(note.toJsonPretty))
 
 
 }

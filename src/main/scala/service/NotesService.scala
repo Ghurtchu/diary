@@ -1,35 +1,23 @@
 package service
 
-import model._
-import zio._
+import db._
+import model.*
+import zio.*
 
 import java.time.Instant
 import java.util.Date
 
-object NotesService extends CRUD[Note]:
+object NotesService:
 
-  override def add(note: Note): Task[Boolean] = ZIO.attempt {
-    true
-  }
+  val notesRepository: CRUD[Note] = NotesRepository
 
-  override def getAll: UIO[List[Note]] = ZIO.succeed {
-    List()
-  }
+  def add(note: Note): Task[Boolean] = notesRepository add note
 
-  override def getById(id: Int): Task[Option[Note]] = ZIO.attempt {
-    Some(Note(
-      1,
-      "first note",
-      "note body",
-      Date.from(Instant.now()).toString,
-      User(1, "Nika", "Ghurtchumelia")))
-  }
+  def getAll: UIO[List[Note]] = notesRepository.getAll
 
-  override def delete(id: Int): Task[Boolean] = ZIO.attempt {
-    true
-  }
+  def getById(id: Int): Task[Option[Note]] = notesRepository getById id
 
-  override def update(id: Int, a: Note): Task[Boolean] = ZIO.attempt {
-    true
-  }
+  def delete(id: Int): Task[Boolean] = notesRepository delete id
+
+  def update(id: Int, note: Note): Task[Boolean] = notesRepository.update(id, note)
 

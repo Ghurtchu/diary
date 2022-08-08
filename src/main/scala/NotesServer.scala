@@ -9,9 +9,9 @@ import zhttp.service.Server
 object NotesServer extends ZIOAppDefault {
 
   val app = Http.collectZIO[Request] {
-    case Method.GET  -> !! / "api" / "notes"                    => NotesRoute.notes()
-    case Method.POST -> !! / "api" / "notes" / id               => NotesRoute note id.toInt
-    case Method.POST -> !! / "api" / "notes" / "search" / title => NotesRoute search title  
+    case Method.GET  -> !! / "api" / "notes"                    => NotesRoute.getAllNotes
+    case Method.POST -> !! / "api" / "notes" / id               => NotesRoute getNoteById id.toInt
+    case Method.POST -> !! / "api" / "notes" / "search" / title => NotesRoute searchByTitle title
   }
 
   override def run = Server.start(8080, app)

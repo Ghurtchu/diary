@@ -1,36 +1,40 @@
 package route
 
+import db.CRUD
+import service.*
+
 import java.util.Date
 import java.time.Instant
 import model.*
-import service._
+import service.*
+import service.search.{NotesSearchService, SearchService}
 import zio.*
 import zhttp.http.*
 import zio.json.EncoderOps
 
 object NotesRoute {
 
-  val notesService: CRUD[Note] = NotesService
+  val notesService: NotesService.type    = NotesService
   val searchService: SearchService[Note] = NotesSearchService
 
-  def notes(): UIO[Response] = ZIO.succeed {
-    Response.text(List(
-      Note(1, "first note", "first note body...", Date.from(Instant.now()).toString, User(1, "Nika", "Ghurtchumelia")),
-      Note(2, "second note", "second note body...", Date.from(Instant.now()).toString, User(2, "Ozzy", "Osbourne")),
-      Note(3, "third note", "third note body...", Date.from(Instant.now()).toString, User(3, "Tony", "Iommi"))
-    ).toJsonPretty)
-  }
+  def getAllNotes: UIO[Response] = for {
+    notes    <- notesService.getAll
+    response <- ZIO.succeed(Response.text(notes.toJsonPretty))
+  } yield response
 
-  def note(id: Int): Task[Response] =
+  def getNoteById(id: Int): Task[Response] =
     notesService.getById(id)
       .fold(_ => Response.text("not found"),
             note => Response.json(note.toJsonPretty))
 
 
-  def search(title: String): Task[Response] =
+  def searchByTitle(title: String): Task[Response] =
     searchService.searchByTitle(title)
-      .fold(_ => Response.text("not found"),
-        note => Response.json(note.toJsonPretty))
+      .fold(
+        _ => Response.text("Error occurred while searching"),
+        maybeNote => maybeNote.fold(
+          Response.text("{}"))
+        (note => Response.text(note.toJsonPretty)))
 
 
 }

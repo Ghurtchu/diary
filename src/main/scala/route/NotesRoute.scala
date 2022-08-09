@@ -32,13 +32,13 @@ object NotesRoute {
       .fold(
         _ => Response.text("Error occurred while searching"),
         maybeNote => maybeNote.fold(
-          Response.text("{}"))
+          Response.text(s"Note with title $title does not exist"))
         (note => Response.text(note.toJsonPretty)))
 
   def removeNoteById(id: Int): Task[Response] = for {
     deleteStatus <- notesService delete id
     response     <- ZIO.succeed {
-      if deleteStatus then Response.text(s"Note with id $id does not exist")
+      if !deleteStatus then Response.text(s"Note with id $id does not exist")
       else Response.text(s"Note with id $id was deleted successfully")
     }
   } yield response

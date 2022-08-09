@@ -1,31 +1,37 @@
 package db
 
 import model.{Note, User}
-import zio._
+import zio.*
 
 import scala.util.Random
 import java.time.Instant
 import java.util.Date
+import scala.collection.mutable.ListBuffer
 
 object NotesRepository extends CRUD[Note] {
 
-  override def getById(id: Int): Task[Option[Note]] = ZIO.attempt {
-    Some(Note(
-      1,
-      "first note",
-      "note body",
-      Date.from(Instant.now()).toString,
-      User(1, "Nika", "Ghurtchumelia")))
-  }
+  val inMemoryDB: InMemoryDB.type = InMemoryDB
 
-  override def getAll: UIO[List[Note]] = ZIO.succeed {
-    Note(1, "title", "body", Date.from(Instant.now()).toString, User(1, "Nika", "Ghurtchumelia"))
-      :: (2 to 11).toList.map(i => Note(i, Random.nextString(15), Random.nextString(100), Date.from(Instant.now()).toString, User(i, Random.nextString(10), Random.nextString(10))))
-  }
+  override def getById(id: Int): Task[Option[Note]] = ZIO.attempt(inMemoryDB.notes.find(_.id == id))
 
-  override def update(id: Int, a: Note): Task[Boolean] = ZIO.attempt(true)
+  override def getAll: UIO[List[Note]] = ZIO.succeed(inMemoryDB.notes.toList)
 
-  override def delete(id: Int): Task[Boolean] = ZIO.attempt(true)
+  override def update(id: Int, newNote: Note): Task[Boolean] = for {
+    notes                   <- ZIO.succeed(inMemoryDB.notes)
+    maybeNote               <- ZIO.succeed(notes.find(_.id == id))
+    index                   <- ZIO.succeed(maybeNote.fold(-1)(notes.indexOf(_)))
+    _                       <- ZIO.succeed(inMemoryDB.notes.update(index, newNote))
+    updateStatus            <- ZIO.succeed(inMemoryDB.notes.contains(newNote))
+  } yield updateStatus
 
-  override def add(a: Note): Task[Boolean] = ZIO.attempt(true)
+  override def delete(id: Int): Task[Boolean] = for {
+    index        <- ZIO.succeed(inMemoryDB.notes.map(_.id).indexOf(id))
+    note         <- ZIO.succeed(inMemoryDB.notes.remove(index))
+    deleteStatus <- ZIO.succeed(!inMemoryDB.notes.contains(note))
+  } yield deleteStatus
+
+  override def add(note: Note): Task[Boolean] = for {
+    _      <- ZIO.succeed(inMemoryDB.notes.addOne(note))
+    status <- ZIO.succeed(inMemoryDB.notes.contains(note))
+  } yield status
 }

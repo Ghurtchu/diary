@@ -29,7 +29,8 @@ object NotesRoute {
 
 
   def searchByTitle(title: String): Task[Response] =
-    searchService.searchByTitle(title)
+    val cleanedTitle = title.replace("%20", " ")
+    searchService.searchByTitle(cleanedTitle)
       .fold(
         _ => Response.text("Error occurred while searching"),
         maybeNote => maybeNote.fold(

@@ -27,15 +27,22 @@ object NotesRoute {
       .fold(_ => Response.text("not found"),
             note => Response.json(note.toJsonPretty))
 
-
   def searchByTitle(title: String): Task[Response] =
-    val cleanedTitle = title.replace("%20", " ")
-    searchService.searchByTitle(cleanedTitle)
+    searchService.searchByTitle(title)
       .fold(
         _ => Response.text("Error occurred while searching"),
         maybeNote => maybeNote.fold(
           Response.text("{}"))
         (note => Response.text(note.toJsonPretty)))
+
+  def removeNoteById(id: Int): Task[Response] = for {
+    deleteStatus <- notesService delete id
+    response     <- ZIO.succeed {
+      if deleteStatus then Response.text(s"Note with id $id does not exist")
+      else Response.text(s"Note with id $id was deleted successfully")
+    }
+  } yield response
+
 
 
 }

@@ -24,10 +24,15 @@ object NotesRepository extends CRUD[Note] {
     updateStatus            <- ZIO.succeed(inMemoryDB.notes.contains(newNote))
   } yield updateStatus
 
-  override def delete(id: Int): Task[Boolean] = for {
-    index        <- ZIO.succeed(inMemoryDB.notes.map(_.id).indexOf(id))
-    note         <- ZIO.succeed(inMemoryDB.notes.remove(index))
-    deleteStatus <- ZIO.succeed(!inMemoryDB.notes.contains(note))
+  override def delete(noteId: Int): Task[Boolean] = for {
+    notes        <- ZIO.succeed(InMemoryDB.notes)
+    maybeNote    <- ZIO.succeed(notes.find(_.id == noteId))
+    deleteStatus <- ZIO.attempt {
+      maybeNote.fold(false) { note =>
+        notes subtractOne note
+        !(notes contains note)
+      }
+    }
   } yield deleteStatus
 
   override def add(note: Note): Task[Boolean] = for {

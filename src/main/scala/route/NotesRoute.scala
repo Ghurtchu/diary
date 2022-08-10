@@ -39,8 +39,8 @@ object NotesRoute {
   def removeNoteById(id: Int): Task[Response] = for {
     deleteStatus <- notesService delete id
     response     <- ZIO.succeed {
-      if !deleteStatus then Response.text(s"Note with id $id does not exist")
-      else Response.text(s"Note with id $id was deleted successfully")
+      if deleteStatus then Response.text(s"Note with id $id was deleted successfully")
+      else Response.text(s"Note with id $id does not exist")
     }
   } yield response
 
@@ -49,12 +49,18 @@ object NotesRoute {
     status     <- noteEither.fold(err => ZIO.fail(RuntimeException(err)) , notesService.add)
     response   <- ZIO.succeed {
       if status then Response.text(s"Note with title ${noteEither.map(_.title)} was added successfully")
-      else Response.text(s"Note with title ${noteEither.map(_.title)} was not added")
+      else           Response.text(s"Note with title ${noteEither.map(_.title)} was not added")
     }
   } yield response
 
 
-
-
+  def updateNote(id: Int, noteAsString: String): Task[Response] = for {
+    noteEither <- ZIO.succeed(noteAsString.fromJson[Note])
+    status     <- noteEither.fold(err => ZIO.fail(RuntimeException(err)), note => notesService.update(id, note))
+    response   <- ZIO.succeed {
+      if status then Response.text("Note was updated successfully")
+      else           Response.text("Note was not updated")
+    }
+  } yield response
 
 }

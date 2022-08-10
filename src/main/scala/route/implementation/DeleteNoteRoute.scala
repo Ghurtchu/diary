@@ -1,11 +1,11 @@
 package route.implementation
 
-import route.interface.NeedsFieldValue
+import route.interface.CanDeleteRecord
 import service.NotesService
 import zhttp.http.Response
 import zio.*
 
-class DeleteNoteRoute extends NeedsFieldValue[Int] {
+class DeleteNoteRoute extends CanDeleteRecord[Int] {
 
   val notesService: NotesService.type    = NotesService
 

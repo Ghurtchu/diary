@@ -1,12 +1,12 @@
 package route.implementation
 
-import route.interface.NeedsFieldValue
+import route.interface.CanDeleteRecord
 import service.NotesService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class NoteRetriever extends NeedsFieldValue[Int] {
+class GetNoteRoute extends CanDeleteRecord[Int] {
 
   private val notesService: NotesService.type = NotesService
 

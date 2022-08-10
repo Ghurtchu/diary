@@ -12,7 +12,7 @@ object NotesServer extends ZIOAppDefault {
     case Method.GET        -> !! / "api" / "notes"            => GetAllNotesRoute().handle
     case req @ Method.POST -> !! / "api" / "notes"            => req.bodyAsString.flatMap(CreateNewNoteRoute().handle)
     case req @ Method.POST -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(req.url.queryParams("title").head)
-    case Method.POST       -> !! / "api" / "notes" / id       => NoteRetriever().handle(id.toInt)
+    case Method.POST       -> !! / "api" / "notes" / id       => GetNoteRoute().handle(id.toInt)
     case Method.DELETE     -> !! / "api" / "notes" / id       => DeleteNoteRoute().handle(id.toInt)
     case req @ Method.PUT  -> !! / "api" / "notes" / id       => req.bodyAsString.flatMap(noteAsString => UpdateNoteRoute().handle(id.toInt, noteAsString))
   }

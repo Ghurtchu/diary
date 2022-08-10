@@ -1,12 +1,12 @@
 package route.implementation
 
-import route.interface.CanRetrieveResponse
+import route.interface.CanRetrieveCollection
 import service.NotesService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class GetAllNotesRoute extends CanRetrieveResponse {
+class GetAllNotesRoute extends CanRetrieveCollection {
 
   private val notesService: NotesService.type = NotesService
 

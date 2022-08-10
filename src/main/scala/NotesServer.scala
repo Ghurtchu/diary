@@ -8,11 +8,16 @@ import zhttp.service.Server
 
 object NotesServer extends ZIOAppDefault {
 
-  val app = Http.collectZIO[Request] {
-    case Method.GET        -> !! / "api" / "notes"            => NotesRoute.getAllNotes
-    case req @ Method.POST -> !! / "api" / "notes" / "search" => NotesRoute.searchByTitle(req.url.queryParams("title").head)
-    case Method.POST       -> !! / "api" / "notes" / id       => NotesRoute getNoteById id.toInt
-    case Method.DELETE     -> !! / "api" / "notes" / id       => NotesRoute removeNoteById id.toInt
+  val app: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
+    case Method.GET         -> !! / "api" / "notes"            => NotesRoute.getAllNotes
+    case req @ Method.POST  -> !! / "api" / "notes"            => for {
+      noteAsString <- req.bodyAsString
+      response     <- NotesRoute addNote noteAsString
+    } yield response
+    case req @ Method.PATCH -> !! / "api" / "notes"            => ???
+    case req @ Method.POST  -> !! / "api" / "notes" / "search" => NotesRoute.searchByTitle(req.url.queryParams("title").head)
+    case Method.POST        -> !! / "api" / "notes" / id       => NotesRoute getNoteById id.toInt
+    case Method.DELETE      -> !! / "api" / "notes" / id       => NotesRoute removeNoteById id.toInt
   }
 
   override def run = Server.start(8080, app)

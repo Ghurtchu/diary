@@ -10,7 +10,7 @@ import service.*
 import service.search.{NotesSearchService, SearchService}
 import zio.*
 import zhttp.http.*
-import zio.json.EncoderOps
+import zio.json._
 
 object NotesRoute {
 
@@ -24,8 +24,9 @@ object NotesRoute {
 
   def getNoteById(id: Int): Task[Response] =
     notesService.getById(id)
-      .fold(_ => Response.text("not found"),
-            note => Response.json(note.toJsonPretty))
+      .fold(_ => Response.text("Error occurred while searching"),
+        maybeNote => maybeNote.fold(Response.text(s"Note with id $id was not found"))
+        (note => Response.text(note.toJsonPretty)))
 
   def searchByTitle(title: String): Task[Response] =
     searchService.searchByTitle(title)
@@ -42,6 +43,17 @@ object NotesRoute {
       else Response.text(s"Note with id $id was deleted successfully")
     }
   } yield response
+
+  def addNote(noteAsString: String): Task[Response] = for {
+    noteEither <- ZIO.succeed(noteAsString.fromJson[Note])
+    status     <- noteEither.fold(err => ZIO.fail(RuntimeException(err)) , notesService.add)
+    response   <- ZIO.succeed {
+      if status then Response.text(s"Note with title ${noteEither.map(_.title)} was added successfully")
+      else Response.text(s"Note with title ${noteEither.map(_.title)} was not added")
+    }
+  } yield response
+
+
 
 
 

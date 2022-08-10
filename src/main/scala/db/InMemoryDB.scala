@@ -20,8 +20,8 @@ object InMemoryDB {
     Note(4, "fourth note", "fourth note body", "2021-04-03", users(2)),
     Note(5, "fifth note", "fifth note body", "2021-05-03", users(2)),
     Note(6, "sixth note", "sixth note body", "2021-06-03", users(3)),
-    Note(7, "sixth note", "sixth note body", "2021-06-03", users(4)),
-    Note(8, "sixth note", "sixth note body", "2021-06-03", users(4)),
+    Note(7, "seventh note", "seventh note body", "2021-06-03", users(4)),
+    Note(8, "eighth note", "eighth note body", "2021-06-03", users(4)),
   )
 
 }

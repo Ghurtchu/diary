@@ -4,7 +4,7 @@ import zio.json._
 
 import java.util.Date
 
-case class Note(id: Int = null.asInstanceOf[Int], title: String, body: String, createdAt: String, owner: User)
+case class Note(id: Int, title: String, body: String, createdAt: String, owner: User)
 
 object Note:
   implicit val decoder: JsonDecoder[Note] = DeriveJsonDecoder.gen[Note]

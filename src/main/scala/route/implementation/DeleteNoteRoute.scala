@@ -1,19 +1,17 @@
 package route.implementation
 
+import db.NotesRepository
 import route.interface.CanDeleteRecord
-import service.NotesService
+import service.route.DeleteNoteService
 import zhttp.http.Response
 import zio.*
 
-class DeleteNoteRoute extends CanDeleteRecord[Int] {
+class DeleteNoteRoute {
 
-  val notesService: NotesService.type    = NotesService
+  val deleteNoteService: CanDeleteRecord = DeleteNoteService()
 
-  override def handle(id: Int): Task[Response] = for {
-    deleteStatus <- notesService delete id
-    response <- ZIO.succeed {
-      if deleteStatus then Response.text(s"Note with id $id was deleted successfully")
-      else Response.text(s"Note with id $id does not exist")
-    }
-  } yield response
+  def handle(id: Int): Task[Response] =
+    deleteNoteService.serve(id)
+      .map(_.toResponse)
+
 }

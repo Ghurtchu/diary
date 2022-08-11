@@ -1,17 +1,20 @@
 package route.implementation
 
+import db.{CRUD, NotesRepository}
+import model.Note
 import route.interface.CanRetrieveCollection
-import service.NotesService
+import service.route.GetAllNotesService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class GetAllNotesRoute extends CanRetrieveCollection {
 
-  private val notesService: NotesService.type = NotesService
+class GetAllNotesRoute {
 
-  override def handle: UIO[Response] = for {
-    notes    <- notesService.getAll
+  private val getAllNotesService: CanRetrieveCollection[Note] = GetAllNotesService()
+
+  def handle: UIO[Response] = for {
+    notes    <- getAllNotesService.serve
     response <- ZIO.succeed(Response.text(notes.toJsonPretty))
   } yield response
 

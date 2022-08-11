@@ -2,7 +2,7 @@ package route.implementation
 
 import model.Note
 import route.interface.CanCreateRecord
-import service.route.CreateNoteService
+import route.service.CreateNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*

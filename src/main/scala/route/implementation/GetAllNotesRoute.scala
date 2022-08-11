@@ -3,7 +3,7 @@ package route.implementation
 import db.{CRUD, NotesRepository}
 import model.Note
 import route.interface.CanRetrieveCollection
-import service.route.GetAllNotesService
+import route.service.GetAllNotesService
 import zhttp.http.Response
 import zio.*
 import zio.json.*

@@ -17,6 +17,6 @@ object NotesServer extends ZIOAppDefault {
     case req @ Method.PUT  -> !! / "api" / "notes" / id       => req.bodyAsString.flatMap(noteAsString => UpdateNoteRoute().handle(id.toInt, noteAsString))
   }
 
-  override def run = Server.start(8080, httpApp)
+  override def run = Server.start(5555, httpApp)
     .provideLayer(ZLayer.succeed(ZIO.succeed(())))
 }

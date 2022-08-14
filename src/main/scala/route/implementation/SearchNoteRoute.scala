@@ -18,7 +18,7 @@ class SearchNoteRoute extends HasQueryParam {
 
   override def handle(title: String): Task[Response] =
     searchService.searchByTitle(title)
-      .map(_.fold(_.toResponse, buildJsonResponse))
+      .map(_.fold(_.toNotFoundResponse, buildJsonResponse))
 
   private def buildJsonResponse(note: Note): Response = Response.text(note.toJsonPretty)
     

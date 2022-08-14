@@ -16,7 +16,7 @@ class UpdateNoteService extends CanUpdateRecord {
     noteEither   <- ZIO.succeed(newRecordAsJson.fromJson[Note])
     updateStatus <- noteEither.fold(err => ZIO.fail(RuntimeException(err)), note => notesRepository.update(id, note))
     response     <- ZIO.succeed {
-      if updateStatus then Right(s"Note with id $id was updated successfully")
+      if updateStatus then Right(s"Note with id ${id.withQuotes} was updated successfully")
       else Left("Note was not updated")
     }
   } yield response

@@ -16,8 +16,8 @@ class CreateNoteService extends CanCreateRecord {
     note           <- noteEither.fold(err => ZIO.fail(new RuntimeException(err)), ZIO.succeed(_))
     creationStatus <- notesRepository add note
     response       <- ZIO.succeed {
-      if creationStatus then Right(s"Note with title ${note.title} was created successfully")
-      else Left(s"Note with title ${note.title} was not created")
+      if creationStatus then Right(s"Note with title ${note.title.withQuotes} was created successfully")
+      else Left(s"Note with title ${note.title.withQuotes} was not created")
     }
   } yield response
 

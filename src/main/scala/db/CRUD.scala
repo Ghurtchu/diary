@@ -3,6 +3,7 @@ package db
 import zio.{Task, UIO}
 
 trait CRUD[A]:
+  
   def getById(id: Int): Task[Option[A]]
 
   def getAll: UIO[List[A]]

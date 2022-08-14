@@ -5,6 +5,8 @@ import zio.*
 import zhttp.*
 import zhttp.http.*
 import service.Server
+import zio.json._
+
 
 object NotesServer extends ZIOAppDefault {
 

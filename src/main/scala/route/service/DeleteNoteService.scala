@@ -12,8 +12,8 @@ class DeleteNoteService extends CanDeleteRecord {
   override def serve(id: Int): Task[Either[String, String]] = for {
     deleteStatus <- notesRepository delete id
     response     <- ZIO.succeed {
-      if deleteStatus then Right(s"Note with id $id was deleted successfully")
-      else Left(s"Note with id $id was not deleted")
+      if deleteStatus then Right(s"Note with id ${id.withQuotes} was deleted successfully")
+      else Left(s"Note with id ${id.withQuotes} was not deleted")
     }
   } yield response
 

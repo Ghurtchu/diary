@@ -12,9 +12,6 @@ class GetNoteRoute {
   private val getNoteService: CanRetrieveRecord[Note] = GetNoteService()
 
   def handle(id: Int): Task[Response] = getNoteService.serve(id)
-    .map(_.fold(_.toResponse, buildJsonResponse))
-
-  private def buildJsonResponse(note: Note): Response = Response.text(note.toJsonPretty)
-
+    .map(_.fold(_.toNotFoundResponse, toJsonResponse))
 
 }

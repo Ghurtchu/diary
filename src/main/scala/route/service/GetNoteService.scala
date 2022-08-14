@@ -13,6 +13,6 @@ class GetNoteService extends CanRetrieveRecord[Note] {
 
   override def serve(id: Int): Task[Either[String, Note]] = for {
     maybeNote <- notesRepository getById id
-    response  <- ZIO.succeed(maybeNote.fold(Left(s"Could not find the note with id $id"))(Right(_)))
+    response  <- ZIO.succeed(maybeNote.fold(Left(s"Could not find the note with id ${id.withQuotes}"))(Right(_)))
   } yield response
 }

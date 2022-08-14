@@ -29,3 +29,10 @@ object User {
 
 }
 
+case class AuthPayload(email: String, password: String)
+
+object AuthPayload {
+  given decoder: JsonDecoder[AuthPayload] = DeriveJsonDecoder.gen[AuthPayload]
+  given encoder: JsonEncoder[AuthPayload] = DeriveJsonEncoder.gen[AuthPayload]
+}
+

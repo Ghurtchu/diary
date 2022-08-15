@@ -1,4 +1,6 @@
 
+import db.InMemoryDB
+import model.Note
 import model.AuthPayload
 import route.implementation.*
 import route.interface.*
@@ -12,25 +14,49 @@ import zio.json.*
 object NotesServer extends ZIOAppDefault {
 
   val httpApp: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
-    case req @ Method.POST -> !! / "api" / "user" / "sign-up" =>  {
+
+    case req@Method.POST -> !! / "api" / "user" / "sign-up" => {
       for {
         authPayload <- req.bodyAsString.map(_.fromJson[AuthPayload])
-        response    <- ZIO.succeed {
+        response <- ZIO.succeed {
           authPayload.fold(
-            _       => Response.text("Malformed json").setStatus(Status.BadRequest),
+            _ => Response.text("Malformed json").setStatus(Status.BadRequest),
             payload => Response.text(s"Handling user auth... for $payload").setStatus(Status.Created)
           )
         }
       } yield response
     }
-    case Method.GET        -> !! / "api" / "notes"            => GetAllNotesRoute().handle
-    case req @ Method.POST -> !! / "api" / "notes"            => req.bodyAsString.flatMap(CreateNoteRoute(_).handle)
-    case req @ Method.POST -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(req.url.queryParams("title").head)
-    case Method.GET        -> !! / "api" / "notes" / id       => GetNoteRoute().handle(id.toInt)
-    case Method.DELETE     -> !! / "api" / "notes" / id       => DeleteNoteRoute().handle(id.toInt)
-    case req @ Method.PUT  -> !! / "api" / "notes" / id       => req.bodyAsString.flatMap(noteAsString => UpdateNoteRoute().handle(id.toInt, noteAsString))
-  }
 
+    case Method.GET -> !! / "api" / "notes" => GetAllNotesRoute().handle
+
+    case req@Method.POST -> !! / "api" / "notes" => req.bodyAsString.flatMap(CreateNoteRoute(_).handle)
+
+    case req@Method.POST -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(req.url.queryParams("title").head)
+
+    case req@Method.GET  -> !! / "api" / "notes" / "sort" => for {
+      order <- ZIO.succeed {
+        val queryParamsMap = req.url.queryParams
+
+        queryParamsMap.get("order")
+          .fold("asc")(_.head)
+      }
+      notes <- ZIO.succeed(InMemoryDB.notes)
+      ordered <- ZIO.succeed {
+        val sortLogic: (Note, Note) => Boolean =
+          if order == "desc" then (n1, n2) => n1.title > n2.title else (n1, n2) => n1.title < n2.title
+
+        notes sortWith sortLogic
+      }
+      response <- ZIO.succeed(Response.text(ordered.toJsonPretty))
+    } yield response
+
+    case Method.GET -> !! / "api" / "notes" / id => GetNoteRoute().handle(id.toInt)
+
+    case Method.DELETE -> !! / "api" / "notes" / id => DeleteNoteRoute().handle(id.toInt)
+
+    case req@Method.PUT -> !! / "api" / "notes" / id => req.bodyAsString.flatMap(noteAsString => UpdateNoteRoute().handle(id.toInt, noteAsString))
+
+  }
   override def run = Server.start(5555, httpApp)
     .provideLayer(ZLayer.succeed(ZIO.succeed(())))
 }

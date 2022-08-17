@@ -4,7 +4,7 @@ import zhttp.http.Response
 import zhttp.http.Status
 import zio.json._
 
-package object implementation {
+package object handler {
   
     extension (eitherStringString: Either[String, String])
       def toResponse: Response = eitherStringString.fold(

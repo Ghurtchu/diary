@@ -3,12 +3,15 @@ package db
 import io.github.nremond.PBKDF2
 import io.github.nremond.legacy.SecureHash
 import model.{Note, User}
-import zio.json._
+import service.hash.{CanHashPassword, PasswordHashService}
+import zio.json.*
 
 import java.nio.charset.StandardCharsets
 import scala.collection.mutable.{ArrayBuffer, ListBuffer, Map}
 
 object InMemoryDB {
+
+  val passwordHashService: CanHashPassword = PasswordHashService()
 
   lazy val users: scala.collection.mutable.Map[Int, User] =
     scala.collection.mutable.Map[Int, User]()
@@ -16,7 +19,6 @@ object InMemoryDB {
   users.addAll(readUsersAndHashPasswords.zipWithIndex.map {
     case (k, v) => (v + 1, k)
   })
-
 
   def readUsersAndHashPasswords: List[User] = {
     val bufferedSource = scala.io.Source.fromFile("src/main/resources/users.json")
@@ -28,17 +30,9 @@ object InMemoryDB {
     usersEither.fold(
       _ => List(),
       users => users.map {
-        user => user.copy(password = hash(user.password))
+        user => user.copy(password = passwordHashService.hash(user.password))
       }
     )
-  }
-
-
-  def hash(password: String): String = {
-    val secureHash = SecureHash()
-    val hashedPass = secureHash createHash password
-
-    hashedPass
   }
 
   lazy val notes: ListBuffer[Note] = ListBuffer(

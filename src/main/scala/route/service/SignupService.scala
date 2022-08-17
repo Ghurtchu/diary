@@ -6,15 +6,24 @@ import route.interface.{CanCreateRecord, CanSignUp}
 import zio.*
 import zio.json.*
 
-class SignupService extends CanSignUp[AuthPayload, JWT] {
+class SignupService extends CanSignUp[User, JWT] {
 
   val userRepository: UserCRUD = UserRepository()
   
-  override def signUp(authPayload: AuthPayload): Task[Either[String, JWT]] = for {
-    userExists  <- userRepository userExists authPayload.email
-    response    <- {
+  override def signUp(userPayload: User): Task[Either[String, JWT]] = for {
+    userExists  <- userRepository userExists userPayload.email
+    response    <-  {
       if userExists then ZIO.succeed(Left("error"))
-      else ZIO.succeed(Right(JWT("jwt token")))
+      else {
+        for {
+          _         <- userRepository add userPayload
+          userAdded <- userRepository.userExists(userPayload.email)
+          errorOrJwt  <- {
+            if userAdded then ZIO.succeed(Right(JWT("Token")))
+            else ZIO.succeed(Left("error"))
+          }
+        } yield errorOrJwt
+      }
     }
   } yield response
 

@@ -12,12 +12,12 @@ import model.AuthPayload
 
 class SignupRoute {
 
-  val signupService: CanSignUp[AuthPayload, JWT] = SignupService()
+  val signupService: CanSignUp[User, JWT] = SignupService()
 
   def handle(request: Request): Task[Response] = for {
     recordAsJson <- request.bodyAsString
-    authPayload  <- ZIO.succeed(recordAsJson.fromJson[AuthPayload])
-    errorOrToken <- authPayload.fold(
+    userPayload  <- ZIO.succeed(recordAsJson.fromJson[User])
+    errorOrToken <- userPayload.fold(
       err     => ZIO.fail(new RuntimeException(err)),
       payload => signupService signUp payload
     )

@@ -15,15 +15,12 @@ object NotesServer extends ZIOAppDefault {
 
   val httpApp: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
 
-    case request@Method.POST -> !! / "api" / "user" / "signup" => SignupRoute().handle(request)
+    case request@Method.POST -> !! / "api" / "user" / "signup"  => SignupRoute().handle(request)
+    case Method.GET          -> !! / "api" / "notes"            => GetAllNotesRoute().handle
+    case request@Method.POST -> !! / "api" / "notes"            => CreateNoteRoute().handle(request)
+    case request@Method.GET  -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(request)
 
-    case Method.GET      -> !! / "api" / "notes" => GetAllNotesRoute().handle
-
-    case request@Method.POST -> !! / "api" / "notes" => CreateNoteRoute().handle(request)
-
-    case request@Method.GET -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(request)
-
-    case req@Method.GET  -> !! / "api" / "notes" / "sort" => for {
+    case req@Method.GET      -> !! / "api" / "notes" / "sort"   => for {
       order <- ZIO.succeed {
         val queryParamsMap = req.url.queryParams
 
@@ -40,11 +37,9 @@ object NotesServer extends ZIOAppDefault {
       response <- ZIO.succeed(Response.text(ordered.toJsonPretty))
     } yield response
 
-    case Method.GET -> !! / "api" / "notes" / id => GetNoteRoute().handle(id.toInt)
-
-    case Method.DELETE -> !! / "api" / "notes" / id => DeleteNoteRoute().handle(id.toInt)
-
-    case request@Method.PUT -> !! / "api" / "notes" / id => UpdateNoteRoute().handle(request, id.toInt)
+    case Method.GET          -> !! / "api" / "notes" / id       => GetNoteRoute().handle(id.toInt)
+    case Method.DELETE       -> !! / "api" / "notes" / id       => DeleteNoteRoute().handle(id.toInt)
+    case request@Method.PUT  -> !! / "api" / "notes" / id       => UpdateNoteRoute().handle(request, id.toInt)
 
   }
   override def run = Server.start(5555, httpApp)

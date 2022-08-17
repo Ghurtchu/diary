@@ -1,18 +1,45 @@
 package db
 
+import io.github.nremond.PBKDF2
+import io.github.nremond.legacy.SecureHash
 import model.{Note, User}
+import zio.json._
 
-import scala.collection.mutable.ListBuffer
-import scala.collection.mutable.Map
+import java.nio.charset.StandardCharsets
+import scala.collection.mutable.{ArrayBuffer, ListBuffer, Map}
 
 object InMemoryDB {
 
-  lazy val users: scala.collection.mutable.Map[Int, User] = scala.collection.mutable.Map(
-    1 -> User(1, "Nika", "n@at.com", "pass1"),
-    2 -> User(2, "Ozzy", "o@at.com", "pass2"),
-    3 -> User(3, "Tony", "t@at.com", "pass3"),
-    4 -> User(4, "Geezer", "g@at.com", "pass4")
-  )
+  lazy val users: scala.collection.mutable.Map[Int, User] =
+    scala.collection.mutable.Map[Int, User]()
+
+  users.addAll(readUsersAndHashPasswords.zipWithIndex.map {
+    case (k, v) => (v + 1, k)
+  })
+
+
+  def readUsersAndHashPasswords: List[User] = {
+    val bufferedSource = scala.io.Source.fromFile("src/main/resources/users.json")
+    val data: String = bufferedSource.getLines().mkString("\n")
+    val usersEither = data.fromJson[List[User]]
+
+    bufferedSource.close()
+
+    usersEither.fold(
+      _ => List(),
+      users => users.map {
+        user => user.copy(password = hash(user.password))
+      }
+    )
+  }
+
+
+  def hash(password: String): String = {
+    val secureHash = SecureHash()
+    val hashedPass = secureHash createHash password
+
+    hashedPass
+  }
 
   lazy val notes: ListBuffer[Note] = ListBuffer(
     Note(1, "Z title", "first note body", "2020-01-01", users(1)),

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Nika",
+    "email": "n@at.com",
+    "password": "nikapass"
+  },
+  {
+    "id": 2,
+    "name": "George",
+    "email": "g@at.com",
+    "password": "georgepass"
+  },
+  {
+    "id": 3,
+    "name": "Tornike",
+    "email": "t@at.com",
+    "password": "tokopass"
+  },
+  {
+    "id": 4,
+    "name": "Onavari",
+    "email": "o@at.com",
+    "password": "onavaripass"
+  }
+]

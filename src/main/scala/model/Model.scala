@@ -17,7 +17,7 @@ object Note {
 }
 
 
-case class User private(id: Option[Int], name: String, email: String, password: String)
+case class User (id: Option[Int], name: String, email: String, password: String)
 
 object User {
 

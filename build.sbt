@@ -7,6 +7,8 @@ libraryDependencies ++= Seq(
   "dev.zio" %% "zio" % "2.0.0",
   "dev.zio" %% "zio-json" % "0.3.0-RC10"
 )
+libraryDependencies += "io.github.nremond" %% "pbkdf2-scala" % "0.7.0"
+libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test
 
 lazy val root = (project in file("."))
   .settings(

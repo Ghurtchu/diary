@@ -2,9 +2,9 @@ package service.hash
 
 import io.github.nremond.legacy.SecureHash
 
-class PasswordHashService extends CanHashPassword {
+object SecureHashService extends CanHashPassword {
   
-  val underlyingImpl: SecureHash = SecureHash()
+  private final val underlyingImpl: SecureHash = SecureHash()
   
   override def hash(hashable: String): String = underlyingImpl createHash hashable
   

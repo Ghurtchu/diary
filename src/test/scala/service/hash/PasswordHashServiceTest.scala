@@ -6,7 +6,7 @@ import munit.FunSuite
 
 class PasswordHashServiceTest extends FunSuite {
 
-  val service: CanHashPassword = PasswordHashService()
+  val service: CanHashPassword = SecureHashService
 
   test("hash") {
     (1 to 25).foreach { _ =>

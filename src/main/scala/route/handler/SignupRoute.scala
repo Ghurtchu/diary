@@ -2,7 +2,7 @@ package route.handler
 
 import route.interface.*
 import zio.*
-import route.service.SignupService
+import route.implementation.SignupService
 import zhttp.http.Response
 import model._
 import route.interface.CanCreateRecord
@@ -12,7 +12,7 @@ import model.AuthPayload
 
 class SignupRoute {
 
-  val signupService: CanSignUp[User, JWT] = SignupService()
+  val signupService: CanSignUp[User] = SignupService()
 
   def handle(request: Request): Task[Response] = for {
     recordAsJson <- request.bodyAsString
@@ -23,7 +23,7 @@ class SignupRoute {
     )
     response     <- errorOrToken.fold(
       err => ZIO.succeed(Response.text(err)),
-      jwt => ZIO.succeed(Response.text(jwt.token))
+      suc => ZIO.succeed(Response.text(suc))
     )
   } yield response
 

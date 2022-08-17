@@ -2,7 +2,7 @@ package route.handler
 
 import model.Note
 import route.interface.CanRetrieveRecord
-import route.service.GetNoteService
+import route.implementation.GetNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*

@@ -2,7 +2,7 @@ package route.handler
 
 import model.Note
 import route.interface.CanUpdateRecord
-import route.service.UpdateNoteService
+import route.implementation.UpdateNoteService
 
 import zhttp.http._
 import zio.*

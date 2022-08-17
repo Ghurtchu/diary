@@ -2,7 +2,7 @@ package route.handler
 
 import db.NotesRepository
 import route.interface.CanDeleteRecord
-import route.service.DeleteNoteService
+import route.implementation.DeleteNoteService
 import zhttp.http.Response
 import zio.*
 

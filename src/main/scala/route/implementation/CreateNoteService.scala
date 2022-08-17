@@ -1,4 +1,4 @@
-package route.service
+package route.implementation
 
 import db.{CRUD, NotesRepository}
 import model.Note

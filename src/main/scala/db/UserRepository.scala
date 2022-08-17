@@ -20,7 +20,7 @@ class UserRepository extends UserCRUD {
     newUserId      <- ZIO.succeed(scala.util.Random.nextInt)
     _              <- ZIO.succeed(users.addOne(newUserId, user))
     creationStatus <- ZIO.succeed {
-      if users.get(newUserId) == user then Right("User update was successful") else Left("User update was not successful")
+      if users(newUserId) == user then Right("User has been created") else Left("User creation was not successful")
     }
   } yield creationStatus
 

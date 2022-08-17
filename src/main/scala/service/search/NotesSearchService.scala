@@ -9,7 +9,7 @@ import java.util.Date
 
 object NotesSearchService extends CanSearch[Note] {
 
-  val notesRepository: CRUD[Note] = NotesRepository
+  val notesRepository: CRUD[Note] = NotesRepository()
 
   override def searchByTitle(title: String): Task[Either[String, Note]] = for {
     notes     <- notesRepository.getAll

@@ -1,7 +1,6 @@
 package route.implementation
 
 import model.*
-import route.interface.HasQueryParam
 import service.*
 import service.search.{NotesSearchService, CanSearch}
 import zhttp.http.*
@@ -11,15 +10,18 @@ import zio.json.*
 import java.time.Instant
 import java.util.Date
 
-
-class SearchNoteRoute extends HasQueryParam {
+class SearchNoteRoute {
 
   private val searchService: CanSearch[Note] = NotesSearchService
 
-  override def handle(title: String): Task[Response] =
-    searchService.searchByTitle(title)
-      .map(_.fold(_.toNotFoundResponse, buildJsonResponse))
-
-  private def buildJsonResponse(note: Note): Response = Response.text(note.toJsonPretty)
+  def handle(request: Request): Task[Response] = for {
+    title        <- ZIO.succeed(request.url.queryParams("title").head)
+    searchResult <- searchService searchByTitle title
+    response     <- ZIO.succeed(searchResult.fold(
+      err  => Response.text(err),
+      note => Response.text(note.toJsonPretty)
+    ))
+  } yield response
+  
     
 }

@@ -9,9 +9,9 @@ import zio.json.*
 
 class GetNoteService extends CanRetrieveRecord[Note] {
 
-  private val notesRepository: CRUD[Note] = NotesRepository
+  private val notesRepository: CRUD[Note] = NotesRepository()
 
-  override def serve(id: Int): Task[Either[String, Note]] = for {
+  override def retrieveRecord(id: Int): Task[Either[String, Note]] = for {
     maybeNote <- notesRepository getById id
     response  <- ZIO.succeed(maybeNote.fold(Left(s"Could not find the note with id ${id.withQuotes}"))(Right(_)))
   } yield response

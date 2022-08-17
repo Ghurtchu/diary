@@ -5,16 +5,26 @@ import route.interface.CanCreateRecord
 import route.service.CreateNoteService
 import zhttp.http.Response
 import zio.*
+import zhttp.http.Request
 import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute(private val noteAsJson: String) {
+class CreateNoteRoute() {
 
-  private val createNoteRouteService: CanCreateRecord = new CreateNoteService()
+  private val createNoteRouteService: CanCreateRecord[Note] = new CreateNoteService()
 
-  def handle: Task[Response] =
-    createNoteRouteService.serve(noteAsJson)
-      .map(_.toResponse)
+  def handle(request: Request): Task[Response] = for {
+    noteAsJson     <- request.bodyAsString
+    noteEither     <- ZIO.succeed(noteAsJson.fromJson[Note])
+    creationStatus <- noteEither.fold(
+      err => ZIO.fail(RuntimeException(err)),
+      createNoteRouteService.createRecord
+    )
+    response       <- ZIO.succeed(creationStatus.fold(
+      Response.text,
+      Response.text
+    ))
+  } yield response
 
 }

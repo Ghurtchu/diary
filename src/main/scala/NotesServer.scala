@@ -15,23 +15,13 @@ object NotesServer extends ZIOAppDefault {
 
   val httpApp: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
 
-    case req@Method.POST -> !! / "api" / "user" / "sign-up" => {
-      for {
-        authPayload <- req.bodyAsString.map(_.fromJson[AuthPayload])
-        response <- ZIO.succeed {
-          authPayload.fold(
-            _ => Response.text("Malformed json").setStatus(Status.BadRequest),
-            payload => Response.text(s"Handling user auth... for $payload").setStatus(Status.Created)
-          )
-        }
-      } yield response
-    }
+    case request@Method.POST -> !! / "api" / "user" / "signup" => SignupRoute().handle(request)
 
-    case Method.GET -> !! / "api" / "notes" => GetAllNotesRoute().handle
+    case Method.GET      -> !! / "api" / "notes" => GetAllNotesRoute().handle
 
-    case req@Method.POST -> !! / "api" / "notes" => req.bodyAsString.flatMap(CreateNoteRoute(_).handle)
+    case request@Method.POST -> !! / "api" / "notes" => CreateNoteRoute().handle(request)
 
-    case req@Method.POST -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(req.url.queryParams("title").head)
+    case request@Method.GET -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(request)
 
     case req@Method.GET  -> !! / "api" / "notes" / "sort" => for {
       order <- ZIO.succeed {
@@ -43,7 +33,7 @@ object NotesServer extends ZIOAppDefault {
       notes <- ZIO.succeed(InMemoryDB.notes)
       ordered <- ZIO.succeed {
         val sortLogic: (Note, Note) => Boolean =
-          if order == "desc" then (n1, n2) => n1.title > n2.title else (n1, n2) => n1.title < n2.title
+          if order == "desc" then _.title > _.title else _.title < _.title
 
         notes sortWith sortLogic
       }
@@ -54,7 +44,7 @@ object NotesServer extends ZIOAppDefault {
 
     case Method.DELETE -> !! / "api" / "notes" / id => DeleteNoteRoute().handle(id.toInt)
 
-    case req@Method.PUT -> !! / "api" / "notes" / id => req.bodyAsString.flatMap(noteAsString => UpdateNoteRoute().handle(id.toInt, noteAsString))
+    case request@Method.PUT -> !! / "api" / "notes" / id => UpdateNoteRoute().handle(request, id.toInt)
 
   }
   override def run = Server.start(5555, httpApp)

@@ -1,6 +1,6 @@
 package route.service
 
-import db.NotesRepository
+import db.{CRUD, NotesRepository}
 import model.Note
 import route.interface.{CanCreateRecord, CanUpdateRecord}
 import zhttp.http.Response
@@ -8,17 +8,12 @@ import zio.*
 import zio.json.*
 
 
-class UpdateNoteService extends CanUpdateRecord {
+class UpdateNoteService extends CanUpdateRecord[Note] {
 
-  private val notesRepository: NotesRepository.type = NotesRepository
+  private val notesRepository: CRUD[Note] = NotesRepository()
 
-  override def serve(id: Int, newRecordAsJson: String): Task[Either[String, String]] = for {
-    noteEither   <- ZIO.succeed(newRecordAsJson.fromJson[Note])
-    updateStatus <- noteEither.fold(err => ZIO.fail(RuntimeException(err)), note => notesRepository.update(id, note))
-    response     <- ZIO.succeed {
-      if updateStatus then Right(s"Note with id ${id.withQuotes} was updated successfully")
-      else Left("Note was not updated")
-    }
-  } yield response
+  override def updateRecord(id: Int, note: Note): Task[Either[String, String]] = for {
+    updateStatus <- notesRepository.update(id, note)
+  } yield updateStatus
 
 }

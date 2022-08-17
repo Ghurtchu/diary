@@ -3,14 +3,15 @@ package db
 import model.{Note, User}
 
 import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Map
 
-object InMemoryDB:
+object InMemoryDB {
 
-  lazy val users: Map[Int, User] = Map(
-    1 -> User(1, "Nika", "Ghurtchumelia"),
-    2 -> User(2, "Ozzy", "Osbourne"),
-    3 -> User(3, "Tony", "Iommi"),
-    4 -> User(4, "Geezer", "Butler")
+  lazy val users: scala.collection.mutable.Map[Int, User] = scala.collection.mutable.Map(
+    1 -> User(1, "Nika", "n@at.com", "pass1"),
+    2 -> User(2, "Ozzy", "o@at.com", "pass2"),
+    3 -> User(3, "Tony", "t@at.com", "pass3"),
+    4 -> User(4, "Geezer", "g@at.com", "pass4")
   )
 
   lazy val notes: ListBuffer[Note] = ListBuffer(
@@ -23,4 +24,6 @@ object InMemoryDB:
     Note("C title", "seventh note body", "2021-06-03", users(4)),
     Note(8, "D title", "eighth note body", "2021-06-03", users(4)),
   )
+
+}
 

@@ -4,5 +4,5 @@ import zhttp.http.Response
 import zio.Task
 
 trait CanDeleteRecord {
-  def serve(id: Int): Task[Either[String, String]]
+  def deleteRecord(id: Int): Task[Either[String, String]]
 }

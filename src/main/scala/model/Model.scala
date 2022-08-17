@@ -17,22 +17,24 @@ object Note {
 }
 
 
-case class User private(id: Option[Int], firstName: String, lastName: String)
+case class User private(id: Option[Int], name: String, email: String, password: String)
 
 object User {
 
   given decoder: JsonDecoder[User] = DeriveJsonDecoder.gen[User]
   given encoder: JsonEncoder[User] = DeriveJsonEncoder.gen[User]
 
-  def apply(id: Int, firstName: String, lastName: String): User = new User(id.some, firstName, lastName)
-  def apply(firstName: String, lastName: String): User = new User(None, firstName, lastName)
+  def apply(id: Int, name: String, email: String, password: String): User = new User(id.some, name, email, password)
+  def apply(name: String, email: String, password: String): User = new User(None, name, email, password)
 
 }
 
-case class AuthPayload(email: String, password: String)
+case class AuthPayload(name: String, email: String, password: String)
 
 object AuthPayload {
   given decoder: JsonDecoder[AuthPayload] = DeriveJsonDecoder.gen[AuthPayload]
   given encoder: JsonEncoder[AuthPayload] = DeriveJsonEncoder.gen[AuthPayload]
 }
 
+case class JWT(token: String)
+case class JWTError(error: String)

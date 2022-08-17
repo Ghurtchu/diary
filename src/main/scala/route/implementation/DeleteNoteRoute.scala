@@ -11,7 +11,7 @@ class DeleteNoteRoute {
   val deleteNoteService: CanDeleteRecord = DeleteNoteService()
 
   def handle(id: Int): Task[Response] =
-    deleteNoteService.serve(id)
-      .map(_.toResponse)
+    deleteNoteService.deleteRecord(id)
+      .map(_.fold(err => Response text err, succ => Response.text(succ)))
 
 }

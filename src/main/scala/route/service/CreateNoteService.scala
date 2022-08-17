@@ -1,24 +1,18 @@
 package route.service
 
-import db.NotesRepository
+import db.{CRUD, NotesRepository}
 import model.Note
 import route.interface.CanCreateRecord
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class CreateNoteService extends CanCreateRecord {
+class CreateNoteService extends CanCreateRecord[Note] {
 
-  private val notesRepository: NotesRepository.type = NotesRepository
+  private val notesRepository: CRUD[Note] = NotesRepository()
 
-  override def serve(recordAsJon: String): Task[Either[String, String]] = for {
-    noteEither     <- ZIO.succeed(recordAsJon.fromJson[Note])
-    note           <- noteEither.fold(err => ZIO.fail(new RuntimeException(err)), ZIO.succeed(_))
+  override def createRecord(note: Note): Task[Either[String, String]] = for {
     creationStatus <- notesRepository add note
-    response       <- ZIO.succeed {
-      if creationStatus then Right(s"Note with title ${note.title.withQuotes} was created successfully")
-      else Left(s"Note with title ${note.title.withQuotes} was not created")
-    }
-  } yield response
+  } yield creationStatus
 
 }

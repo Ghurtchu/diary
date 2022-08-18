@@ -39,9 +39,7 @@ class LoginRoute extends CommonRequestHandler[Request] {
             }
           )
           a <- ZIO.succeed(Response.text("yes"))
-        } yield ???
-
-          Response.text("")
+        } yield a
       }
     }
   } yield response

@@ -19,24 +19,7 @@ object NotesServer extends ZIOAppDefault {
     case Method.GET          -> !! / "api" / "notes"            => GetAllNotesRoute().handle
     case request@Method.POST -> !! / "api" / "notes"            => CreateNoteRoute().handle(request)
     case request@Method.GET  -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(request)
-
-    case req@Method.GET      -> !! / "api" / "notes" / "sort"   => for {
-      order <- ZIO.succeed {
-        val queryParamsMap = req.url.queryParams
-
-        queryParamsMap.get("order")
-          .fold("asc")(_.head)
-      }
-      notes <- ZIO.succeed(InMemoryDB.notes)
-      ordered <- ZIO.succeed {
-        val sortLogic: (Note, Note) => Boolean =
-          if order == "desc" then _.title > _.title else _.title < _.title
-
-        notes sortWith sortLogic
-      }
-      response <- ZIO.succeed(Response.text(ordered.toJsonPretty))
-    } yield response
-
+    case request@Method.GET  -> !! / "api" / "notes" / "sort"   => SortRoute().handle(request)
     case Method.GET          -> !! / "api" / "notes" / id       => GetNoteRoute().handle(id.toInt)
     case Method.DELETE       -> !! / "api" / "notes" / id       => DeleteNoteRoute().handle(id.toInt)
     case request@Method.PUT  -> !! / "api" / "notes" / id       => UpdateNoteRoute().handle(request, id.toInt)

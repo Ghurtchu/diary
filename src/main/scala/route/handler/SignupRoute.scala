@@ -7,10 +7,11 @@ import zhttp.http.Response
 import model._
 import route.interface.CanCreateRecord
 import zio.json.*
+import route.interface.CommonRequestHandler
 import zhttp.http.Request
 import model.AuthPayload
 
-class SignupRoute {
+class SignupRoute extends CommonRequestHandler[Request] {
 
   val signupService: CanSignUp[User] = SignupService()
 

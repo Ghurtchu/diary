@@ -6,8 +6,10 @@ import route.implementation.GetNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
+import route.interface.CommonRequestHandler
 
-class GetNoteRoute {
+
+class GetNoteRoute extends CommonRequestHandler[Int] {
 
   private val getNoteService: CanRetrieveRecord[Note] = GetNoteService()
 

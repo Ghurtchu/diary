@@ -5,8 +5,9 @@ import route.interface.CanDeleteRecord
 import route.implementation.DeleteNoteService
 import zhttp.http.Response
 import zio.*
+import route.interface.CommonRequestHandler
 
-class DeleteNoteRoute {
+class DeleteNoteRoute extends CommonRequestHandler[Int] {
 
   val deleteNoteService: CanDeleteRecord = DeleteNoteService()
 

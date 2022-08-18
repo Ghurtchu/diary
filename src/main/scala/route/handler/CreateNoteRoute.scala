@@ -1,7 +1,7 @@
 package route.handler
 
 import model.Note
-import route.interface.CanCreateRecord
+import route.interface._
 import route.implementation.CreateNoteService
 import zhttp.http.Response
 import zio.*
@@ -10,11 +10,11 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute() {
+class CreateNoteRoute() extends CommonRequestHandler[Request] {
 
   private val createNoteRouteService: CanCreateRecord[Note] = new CreateNoteService()
 
-  def handle(request: Request): Task[Response] = for {
+  final override def handle(request: Request): Task[Response] = for {
     noteAsJson     <- request.bodyAsString
     noteEither     <- ZIO.succeed(noteAsJson.fromJson[Note])
     creationStatus <- noteEither.fold(

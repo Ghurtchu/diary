@@ -7,8 +7,9 @@ import route.implementation.UpdateNoteService
 import zhttp.http._
 import zio.*
 import zio.json.*
+import route.interface.AdvancedRequestHandler
 
-class UpdateNoteRoute {
+class UpdateNoteRoute extends AdvancedRequestHandler[Request, Int] {
 
   private val updateNoteService: CanUpdateRecord[Note] = new UpdateNoteService()
 

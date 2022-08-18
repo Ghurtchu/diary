@@ -8,7 +8,7 @@ import zhttp.http.Request
 import route.implementation.NoteSortService
 import zio.json._
 
-class SortRoute extends CommonRequestHandler[Request] {
+class SortNoteRoute extends CommonRequestHandler[Request] {
 
   val sortService: CanSort[Note] = NoteSortService()
 

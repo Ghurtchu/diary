@@ -8,7 +8,7 @@ import route.interface.{CanSort, SortOrder}
 import zio.*
 
 
-class NoteSortService extends CanSort[Note] {
+class SortNoteService extends CanSort[Note] {
 
   private val notesRepository: CRUD[Note] = NotesRepository()
 

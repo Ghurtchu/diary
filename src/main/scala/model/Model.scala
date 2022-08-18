@@ -29,11 +29,11 @@ object User {
 
 }
 
-case class AuthPayload(name: String, email: String, password: String)
+case class LoginPayload(email: String, password: String)
 
-object AuthPayload {
-  given decoder: JsonDecoder[AuthPayload] = DeriveJsonDecoder.gen[AuthPayload]
-  given encoder: JsonEncoder[AuthPayload] = DeriveJsonEncoder.gen[AuthPayload]
+object LoginPayload {
+  given decoder: JsonDecoder[LoginPayload] = DeriveJsonDecoder.gen[LoginPayload]
+  given encoder: JsonEncoder[LoginPayload] = DeriveJsonEncoder.gen[LoginPayload]
 }
 
 case class JWT(token: String)

@@ -5,12 +5,12 @@ import route.interface.{CanSort, CommonRequestHandler, SortOrder}
 import zhttp.http.Response
 import zio.{Task, ZIO}
 import zhttp.http.Request
-import route.implementation.NoteSortService
+import route.implementation.SortNoteService
 import zio.json._
 
 class SortNoteRoute extends CommonRequestHandler[Request] {
 
-  val sortService: CanSort[Note] = NoteSortService()
+  val sortService: CanSort[Note] = SortNoteService()
 
   final override def handle(request: Request): Task[Response] = for {
     sortOrder <- ZIO.succeed {

@@ -25,6 +25,7 @@ class UserRepository extends UserCRUD {
   } yield creationStatus
 
   override def userExists(email: String): Task[Boolean] = ZIO.succeed(inMemoryDB.users.values.map(_.email).toList.contains(email))
-  
 
+  override def getUserByEmail(email: String): Task[Option[User]] = ZIO.attempt(inMemoryDB.users.values.find(_.email == email))
+  
 }

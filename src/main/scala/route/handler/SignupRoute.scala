@@ -9,7 +9,7 @@ import route.interface.CanCreateRecord
 import zio.json.*
 import route.interface.CommonRequestHandler
 import zhttp.http.Request
-import model.AuthPayload
+import model.LoginPayload
 
 class SignupRoute extends CommonRequestHandler[Request] {
 

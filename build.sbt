@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
 )
 libraryDependencies += "io.github.nremond" %% "pbkdf2-scala" % "0.7.0"
 libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test
+libraryDependencies += "com.github.jwt-scala" %% "jwt-circe" % "9.0.6"
 
 lazy val root = (project in file("."))
   .settings(

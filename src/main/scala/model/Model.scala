@@ -29,6 +29,14 @@ object User {
 
 }
 
+case class UserJWT(id: Int, name: String, email: String)
+
+object UserJWT {
+  given decoder: JsonDecoder[UserJWT] = DeriveJsonDecoder.gen[UserJWT]
+  given encoder: JsonEncoder[UserJWT] = DeriveJsonEncoder.gen[UserJWT]
+}
+
+
 case class LoginPayload(email: String, password: String)
 
 object LoginPayload {

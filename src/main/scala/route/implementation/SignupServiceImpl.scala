@@ -19,7 +19,8 @@ case class SignupServiceImpl private (
       else {
         for {
           userWithHashedPass <- ZIO.succeed(user.copy(password = passwordHashService.hash(user.password)))
-          signupStatus       <- userRepository add userWithHashedPass
+          userWithId         <- ZIO.succeed(userWithHashedPass.copy(id = Some(scala.util.Random.nextInt)))
+          signupStatus       <- userRepository add userWithId
         } yield signupStatus
       } 
     }

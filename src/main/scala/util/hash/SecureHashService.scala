@@ -3,7 +3,7 @@ package util.hash
 import io.github.nremond.legacy.SecureHash
 import zio._
 
-class SecureHashService extends CanHashPassword {
+class SecureHashService extends PasswordHashService {
   
   private final val underlyingImpl: SecureHash = SecureHash()
   
@@ -14,6 +14,6 @@ class SecureHashService extends CanHashPassword {
 }
 
 object SecureHashService {
-  def layer: ZLayer[Any, Throwable, SecureHashService] =
+  def layer: ZLayer[Any, Nothing, SecureHashService] =
     ZLayer.succeed(SecureHashService())
 }

@@ -9,7 +9,7 @@ import zio.json.*
 import route.interface.CommonRequestHandler
 
 
-class GetNoteRoute extends CommonRequestHandler[Int] {
+class GetNoteRoute {
 
   private val getNoteService: CanRetrieveRecord[Note] = GetNoteService()
 

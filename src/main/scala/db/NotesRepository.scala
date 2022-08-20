@@ -51,3 +51,7 @@ class NotesRepository extends CRUD[Note] {
     }
   } yield creationStatus
 }
+
+object NotesRepository {
+  def layer: ZLayer[Any, Nothing, NotesRepository] = ZLayer.succeed(NotesRepository())
+}

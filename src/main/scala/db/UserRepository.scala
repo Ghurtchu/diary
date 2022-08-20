@@ -1,4 +1,5 @@
 package db
+
 import model.User
 import zio._
 import CRUD._
@@ -31,5 +32,5 @@ class UserRepository extends UserCRUD {
 }
 
 object UserRepository {
-  def layer: ZLayer[Any, Throwable, UserRepository] = ZLayer.succeed(UserRepository())
+  def layer: ZLayer[Any, Nothing, UserRepository] = ZLayer.succeed(UserRepository())
 }

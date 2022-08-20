@@ -3,15 +3,15 @@ package route.implementation
 import db.*
 import model.*
 import route.interface.{CanCreateRecord, SignupService}
-import util.hash.{CanHashPassword, SecureHashService}
+import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
 import zio.json.*
 
-class SignupServiceImpl extends SignupService {
+case class SignupServiceImpl private (
+                         private val passwordHashService: PasswordHashService,
+                         private val userRepository: UserRepository
+                       ) extends SignupService {
 
-  val passwordHashService: CanHashPassword = SecureHashService()
-  val userRepository: UserCRUD             = UserRepository()
-  
   override def signUp(user: User): Task[Either[String, String]] = for {
     userExists  <- userRepository userExists user.email
     response    <-  {
@@ -28,6 +28,11 @@ class SignupServiceImpl extends SignupService {
 }
 
 object SignupServiceImpl {
-  def layer: ZLayer[CanHashPassword & UserCRUD, Throwable, SignupServiceImpl] =
-    (SecureHashService.layer ++ UserRepository.layer) >>> ZLayer.succeed(SignupServiceImpl())
+
+  def spawn(passwordHashService: PasswordHashService, userRepository: UserRepository): SignupServiceImpl =
+    new SignupServiceImpl(passwordHashService, userRepository)
+
+  def layer: ZLayer[Any, Nothing, SignupServiceImpl] =
+    (SecureHashService.layer ++ UserRepository.layer) >>> ZLayer.fromFunction(SignupServiceImpl.spawn)
+
 }

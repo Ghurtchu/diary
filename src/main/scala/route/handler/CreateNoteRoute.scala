@@ -10,11 +10,11 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute() extends CommonRequestHandler[Request] {
+class CreateNoteRoute() {
 
   private val createNoteRouteService: CanCreateRecord[Note] = new CreateNoteService()
 
-  final override def handle(request: Request): Task[Response] = for {
+  final def handle(request: Request): Task[Response] = for {
     noteAsJson     <- request.bodyAsString
     noteEither     <- ZIO.succeed(noteAsJson.fromJson[Note])
     creationStatus <- noteEither.fold(

@@ -3,7 +3,7 @@ package db
 import io.github.nremond.PBKDF2
 import io.github.nremond.legacy.SecureHash
 import model.{Note, User}
-import util.hash.{CanHashPassword, SecureHashService}
+import util.hash.{PasswordHashService, SecureHashService}
 import zio.json.*
 
 import java.nio.charset.StandardCharsets
@@ -11,7 +11,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer, Map}
 
 object InMemoryDB {
 
-  val passwordHashService: CanHashPassword = SecureHashService()
+  val passwordHashService: PasswordHashService = SecureHashService()
 
   lazy val users: scala.collection.mutable.Map[Int, User] =
     scala.collection.mutable.Map[Int, User]()

@@ -8,11 +8,11 @@ import zhttp.http.Request
 import route.implementation.SortNoteService
 import zio.json._
 
-class SortNoteRoute extends CommonRequestHandler[Request] {
+class SortNoteRoute {
 
   val sortService: CanSort[Note] = SortNoteService()
 
-  final override def handle(request: Request): Task[Response] = for {
+  final def handle(request: Request): Task[Response] = for {
     sortOrder <- ZIO.succeed {
       val queryParamsMap = request.url.queryParams
 

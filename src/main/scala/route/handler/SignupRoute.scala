@@ -2,7 +2,7 @@ package route.handler
 
 import route.interface.*
 import zio.*
-import route.implementation.SignupService
+import route.implementation.SignupServiceImpl
 import zhttp.http.Response
 import model._
 import route.interface.CanCreateRecord
@@ -11,14 +11,13 @@ import route.interface.CommonRequestHandler
 import zhttp.http.Request
 import model.LoginPayload
 
-class SignupRoute extends CommonRequestHandler[Request] {
+class SignupRoute {
 
-  val signupService: CanSignUp[User] = SignupService()
-
-  def handle(request: Request): Task[Response] = for {
-    recordAsJson <- request.bodyAsString
-    userPayload  <- ZIO.succeed(recordAsJson.fromJson[User])
-    errorOrToken <- userPayload.fold(
+  def handle(request: Request): RIO[SignupService, Response] = for {
+    signupService <- ZIO.service[SignupService]
+    recordAsJson  <- request.bodyAsString
+    userPayload   <- ZIO.succeed(recordAsJson.fromJson[User])
+    errorOrToken  <- userPayload.fold(
       err     => ZIO.fail(new RuntimeException(err)),
       payload => signupService signUp payload
     )

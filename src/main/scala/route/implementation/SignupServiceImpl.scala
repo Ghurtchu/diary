@@ -2,14 +2,14 @@ package route.implementation
 
 import db.*
 import model.*
-import route.interface.{CanCreateRecord, CanSignUp}
-import service.hash.{CanHashPassword, SecureHashService}
+import route.interface.{CanCreateRecord, SignupService}
+import util.hash.{CanHashPassword, SecureHashService}
 import zio.*
 import zio.json.*
 
-class SignupService extends CanSignUp[User] {
+class SignupServiceImpl extends SignupService {
 
-  val passwordHashService: CanHashPassword = SecureHashService
+  val passwordHashService: CanHashPassword = SecureHashService()
   val userRepository: UserCRUD             = UserRepository()
   
   override def signUp(user: User): Task[Either[String, String]] = for {
@@ -25,4 +25,9 @@ class SignupService extends CanSignUp[User] {
     }
   } yield response
 
+}
+
+object SignupServiceImpl {
+  def layer: ZLayer[CanHashPassword & UserCRUD, Throwable, SignupServiceImpl] =
+    (SecureHashService.layer ++ UserRepository.layer) >>> ZLayer.succeed(SignupServiceImpl())
 }

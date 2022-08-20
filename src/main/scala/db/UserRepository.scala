@@ -29,3 +29,7 @@ class UserRepository extends UserCRUD {
   override def getUserByEmail(email: String): Task[Option[User]] = ZIO.attempt(inMemoryDB.users.values.find(_.email == email))
   
 }
+
+object UserRepository {
+  def layer: ZLayer[Any, Throwable, UserRepository] = ZLayer.succeed(UserRepository())
+}

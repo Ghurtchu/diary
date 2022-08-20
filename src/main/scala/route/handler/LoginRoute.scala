@@ -7,8 +7,8 @@ import zio.json.*
 import db.*
 import model.UserJWT
 import model.LoginPayload
-import service.hash.CanHashPassword
-import service.hash.SecureHashService
+import util.hash.CanHashPassword
+import util.hash.SecureHashService
 import java.time.Instant
 import pdi.jwt.{JwtCirce, JwtAlgorithm, JwtClaim}
 import java.time.Instant
@@ -17,7 +17,7 @@ import io.circe._, jawn.{parse => jawnParse}
 class LoginRoute extends CommonRequestHandler[Request] {
 
   val userRepository: UserCRUD             = UserRepository()
-  val passwordHashService: CanHashPassword = SecureHashService
+  val passwordHashService: CanHashPassword = SecureHashService()
 
   final override def handle(request: Request): Task[Response] = for {
     loginPayloadEither <- request.bodyAsString.flatMap(lp => ZIO.succeed(lp.fromJson[LoginPayload]))

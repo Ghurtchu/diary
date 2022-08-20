@@ -1,9 +1,9 @@
 package route.handler
 
 import model.*
-import service.*
+import util.*
 import route.interface.CommonRequestHandler
-import service.search.{NotesSearchService, CanSearch}
+import util.search.{NotesSearchService, CanSearch}
 import zhttp.http.*
 import zio.*
 import zio.json.*

@@ -1,20 +1,22 @@
 
-import db.InMemoryDB
-import model.Note
-import model.LoginPayload
+import db.{InMemoryDB, UserRepository}
+import model.{LoginPayload, Note, User}
 import route.handler.*
+import route.implementation.SignupServiceImpl
 import route.interface.*
 import zio.*
 import zhttp.*
 import zhttp.http.*
 import service.Server
+import util.hash.SecureHashService
 import zhttp.http.HttpError.BadRequest
 import zio.json.*
+import util.layer._
 
 object NotesServer extends ZIOAppDefault {
 
   val httpApp: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
-    case request @ Method.POST -> !! / "api" / "user" / "signup"  => SignupRoute().handle(request)
+    case request @ Method.POST -> !! / "api" / "user" / "signup"  => SignupRoute().handle(request).provideLayer(Layers.fullSignupRouteLayer)
     case request @ Method.POST -> !! / "api" / "user" / "login"   => LoginRoute().handle(request)
     case Method.GET            -> !! / "api" / "notes"            => GetAllNotesRoute().handle
     case request @ Method.POST -> !! / "api" / "notes"            => CreateNoteRoute().handle(request)
@@ -26,5 +28,4 @@ object NotesServer extends ZIOAppDefault {
   }
 
   override def run = Server.start(5555, httpApp)
-    .provideLayer(ZLayer.succeed(ZIO.succeed(())))
 }

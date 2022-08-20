@@ -1,4 +1,4 @@
-package service.hash
+package util.hash
 
 import db.InMemoryDB
 import io.github.nremond.legacy.SecureHash

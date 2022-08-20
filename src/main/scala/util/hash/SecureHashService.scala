@@ -1,13 +1,19 @@
-package service.hash
+package util.hash
 
 import io.github.nremond.legacy.SecureHash
+import zio._
 
-object SecureHashService extends CanHashPassword {
+class SecureHashService extends CanHashPassword {
   
   private final val underlyingImpl: SecureHash = SecureHash()
   
   override def hash(hashable: String): String = underlyingImpl createHash hashable
   
   override def validate(password: String, hashedPassword: String): Boolean = underlyingImpl.validatePassword(password, hashedPassword)
+  
+}
 
+object SecureHashService {
+  def layer: ZLayer[Any, Throwable, SecureHashService] =
+    ZLayer.succeed(SecureHashService())
 }

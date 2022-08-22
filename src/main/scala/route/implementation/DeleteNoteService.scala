@@ -3,11 +3,11 @@ package route.implementation
 import db.CRUD.DeletionStatus
 import db.{CRUD, NotesRepository}
 import model.Note
-import route.interface.CanDeleteRecord
+import route.interface.RecordRemover
 import zhttp.http.Response
 import zio.*
 
-class DeleteNoteService extends CanDeleteRecord {
+class DeleteNoteService extends RecordRemover {
 
   private val notesRepository: CRUD[Note] = NotesRepository()
 

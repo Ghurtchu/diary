@@ -4,6 +4,6 @@ import zhttp.http.Response
 import zio.Task
 import db.CRUD
 
-trait CanCreateRecord[A] {
+trait RecordCreator[A] {
   def createRecord(record: A): Task[Either[String, String]]
 }

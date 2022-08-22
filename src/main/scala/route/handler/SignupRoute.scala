@@ -5,15 +5,14 @@ import zio.*
 import route.implementation.SignupServiceImpl
 import zhttp.http.Response
 import model._
-import route.interface.CanCreateRecord
+import route.interface.RecordCreator
 import zio.json.*
-import route.interface.CommonRequestHandler
 import zhttp.http.Request
 import model.LoginPayload
 
-class SignupRoute extends CommonRequestHandler[SignupService, Request] {
+class SignupRoute {
 
-  final override def handle(request: Request): RIO[SignupService, Response] = for {
+  final def handle(request: Request): RIO[SignupService, Response] = for {
     signupService <- ZIO.service[SignupService]
     recordAsJson  <- request.bodyAsString
     userPayload   <- ZIO.succeed(recordAsJson.fromJson[User])

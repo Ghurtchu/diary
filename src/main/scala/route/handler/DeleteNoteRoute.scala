@@ -1,14 +1,14 @@
 package route.handler
 
 import db.NotesRepository
-import route.interface.CanDeleteRecord
+import route.interface.RecordRemover
 import route.implementation.DeleteNoteService
 import zhttp.http.Response
 import zio.*
 
 class DeleteNoteRoute {
 
-  val deleteNoteService: CanDeleteRecord = DeleteNoteService()
+  val deleteNoteService: RecordRemover = DeleteNoteService()
 
   def handle(id: Int): Task[Response] =
     deleteNoteService.deleteRecord(id)

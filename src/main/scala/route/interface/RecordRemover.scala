@@ -3,6 +3,6 @@ package route.interface
 import zhttp.http.Response
 import zio.Task
 
-trait CanDeleteRecord {
+trait RecordRemover {
   def deleteRecord(id: Int): Task[Either[String, String]]
 }

@@ -2,7 +2,7 @@ package route.implementation
 
 import db.*
 import model.*
-import route.interface.{CanCreateRecord, SignupService}
+import route.interface.{RecordCreator, SignupService}
 import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
 import zio.json.*

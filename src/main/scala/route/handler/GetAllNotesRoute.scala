@@ -10,7 +10,7 @@ import zio.json.*
 import route.interface.BasicRequestHandler
 
 
-class GetAllNotesRoute extends BasicRequestHandler[RecordsRetriever[Note]] {
+class GetAllNotesRoute {
   
   final def handle: RIO[RecordsRetriever[Note], Response] = for {
     service  <- ZIO.service[RecordsRetriever[Note]]

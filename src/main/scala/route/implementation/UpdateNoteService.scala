@@ -2,13 +2,13 @@ package route.implementation
 
 import db.{CRUD, NotesRepository}
 import model.Note
-import route.interface.{CanCreateRecord, CanUpdateRecord}
+import route.interface.{RecordCreator, RecordUpdater}
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
 
-class UpdateNoteService extends CanUpdateRecord[Note] {
+class UpdateNoteService extends RecordUpdater[Note] {
 
   private val notesRepository: CRUD[Note] = NotesRepository()
 

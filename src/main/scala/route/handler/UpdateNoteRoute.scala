@@ -1,7 +1,7 @@
 package route.handler
 
 import model.Note
-import route.interface.CanUpdateRecord
+import route.interface.RecordUpdater
 import route.implementation.UpdateNoteService
 
 import zhttp.http._
@@ -11,7 +11,7 @@ import route.interface.AdvancedRequestHandler
 
 class UpdateNoteRoute extends AdvancedRequestHandler[Request, Int] {
 
-  private val updateNoteService: CanUpdateRecord[Note] = new UpdateNoteService()
+  private val updateNoteService: RecordUpdater[Note] = new UpdateNoteService()
 
   def handle(request: Request, id: Int): Task[Response] = for {
     noteAsJson   <- request.bodyAsString

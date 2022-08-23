@@ -2,8 +2,7 @@ package route.handler
 
 import model.*
 import util.*
-import route.interface.CommonRequestHandler
-import util.search.{NotesSearchService, CanSearch}
+import util.search.{SearchNoteService, CanSearch}
 import zhttp.http.*
 import zio.*
 import zio.json.*
@@ -13,15 +12,14 @@ import java.util.Date
 
 class SearchNoteRoute {
 
-  private val searchService: CanSearch[Note] = NotesSearchService
-
-  final def handle(request: Request): Task[Response] = for {
-    title        <- ZIO.succeed(request.url.queryParams("title").head)
-    isExact      <- ZIO.succeed {
+  final def handle(request: Request): RIO[CanSearch[Note], Response] = for {
+    service        <- ZIO.service[CanSearch[Note]]
+    title          <- ZIO.succeed(request.url.queryParams("title").head)
+    searchCriteria <- ZIO.succeed {
       request.url.queryParams.get("exact")
         .fold(SearchCriteria.nonExact)(criteria => if criteria.head == "true" then SearchCriteria.exact else SearchCriteria.nonExact)
     }
-    searchResult <- searchService.searchByTitle(title, isExact)
+    searchResult <- service.searchByTitle(title, searchCriteria)
     response     <- ZIO.succeed(searchResult.fold(
       err  => Response.text(err),
       note => Response.text(note.toJsonPretty)

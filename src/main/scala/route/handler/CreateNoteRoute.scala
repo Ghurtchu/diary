@@ -9,7 +9,7 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute() {
+class CreateNoteRoute {
 
   final def handle(request: Request): RIO[RecordCreator[Note], Response] = for {
     service        <- ZIO.service[RecordCreator[Note]]

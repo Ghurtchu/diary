@@ -4,15 +4,15 @@ import zio.json._
 
 import java.util.Date
 
-case class Note private(id: Option[Int] = None, title: String, body: String, createdAt: String, owner: User)
+case class Note private(id: Option[Int] = None, title: String, body: String, createdAt: String, userId: Int)
 
 object Note {
 
   given decoder: JsonDecoder[Note] = DeriveJsonDecoder.gen[Note]
   given encoder: JsonEncoder[Note] = DeriveJsonEncoder.gen[Note]
 
-  def apply(id: Int, title: String, body: String, createdAt: String, owner: User): Note = new Note(id.some, title, body, createdAt, owner)
-  def apply(title: String, body: String, createdAt: String, owner: User): Note = new Note(None, title, body, createdAt, owner)
+  def apply(id: Int, title: String, body: String, createdAt: String, userId: Int): Note = new Note(id.some, title, body, createdAt, userId)
+  def apply(title: String, body: String, createdAt: String, userId: Int): Note = new Note(None, title, body, createdAt, userId)
 
 }
 

@@ -4,7 +4,7 @@ import zhttp.http.*
 import zio.*
 import zio.json.*
 import db.*
-import model.UserJWT
+import model.LoginResponse
 import model.LoginPayload
 import util.hash.{PasswordHashService, SecureHashService}
 
@@ -14,33 +14,22 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import java.time.Instant
 import io.circe.*
 import jawn.parse as jawnParse
+import route.interface.{CommonRequestHandler, LoginService}
 
-class LoginRoute {
+class LoginRoute extends CommonRequestHandler[Request, LoginService]{
 
-  val userRepository: UserCRUD                 = UserRepository()
-  val passwordHashService: PasswordHashService = SecureHashService()
-
-  final def handle(request: Request): Task[Response] = for {
+  final override def handle(request: Request): RIO[LoginService, Response] = for {
+    loginService       <- ZIO.service[LoginService]
     loginPayloadEither <- request.bodyAsString.flatMap(lp => ZIO.succeed(lp.fromJson[LoginPayload]))
     response           <- loginPayloadEither.fold(
-      err => ZIO.fail(new RuntimeException(err)),
+      _ => ZIO.succeed(Response.text("wrong JSON format").setStatus(Status.BadRequest)),
       loginPayload => for {
-        maybeUser     <- userRepository.getUserByEmail(loginPayload.email)
-        passwordMatch <- maybeUser.fold(ZIO.succeed(false))(user => ZIO.succeed(passwordHashService.validate(loginPayload.password, user.password)))
-        maybeJwtToken <- ZIO.succeed {
-          if passwordMatch then {
-            val key = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
-            val algo = JwtAlgorithm.HS256
-            val Right(claimJson) = jawnParse(maybeUser.map(user => Some(UserJWT(user.id.get, user.name, user.email)).get).toJsonPretty)
-            val jwt = JwtCirce.encode(claimJson, key, algo)
-            val jsonResponse = s"""{"token": $jwt}"""
-            Response.text(jsonResponse)
-              .setStatus(Status.Ok)
-          }
-          else Response.text("Auth Failed")
-            .setStatus(Status.Unauthorized)
-        }
-      } yield maybeJwtToken
+         loginStatus <- loginService.login(loginPayload)
+         jwtOrError  <- loginStatus.fold(
+           loginError => ZIO.succeed(Response.text(loginError.value).setStatus(Status.Unauthorized)),
+           jwt        => ZIO.succeed(Response.text(s"""{"token": ${jwt.value}""").setStatus(Status.Ok))
+         )
+      } yield jwtOrError
     )
   } yield response
 

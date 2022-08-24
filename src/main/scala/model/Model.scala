@@ -29,11 +29,11 @@ object User {
 
 }
 
-case class UserJWT(id: Int, name: String, email: String)
+case class LoginResponse(id: Int, name: String, email: String)
 
-object UserJWT {
-  given decoder: JsonDecoder[UserJWT] = DeriveJsonDecoder.gen[UserJWT]
-  given encoder: JsonEncoder[UserJWT] = DeriveJsonEncoder.gen[UserJWT]
+object LoginResponse {
+  given decoder: JsonDecoder[LoginResponse] = DeriveJsonDecoder.gen[LoginResponse]
+  given encoder: JsonEncoder[LoginResponse] = DeriveJsonEncoder.gen[LoginResponse]
 }
 
 
@@ -43,6 +43,3 @@ object LoginPayload {
   given decoder: JsonDecoder[LoginPayload] = DeriveJsonDecoder.gen[LoginPayload]
   given encoder: JsonEncoder[LoginPayload] = DeriveJsonEncoder.gen[LoginPayload]
 }
-
-case class JWT(token: String)
-case class JWTError(error: String)

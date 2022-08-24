@@ -18,7 +18,7 @@ object NotesServer extends ZIOAppDefault {
 
   val httpApp: Http[Any, Throwable, Request, Response] = Http.collectZIO[Request] {
     case request @ Method.POST -> !! / "api" / "user" / "signup"  => SignupRoute().handle(request).provideLayer(SignupServiceImpl.layer)
-    case request @ Method.POST -> !! / "api" / "user" / "login"   => LoginRoute().handle(request)
+    case request @ Method.POST -> !! / "api" / "user" / "login"   => LoginRoute().handle(request).provideLayer(LoginServiceImpl.layer)
     case Method.GET            -> !! / "api" / "notes"            => GetAllNotesRoute().handle.provideLayer(GetAllNotesService.layer)
     case request @ Method.POST -> !! / "api" / "notes"            => CreateNoteRoute().handle(request).provideLayer(CreateNoteService.layer)
     case request @ Method.GET  -> !! / "api" / "notes" / "search" => SearchNoteRoute().handle(request).provideLayer(SearchNoteService.layer)

@@ -2,17 +2,17 @@ package route.handler
 
 import db.NotesRepository
 import route.implementation
-import route.interface.RecordRemover
+import route.interface._
 import route.implementation.DeleteNoteService
 import zhttp.http.Response
 import zio.*
 
-class DeleteNoteRoute {
+class DeleteNoteRoute extends CommonRequestHandler[Int, RecordRemover] {
 
-  def handle(id: Int): RIO[DeleteNoteService, Response] = for {
-    service      <- ZIO.service[DeleteNoteService]
-    deleteStatus <- service.deleteRecord(id)
-    response     <- ZIO.succeed(deleteStatus.fold(Response.text, Response.text))
+  final override def handle(id: Int): RIO[RecordRemover, Response] = for {
+    recordRemoverService <- ZIO.service[RecordRemover]
+    deleteStatus         <- recordRemoverService.deleteRecord(id)
+    response             <- ZIO.succeed(deleteStatus.fold(Response.text, Response.text))
   } yield response
 
 }

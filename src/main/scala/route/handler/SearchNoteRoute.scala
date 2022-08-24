@@ -1,8 +1,9 @@
 package route.handler
 
 import model.*
+import route.interface.CommonRequestHandler
 import util.*
-import util.search.{SearchNoteService, CanSearch}
+import util.search.{SearchNoteService, SearchService}
 import zhttp.http.*
 import zio.*
 import zio.json.*
@@ -10,16 +11,16 @@ import zio.json.*
 import java.time.Instant
 import java.util.Date
 
-class SearchNoteRoute {
+class SearchNoteRoute extends CommonRequestHandler[Request, SearchService[Note]] {
 
-  final def handle(request: Request): RIO[CanSearch[Note], Response] = for {
-    service        <- ZIO.service[CanSearch[Note]]
+  final override def handle(request: Request): RIO[SearchService[Note], Response] = for {
+    searchService  <- ZIO.service[SearchService[Note]]
     title          <- ZIO.succeed(request.url.queryParams("title").head)
     searchCriteria <- ZIO.succeed {
       request.url.queryParams.get("exact")
         .fold(SearchCriteria.nonExact)(criteria => if criteria.head == "true" then SearchCriteria.exact else SearchCriteria.nonExact)
     }
-    searchResult <- service.searchByTitle(title, searchCriteria)
+    searchResult <- searchService.searchByTitle(title, searchCriteria)
     response     <- ZIO.succeed(searchResult.fold(
       err  => Response.text(err),
       note => Response.text(note.toJsonPretty)

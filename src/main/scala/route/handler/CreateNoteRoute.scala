@@ -9,9 +9,9 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute {
+class CreateNoteRoute extends CommonRequestHandler[Request, RecordCreator[Note]] {
 
-  final def handle(request: Request): RIO[RecordCreator[Note], Response] = for {
+  final override def handle(request: Request): RIO[RecordCreator[Note], Response] = for {
     service        <- ZIO.service[RecordCreator[Note]]
     noteAsJson     <- request.bodyAsString
     noteEither     <- ZIO.succeed(noteAsJson.fromJson[Note])

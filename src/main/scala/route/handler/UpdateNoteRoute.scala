@@ -7,11 +7,11 @@ import route.implementation.UpdateNoteService
 import zhttp.http._
 import zio.*
 import zio.json.*
-import route.interface.AdvancedRequestHandler
+import route.interface.ComplexRequestHandler
 
-class UpdateNoteRoute {
+class UpdateNoteRoute extends ComplexRequestHandler[Request, Int, RecordUpdater[Note]] {
 
-  def handle(request: Request, id: Int): RIO[RecordUpdater[Note], Response] = for {
+  final override def handle(request: Request, id: Int): RIO[RecordUpdater[Note], Response] = for {
     service      <- ZIO.service[RecordUpdater[Note]]
     noteAsJson   <- request.bodyAsString
     noteEither   <- ZIO.succeed(noteAsJson.fromJson[Note])

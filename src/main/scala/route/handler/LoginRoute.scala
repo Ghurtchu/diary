@@ -1,6 +1,5 @@
 package route.handler
 
-import route.interface.CommonRequestHandler
 import zhttp.http.*
 import zio.*
 import zio.json.*
@@ -18,7 +17,7 @@ import jawn.parse as jawnParse
 
 class LoginRoute {
 
-  val userRepository: UserCRUD             = UserRepository()
+  val userRepository: UserCRUD                 = UserRepository()
   val passwordHashService: PasswordHashService = SecureHashService()
 
   final def handle(request: Request): Task[Response] = for {

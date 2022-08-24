@@ -8,9 +8,9 @@ import zio.{Task, ZIO, ZLayer}
 import java.time.Instant
 import java.util.Date
 
-class SearchNoteService(notesRepository: CRUD[Note]) extends CanSearch[Note] {
+class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note] {
 
-  override def searchByTitle(title: String, criteria: SearchCriteria): Task[Either[String, List[Note]]] = for {
+  final override def searchByTitle(title: String, criteria: SearchCriteria): Task[Either[String, List[Note]]] = for {
     notes      <- notesRepository.getAll
     response   <-
       criteria match {

@@ -11,8 +11,8 @@ import zio.json.*
 class SortNoteRoute extends CommonRequestHandler[Request, CanSort[Note]] {
 
   final override def handle(request: Request): RIO[CanSort[Note], Response] = for {
-    service   <- ZIO.service[CanSort[Note]]
-    sortOrder <- ZIO.succeed {
+    sortNoteService <- ZIO.service[CanSort[Note]]
+    sortOrder       <- ZIO.succeed {
       val queryParamsMap = request.url.queryParams
 
       queryParamsMap.get("order")
@@ -20,8 +20,8 @@ class SortNoteRoute extends CommonRequestHandler[Request, CanSort[Note]] {
           if ord.head == "asc" then SortOrder.Ascending else SortOrder.Descending
         }
     }
-    ordered  <- service.sort(sortOrder)
-    response <- ZIO.succeed(Response.text(ordered.toJsonPretty))
+    ordered         <- sortNoteService.sort(sortOrder)
+    response        <- ZIO.succeed(Response.text(ordered.toJsonPretty))
   } yield response
   
 }

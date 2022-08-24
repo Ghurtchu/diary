@@ -14,14 +14,14 @@ import java.util.Date
 class SearchNoteRoute extends CommonRequestHandler[Request, SearchService[Note]] {
 
   final override def handle(request: Request): RIO[SearchService[Note], Response] = for {
-    searchService  <- ZIO.service[SearchService[Note]]
-    title          <- ZIO.succeed(request.url.queryParams("title").head)
-    searchCriteria <- ZIO.succeed {
+    searchNoteService <- ZIO.service[SearchService[Note]]
+    title             <- ZIO.succeed(request.url.queryParams("title").head)
+    searchCriteria    <- ZIO.succeed {
       request.url.queryParams.get("exact")
         .fold(SearchCriteria.nonExact)(criteria => if criteria.head == "true" then SearchCriteria.exact else SearchCriteria.nonExact)
     }
-    searchResult <- searchService.searchByTitle(title, searchCriteria)
-    response     <- ZIO.succeed(searchResult.fold(
+    searchResult      <- searchNoteService.searchByTitle(title, searchCriteria)
+    response          <- ZIO.succeed(searchResult.fold(
       err  => Response.text(err),
       note => Response.text(note.toJsonPretty)
     ))

@@ -12,14 +12,14 @@ import java.net.http.HttpResponse.ResponseInfo
 class CreateNoteRoute extends CommonRequestHandler[Request, RecordCreator[Note]] {
 
   final override def handle(request: Request): RIO[RecordCreator[Note], Response] = for {
-    service        <- ZIO.service[RecordCreator[Note]]
-    noteAsJson     <- request.bodyAsString
-    noteEither     <- ZIO.succeed(noteAsJson.fromJson[Note])
-    creationStatus <- noteEither.fold(
+    createNoteService <- ZIO.service[RecordCreator[Note]]
+    noteAsJson        <- request.bodyAsString
+    noteEither        <- ZIO.succeed(noteAsJson.fromJson[Note])
+    creationStatus    <- noteEither.fold(
       err => ZIO.fail(RuntimeException(err)),
-      service.createRecord
+      createNoteService.createRecord
     )
-    response       <- ZIO.succeed(creationStatus.fold(
+    response          <- ZIO.succeed(creationStatus.fold(
       Response.text,
       Response.text
     ))

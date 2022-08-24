@@ -11,9 +11,9 @@ import zio.json.*
 class GetAllNotesRoute extends SimpleRequestHandler[RecordsRetriever[Note]] {
   
   final override def handle: RIO[RecordsRetriever[Note], Response] = for {
-    notesRetriever  <- ZIO.service[RecordsRetriever[Note]]
-    notes           <- notesRetriever.retrieveRecords
-    response        <- ZIO.succeed(Response.text(notes.toJsonPretty))
+    getAllNotesService <- ZIO.service[RecordsRetriever[Note]]
+    notes              <- getAllNotesService.retrieveRecords
+    response           <- ZIO.succeed(Response.text(notes.toJsonPretty))
   } yield response
 
 }

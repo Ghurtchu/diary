@@ -16,10 +16,10 @@ class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note]
       criteria match {
         case Exact    => ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
         case NonExact => ZIO.succeed {
-          val maybeNotes = notes.filter(_.title.toLowerCase.contains(title))
+          val maybeNotes = notes.filter(note => note.title.replace(" ", "").toLowerCase.contains(title.replace(" ","").toLowerCase))
           if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
         }
-    }
+      }
   } yield response
 
 }

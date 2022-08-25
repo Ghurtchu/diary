@@ -10,40 +10,51 @@ import util.sort.SortNoteService
 
 object Main extends ZIOAppDefault {
 
+    val endpointLayers = SignupEndpoint.layer ++
+      CreateNoteEndpoint.layer ++
+      DeleteNoteEndpoint.layer ++
+      GetAllNotesEndpoint.layer ++
+      GetNoteEndpoint.layer ++
+      LoginEndpoint.layer ++
+      SearchNoteEndpoint.layer ++
+      SortNoteEndpoint.layer ++
+      UpdateNoteEndpoint.layer
+
+    val serverLayer = NotesServer.layer
+
+    val handlerLayers = SearchNoteHandlerImpl.layer ++
+      SortNoteHandlerImpl.layer ++
+      UpdateNoteHandlerImpl.layer ++
+      CreateNoteHandlerImpl.layer ++
+      GetAllNotesHandlerImpl.layer ++
+      GetNoteHandlerImpl.layer ++
+      DeleteNoteHandlerImpl.layer ++
+      LoginHandlerImpl.layer ++
+      SignupHandlerImpl.layer
+
+    val serviceLayers = SearchNoteService.layer ++
+      SortNoteService.layer ++
+      UpdateNoteService.layer ++
+      CreateNoteService.layer ++
+      GetAllNotesService.layer ++
+      GetNoteService.layer ++
+      LoginServiceImpl.layer ++
+      SignupServiceImpl.layer ++
+      DeleteNoteService.layer
+
+    val dbLayers = NotesRepository.layer ++ UserRepository.layer
+
+    val otherLayers = SecureHashService.layer
+
     override def run: Task[Unit] =
       ZIO.serviceWithZIO[NotesServer](_.start)
         .provide(
-          NotesServer.layer,
-          SignupEndpoint.layer,
-          CreateNoteEndpoint.layer,
-          DeleteNoteEndpoint.layer,
-          GetAllNotesEndpoint.layer,
-          GetNoteEndpoint.layer,
-          LoginEndpoint.layer,
-          SearchNoteEndpoint.layer,
-          SortNoteEndpoint.layer,
-          UpdateNoteEndpoint.layer,
-          SearchNoteHandlerImpl.layer,
-          SortNoteHandlerImpl.layer,
-          UpdateNoteHandlerImpl.layer,
-          CreateNoteHandlerImpl.layer,
-          GetAllNotesHandlerImpl.layer,
-          GetNoteHandlerImpl.layer,
-          DeleteNoteHandlerImpl.layer,
-          LoginHandlerImpl.layer,
-          SignupHandlerImpl.layer,
-          SearchNoteService.layer,
-          SortNoteService.layer,
-          UpdateNoteService.layer,
-          CreateNoteService.layer,
-          GetAllNotesService.layer,
-          GetNoteService.layer,
-          LoginServiceImpl.layer,
-          SignupServiceImpl.layer,
-          DeleteNoteService.layer,
-          NotesRepository.layer,
-          UserRepository.layer,
-          SecureHashService.layer
+          serverLayer,
+          endpointLayers,
+          handlerLayers,
+          serviceLayers,
+          dbLayers,
+          otherLayers
         )
 
 }

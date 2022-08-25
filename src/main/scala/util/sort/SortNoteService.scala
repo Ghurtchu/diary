@@ -21,5 +21,5 @@ final case class SortNoteService(notesRepository: CRUD[Note]) extends SortServic
 }
 
 object SortNoteService {
- lazy val layer: URLayer[CRUD[Note], SortService[Note]] = NotesRepository.layer >>> ZLayer.fromFunction(SortNoteService.apply _)
+ lazy val layer: URLayer[CRUD[Note], SortNoteService] = ZLayer.fromFunction(SortNoteService.apply _)
 }

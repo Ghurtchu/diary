@@ -26,6 +26,6 @@ final case class SearchNoteService(notesRepository: CRUD[Note]) extends SearchSe
 
 object SearchNoteService {
 
-  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchNoteService] = NotesRepository.layer >>> ZLayer.fromFunction(SearchNoteService.apply _)
+  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchNoteService] = ZLayer.fromFunction(SearchNoteService.apply _)
 
 }

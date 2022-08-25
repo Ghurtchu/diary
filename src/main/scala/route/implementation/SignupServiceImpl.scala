@@ -9,7 +9,7 @@ import zio.json.*
 
 final case class SignupServiceImpl private (
                          private val passwordHashService: PasswordHashService,
-                         private val userRepository: UserRepository
+                         private val userRepository: UserCRUD
                        ) extends SignupService {
 
   override def signUp(user: User): Task[Either[String, String]] = for {
@@ -30,7 +30,7 @@ final case class SignupServiceImpl private (
 
 object SignupServiceImpl {
 
-  def layer: URLayer[PasswordHashService & UserRepository, SignupServiceImpl] =
+  def layer: URLayer[PasswordHashService & UserCRUD, SignupServiceImpl] =
     ZLayer.fromFunction(SignupServiceImpl.apply _)
 
 }

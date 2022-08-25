@@ -11,10 +11,13 @@ import zio.json.*
 import java.time.Instant
 import java.util.Date
 
-class SearchNoteRoute extends CommonRequestHandler[Request, SearchService[Note]] {
+trait SearchNoteHandler {
+  def handle(request: Request): Task[Response]
+}
 
-  final override def handle(request: Request): RIO[SearchService[Note], Response] = for {
-    searchNoteService <- ZIO.service[SearchService[Note]]
+final case class SearchNoteHandlerImpl(searchNoteService: SearchService[Note]) extends SearchNoteHandler {
+
+  final override def handle(request: Request): Task[Response] = for {
     title             <- ZIO.succeed(request.url.queryParams("title").head)
     searchCriteria    <- ZIO.succeed {
       request.url.queryParams.get("exact")
@@ -27,6 +30,10 @@ class SearchNoteRoute extends CommonRequestHandler[Request, SearchService[Note]]
     ))
   } yield response
 
+}
+
+object SearchNoteHandlerImpl {
+  lazy val layer: URLayer[SearchService[Note], SearchNoteHandlerImpl] = ZLayer.fromFunction(SearchNoteHandlerImpl.apply _)
 }
 
 sealed trait SearchCriteria {

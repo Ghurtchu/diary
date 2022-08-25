@@ -8,16 +8,15 @@ import zhttp.http._
 import zio.*
 import zio.json.*
 import route.interface.ComplexRequestHandler
-import UpdateNoteRoute.NoteID
+import UpdateNoteHandlerImpl.NoteID
 
-object UpdateNoteRoute {
-  type NoteID = Int
+trait UpdateNoteHandler {
+  def handle(request: Request, noteId: NoteID): Task[Response]
 }
 
-class UpdateNoteRoute extends ComplexRequestHandler[Request, NoteID, RecordUpdater[Note]] {
+final case class UpdateNoteHandlerImpl(updateNoteService: RecordUpdater[Note]) extends UpdateNoteHandler {
 
-  final override def handle(request: Request, noteId: NoteID): RIO[RecordUpdater[Note], Response] = for {
-    updateNoteService <- ZIO.service[RecordUpdater[Note]]
+  final override def handle(request: Request, noteId: NoteID): Task[Response] = for {
     noteAsJson        <- request.bodyAsString
     noteEither        <- ZIO.succeed(noteAsJson.fromJson[Note])
     updateStatus      <- noteEither.fold(err => ZIO.fail(new RuntimeException(err)), note => updateNoteService.updateRecord(noteId, note))
@@ -26,4 +25,12 @@ class UpdateNoteRoute extends ComplexRequestHandler[Request, NoteID, RecordUpdat
         status => ZIO.succeed(Response.text(status)))
   } yield response
 
+}
+
+object UpdateNoteHandlerImpl {
+  
+  type NoteID = Int
+  
+  lazy val layer: URLayer[RecordUpdater[Note], UpdateNoteHandlerImpl] = ZLayer.fromFunction(UpdateNoteHandlerImpl.apply _)
+  
 }

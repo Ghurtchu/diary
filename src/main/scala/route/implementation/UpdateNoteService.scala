@@ -8,7 +8,7 @@ import zio.*
 import zio.json.*
 
 
-class UpdateNoteService(notesRepository: CRUD[Note]) extends RecordUpdater[Note] {
+final case class UpdateNoteService(notesRepository: CRUD[Note]) extends RecordUpdater[Note] {
 
   override def updateRecord(id: Int, note: Note): Task[Either[String, String]] = for {
     updateStatus <- notesRepository.update(id, note)
@@ -17,7 +17,7 @@ class UpdateNoteService(notesRepository: CRUD[Note]) extends RecordUpdater[Note]
 }
 
 object UpdateNoteService {
-  def spawn(notesRepository: CRUD[Note]): UpdateNoteService = new UpdateNoteService(notesRepository)
   
-  def layer: ULayer[UpdateNoteService] = NotesRepository.layer >>> ZLayer.fromFunction(UpdateNoteService.spawn)
+  lazy val layer: URLayer[CRUD[Note], UpdateNoteService] = ZLayer.fromFunction(UpdateNoteService.apply _)
+
 }

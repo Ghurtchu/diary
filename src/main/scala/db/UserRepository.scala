@@ -3,8 +3,9 @@ package db
 import model.User
 import zio._
 import CRUD._
+import zio._
 
-class UserRepository extends UserCRUD {
+final case class UserRepository() extends UserCRUD {
 
   val inMemoryDB: InMemoryDB.type = InMemoryDB
 
@@ -32,5 +33,5 @@ class UserRepository extends UserCRUD {
 }
 
 object UserRepository {
-  def layer: ZLayer[Any, Nothing, UserRepository] = ZLayer.succeed(UserRepository())
+  lazy val layer: ULayer[UserRepository] = ZLayer.fromFunction(UserRepository.apply _)
 }

@@ -7,7 +7,7 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class GetNoteService(private final val notesRepository: CRUD[Note]) extends RecordRetriever[Note] {
+final case class GetNoteService(private final val notesRepository: CRUD[Note]) extends RecordRetriever[Note] {
 
   override def retrieveRecord(id: Int): Task[Either[String, Note]] = for {
     maybeNote <- notesRepository getById id
@@ -17,10 +17,7 @@ class GetNoteService(private final val notesRepository: CRUD[Note]) extends Reco
 
 object GetNoteService {
   
-  def spawn(notesRepository: CRUD[Note]): GetNoteService = new GetNoteService(notesRepository)
-  
-  def layer: ULayer[GetNoteService] = 
-    NotesRepository.layer >>> ZLayer.fromFunction(GetNoteService.spawn)
-  
+  lazy val layer: URLayer[CRUD[Note], GetNoteService] = 
+    ZLayer.fromFunction(GetNoteService.apply _)
   
 }

@@ -8,16 +8,16 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 import zhttp.http.Status
-import GetNoteRoute.NoteID
+import GetNoteHandlerImpl.NoteID
 
-object GetNoteRoute {
-  type NoteID = Int
+
+trait GetNoteHandler {
+  def handle(noteId: NoteID): Task[Response]
 }
 
-class GetNoteRoute extends CommonRequestHandler[NoteID, RecordRetriever[Note]] { 
+final case class GetNoteHandlerImpl(getNoteService: RecordRetriever[Note]) extends GetNoteHandler { 
 
-  final override def handle(noteId: NoteID): RIO[RecordRetriever[Note], Response] = for {
-    getNoteService <- ZIO.service[RecordRetriever[Note]]
+  final override def handle(noteId: NoteID): Task[Response] = for {
     maybeNote      <- getNoteService.retrieveRecord(noteId)
     response       <- maybeNote.fold(
       notFound => ZIO.succeed(Response.text(notFound).setStatus(Status.NotFound)),
@@ -25,4 +25,13 @@ class GetNoteRoute extends CommonRequestHandler[NoteID, RecordRetriever[Note]] {
     )
   } yield response
 
+}
+
+object GetNoteHandlerImpl {
+  
+  type NoteID = Int
+  
+  lazy val layer: URLayer[RecordRetriever[Note], GetNoteHandlerImpl] =
+    ZLayer.fromFunction(GetNoteHandlerImpl.apply _)
+  
 }

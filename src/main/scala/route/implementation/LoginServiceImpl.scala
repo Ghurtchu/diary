@@ -15,7 +15,7 @@ import jawn.parse as jawnParse
 import zio.json._
 import model.LoginResponse._
 
-class LoginServiceImpl(
+final case class LoginServiceImpl(
                       userRepository: UserCRUD,
                       passwordHashService: PasswordHashService
                       ) extends LoginService {
@@ -34,8 +34,8 @@ class LoginServiceImpl(
 }
 
 object LoginServiceImpl {
-  def spawn(userRepository: UserCRUD, passwordHashService: PasswordHashService): LoginServiceImpl =
-    new LoginServiceImpl(userRepository, passwordHashService)
     
-  def layer: ULayer[LoginServiceImpl] = (UserRepository.layer ++ SecureHashService.layer) >>> ZLayer.fromFunction(LoginServiceImpl.spawn)  
+  lazy val layer: URLayer[UserCRUD & PasswordHashService, LoginServiceImpl] = 
+    ZLayer.fromFunction(LoginServiceImpl.apply _)
+    
 }

@@ -1,8 +1,8 @@
-package route.interface
+package util.sort
 
-import zio._
+import zio.Task
 
-trait CanSort[A] {
+trait SortService[A] {
   def sort(sortOrder: SortOrder): Task[List[A]]
 }
 

@@ -14,12 +14,15 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import java.time.Instant
 import io.circe.*
 import jawn.parse as jawnParse
-import route.interface.{CommonRequestHandler, LoginService}
+import route.interface._
 
-class LoginRoute extends CommonRequestHandler[Request, LoginService]{
+trait LoginHandler {
+  def handle(request: Request): Task[Response]
+}
 
-  final override def handle(request: Request): RIO[LoginService, Response] = for {
-    loginService       <- ZIO.service[LoginService]
+final case class LoginHandlerImpl(loginService: LoginService) extends LoginHandler {
+  
+  final override def handle(request: Request): Task[Response] = for {
     loginPayloadEither <- request.bodyAsString.flatMap(lp => ZIO.succeed(lp.fromJson[LoginPayload]))
     response           <- loginPayloadEither.fold(
       _ => ZIO.succeed(Response.text("wrong JSON format").setStatus(Status.BadRequest)),
@@ -33,4 +36,11 @@ class LoginRoute extends CommonRequestHandler[Request, LoginService]{
     )
   } yield response
 
+}
+
+object LoginHandlerImpl {
+  
+  lazy val layer: URLayer[LoginService, LoginHandlerImpl] = 
+    ZLayer.fromFunction(LoginHandlerImpl.apply _)
+  
 }

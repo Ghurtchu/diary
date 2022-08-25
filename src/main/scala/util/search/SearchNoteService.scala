@@ -8,7 +8,7 @@ import zio.{Task, ZIO, ZLayer}
 import java.time.Instant
 import java.util.Date
 
-class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note] {
+final case class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note] {
 
   final override def searchByTitle(title: String, criteria: SearchCriteria): Task[Either[String, List[Note]]] = for {
     notes      <- notesRepository.getAll
@@ -26,8 +26,6 @@ class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note]
 
 object SearchNoteService {
 
-  def spawn(notesRepository: CRUD[Note]): SearchNoteService = new SearchNoteService(notesRepository)
-
-  def layer: ZLayer[Any, Nothing, SearchNoteService] = NotesRepository.layer >>> ZLayer.fromFunction(SearchNoteService.spawn)
+  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchNoteService] = NotesRepository.layer >>> ZLayer.fromFunction(SearchNoteService.apply _)
 
 }

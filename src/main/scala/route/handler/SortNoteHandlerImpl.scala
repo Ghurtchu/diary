@@ -1,17 +1,19 @@
 package route.handler
 
 import model.Note
-import route.interface.{CanSort, CommonRequestHandler, SortOrder}
 import zhttp.http.Response
-import zio.{RIO, Task, ZIO}
 import zhttp.http.Request
-import route.implementation.SortNoteService
+import util.sort.{SortNoteService, SortOrder, SortService}
 import zio.json.*
+import zio._
 
-class SortNoteRoute extends CommonRequestHandler[Request, CanSort[Note]] {
+trait SortNoteHandler {
+  def handle(request: Request): Task[Response]
+}
 
-  final override def handle(request: Request): RIO[CanSort[Note], Response] = for {
-    sortNoteService <- ZIO.service[CanSort[Note]]
+final case class SortNoteHandlerImpl(sortNoteService: SortService[Note]) extends SortNoteHandler {
+
+  final override def handle(request: Request): Task[Response] = for {
     sortOrder       <- ZIO.succeed {
       val queryParamsMap = request.url.queryParams
 
@@ -23,5 +25,9 @@ class SortNoteRoute extends CommonRequestHandler[Request, CanSort[Note]] {
     ordered         <- sortNoteService.sort(sortOrder)
     response        <- ZIO.succeed(Response.text(ordered.toJsonPretty))
   } yield response
-  
+
+}
+
+object SortNoteHandlerImpl {
+  lazy val layer: URLayer[SortService[Note], SortNoteHandlerImpl] = ZLayer.fromFunction(SortNoteHandlerImpl.apply _)
 }

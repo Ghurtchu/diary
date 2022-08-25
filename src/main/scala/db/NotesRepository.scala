@@ -3,13 +3,13 @@ package db
 import model.{Note, User}
 import zio.*
 import CRUD._
-
+import zio.ZLayer
 import scala.util.Random
 import java.time.Instant
 import java.util.Date
 import scala.collection.mutable.ListBuffer
 
-class NotesRepository extends CRUD[Note] {
+final case class NotesRepository() extends CRUD[Note] {
   
   val inMemoryDB: InMemoryDB.type = InMemoryDB
 
@@ -53,5 +53,7 @@ class NotesRepository extends CRUD[Note] {
 }
 
 object NotesRepository {
-  def layer: ZLayer[Any, Nothing, NotesRepository] = ZLayer.succeed(NotesRepository())
+  
+  lazy val layer: ULayer[NotesRepository] = ZLayer.fromFunction(NotesRepository.apply _)
+
 }

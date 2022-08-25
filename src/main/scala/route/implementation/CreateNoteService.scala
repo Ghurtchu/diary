@@ -7,7 +7,7 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class CreateNoteService(private final val notesRepository: CRUD[Note]) extends RecordCreator[Note] {
+final case class CreateNoteService(private final val notesRepository: CRUD[Note]) extends RecordCreator[Note] {
 
   override def createRecord(note: Note): Task[Either[String, String]] = 
     notesRepository.add(note)
@@ -15,11 +15,8 @@ class CreateNoteService(private final val notesRepository: CRUD[Note]) extends R
 }
 
 object CreateNoteService {
-  
-  def spawn(notesRepository: CRUD[Note]): CreateNoteService = 
-    new CreateNoteService(notesRepository)
     
-  def layer: ULayer[CreateNoteService] = 
-    NotesRepository.layer >>> ZLayer.fromFunction(CreateNoteService.spawn)
+  def layer: URLayer[CRUD[Note], CreateNoteService] =
+    ZLayer.fromFunction(CreateNoteService.apply _)
 
 }

@@ -8,12 +8,22 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-class GetAllNotesRoute extends SimpleRequestHandler[RecordsRetriever[Note]] {
+trait GetAllNotesHandler {
+  def handle: Task[Response]
+}
+
+final case class GetAllNotesHandlerImpl(getAllNotesService: RecordsRetriever[Note]) extends GetAllNotesHandler {
   
-  final override def handle: RIO[RecordsRetriever[Note], Response] = for {
-    getAllNotesService <- ZIO.service[RecordsRetriever[Note]]
+  final override def handle: Task[Response] = for {
     notes              <- getAllNotesService.retrieveRecords
     response           <- ZIO.succeed(Response.text(notes.toJsonPretty))
   } yield response
 
+}
+
+object GetAllNotesHandlerImpl {
+  
+  lazy val layer: URLayer[RecordsRetriever[Note], GetAllNotesHandlerImpl] =
+    ZLayer.fromFunction(GetAllNotesHandlerImpl.apply _)
+  
 }

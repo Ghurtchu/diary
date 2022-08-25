@@ -7,7 +7,7 @@ import route.interface.RecordRemover
 import zhttp.http.Response
 import zio.*
 
-class DeleteNoteService(notesRepository: CRUD[Note]) extends RecordRemover {
+final case class DeleteNoteService(notesRepository: CRUD[Note]) extends RecordRemover {
 
   override def deleteRecord(id: Int): Task[Either[String, String]] = 
     notesRepository delete id
@@ -15,7 +15,8 @@ class DeleteNoteService(notesRepository: CRUD[Note]) extends RecordRemover {
 }
 
 object DeleteNoteService {
-  def spawn(notesRepository: CRUD[Note]): DeleteNoteService = new DeleteNoteService(notesRepository)
   
-  def layer: ULayer[DeleteNoteService] = NotesRepository.layer >>> ZLayer.fromFunction(DeleteNoteService.spawn)
+  lazy val layer: URLayer[CRUD[Note], DeleteNoteService] = 
+    ZLayer.fromFunction(DeleteNoteService.apply _)
+    
 }

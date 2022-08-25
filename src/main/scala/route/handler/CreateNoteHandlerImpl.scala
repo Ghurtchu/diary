@@ -9,10 +9,13 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-class CreateNoteRoute extends CommonRequestHandler[Request, RecordCreator[Note]] {
+trait CreateNoteHandler {
+  def handle(request: Request): Task[Response]
+}
 
-  final override def handle(request: Request): RIO[RecordCreator[Note], Response] = for {
-    createNoteService <- ZIO.service[RecordCreator[Note]]
+final case class CreateNoteHandlerImpl(createNoteService: RecordCreator[Note]) extends CreateNoteHandler {
+
+  final override def handle(request: Request): Task[Response] = for {
     noteAsJson        <- request.bodyAsString
     noteEither        <- ZIO.succeed(noteAsJson.fromJson[Note])
     creationStatus    <- noteEither.fold(
@@ -24,5 +27,11 @@ class CreateNoteRoute extends CommonRequestHandler[Request, RecordCreator[Note]]
       Response.text
     ))
   } yield response
+
+}
+
+object CreateNoteHandlerImpl {
+
+  lazy val layer: URLayer[RecordCreator[Note], CreateNoteHandlerImpl] = ZLayer.fromFunction(CreateNoteHandlerImpl.apply _)
 
 }

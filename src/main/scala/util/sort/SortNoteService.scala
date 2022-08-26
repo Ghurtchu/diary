@@ -12,11 +12,7 @@ final case class SortNoteService(notesRepository: CRUD[Note]) extends SortServic
 
   final def sort(sortOrder: SortOrder): Task[List[Note]] = for {
     notes  <- notesRepository.getAll
-    sorted <- ZIO.succeed {
-      sortOrder match
-        case Ascending  => notes.sortWith(_.title < _.title)
-        case Descending => notes.sortWith(_.title > _.title)
-    }
+    sorted <- ZIO.succeed(sortOrder.fold(notes.sortWith(_.title < _.title))(notes.sortWith(_.title > _.title)))
   } yield sorted
 }
 

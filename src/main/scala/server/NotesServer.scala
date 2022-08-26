@@ -25,13 +25,13 @@ final case class NotesServer(
   val allRoutes: HttpApp[Any, Throwable] = {
     signupEndpoint.route ++
       loginEndpoint.route ++
+      sortNoteEndpoint.route ++
+      searchNoteEndpoint.route ++
       getAllNotesEndpoint.route ++
       getNoteEndpoint.route ++
       createNoteEndpoint.route ++
       updateNoteEndpoint.route ++
-      deleteNoteEndpoint.route ++
-      searchNoteEndpoint.route ++
-      sortNoteEndpoint.route
+      deleteNoteEndpoint.route
   }
 
   def start: Task[Unit] =

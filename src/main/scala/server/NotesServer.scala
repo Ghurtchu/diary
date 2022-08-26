@@ -3,7 +3,12 @@ package server
 import zhttp.http.*
 import zhttp.service.Server
 import zio.*
-import endpoint._
+import endpoint.*
+import pdi.jwt.algorithms.JwtUnknownAlgorithm
+import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
+import zhttp.http.middleware.HttpMiddleware
+
+import java.io.IOException
 
 final case class NotesServer(
                            signupEndpoint: SignupEndpoint,
@@ -43,6 +48,10 @@ object NotesServer {
 
   lazy val layer: URLayer[SignupEndpoint & LoginEndpoint & GetAllNotesEndpoint & GetNoteEndpoint & CreateNoteEndpoint & UpdateNoteEndpoint & DeleteNoteEndpoint & SearchNoteEndpoint & SortNoteEndpoint, NotesServer] =
     ZLayer.fromFunction(NotesServer.apply _)
+
+  def decodeJwt(token: String): Option[JwtClaim] = Jwt.decode(token, "default private key",Seq(JwtAlgorithm.HS256)).toOption
+
+  val jwtAuthMiddleware = Middleware.bearerAuth(decodeJwt(_).isDefined)
 
 }
 

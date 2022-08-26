@@ -10,7 +10,7 @@ import util.sort.SortNoteService
 
 object Main extends ZIOAppDefault {
 
-    val endpointLayers = SignupEndpoint.layer ++
+    private lazy val endpointLayers = SignupEndpoint.layer ++
       CreateNoteEndpoint.layer ++
       DeleteNoteEndpoint.layer ++
       GetAllNotesEndpoint.layer ++
@@ -20,9 +20,9 @@ object Main extends ZIOAppDefault {
       SortNoteEndpoint.layer ++
       UpdateNoteEndpoint.layer
 
-    val serverLayer = NotesServer.layer
+    private lazy val serverLayer = NotesServer.layer
 
-    val handlerLayers = SearchNoteHandlerImpl.layer ++
+    private lazy val handlerLayers = SearchNoteHandlerImpl.layer ++
       SortNoteHandlerImpl.layer ++
       UpdateNoteHandlerImpl.layer ++
       CreateNoteHandlerImpl.layer ++
@@ -32,7 +32,7 @@ object Main extends ZIOAppDefault {
       LoginHandlerImpl.layer ++
       SignupHandlerImpl.layer
 
-    val serviceLayers = SearchNoteService.layer ++
+    private lazy val serviceLayers = SearchNoteService.layer ++
       SortNoteService.layer ++
       UpdateNoteService.layer ++
       CreateNoteService.layer ++
@@ -42,9 +42,9 @@ object Main extends ZIOAppDefault {
       SignupServiceImpl.layer ++
       DeleteNoteService.layer
 
-    val dbLayers = NotesRepository.layer ++ UserRepository.layer
+    private lazy val dbLayers = NotesRepository.layer ++ UserRepository.layer
 
-    val otherLayers = SecureHashService.layer
+    private lazy val otherLayers = SecureHashService.layer
 
     override def run: Task[Unit] =
       ZIO.serviceWithZIO[NotesServer](_.start)

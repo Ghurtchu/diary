@@ -1,17 +1,18 @@
 package server.endpoint
 
-import zio._
+import zio.*
 import route.interface.*
 import model.*
-import route.handler._
+import route.handler.*
+import server.NotesServer
 import util.sort.SortNoteService
-import zhttp.http._
+import zhttp.http.*
 
 final case class SortNoteEndpoint(sortNoteHandler: SortNoteHandler) {
 
   lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.GET -> !! / "api" / "notes" / "sort" => sortNoteHandler handle request
-  }
+  } @@ NotesServer.jwtAuthMiddleware
 
 }
 

@@ -1,14 +1,15 @@
 package server.endpoint
 
 import route.handler.GetAllNotesHandler
-import zhttp.http._
-import zio._
+import server._
+import zhttp.http.*
+import zio.*
 
 final case class GetAllNotesEndpoint(getAllNotesHandler: GetAllNotesHandler) {
 
   lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case Method.GET -> !! / "api" / "notes" => getAllNotesHandler.handle
-  }
+  } @@ NotesServer.jwtAuthMiddleware
 
 }
 

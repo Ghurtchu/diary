@@ -17,7 +17,7 @@ final case class GetNoteService(private final val notesRepository: CRUD[Note]) e
 
 object GetNoteService {
   
-  lazy val layer: URLayer[CRUD[Note], GetNoteService] = 
+  lazy val layer: URLayer[CRUD[Note], RecordRetriever[Note]] = 
     ZLayer.fromFunction(GetNoteService.apply _)
   
 }

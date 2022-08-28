@@ -4,8 +4,13 @@ import zhttp.http.*
 import zhttp.service.Server
 import zio.*
 import endpoint.*
+import io.netty.handler.codec.http.HttpHeaders
 import pdi.jwt.algorithms.JwtUnknownAlgorithm
 import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
+import server.endpoint.note.{CreateNoteEndpoint, DeleteNoteEndpoint, GetAllNotesEndpoint, GetNoteEndpoint, SearchNoteEndpoint, SortNoteEndpoint, UpdateNoteEndpoint}
+import server.endpoint.user.{LoginEndpoint, SignupEndpoint}
+import server.middleware.RequestContextManager
+import zhttp.html.{Dom, Html}
 import zhttp.http.middleware.HttpMiddleware
 
 import java.io.IOException
@@ -22,7 +27,7 @@ final case class NotesServer(
                            sortNoteEndpoint: SortNoteEndpoint
                            ) {
 
-  val allRoutes: HttpApp[Any, Throwable] = {
+  val allRoutes: Http[RequestContextManager, Throwable, Request, Response] = {
     signupEndpoint.route ++
       loginEndpoint.route ++
       sortNoteEndpoint.route ++
@@ -34,7 +39,7 @@ final case class NotesServer(
       deleteNoteEndpoint.route
   }
 
-  def start: Task[Unit] =
+  def start: ZIO[RequestContextManager, Throwable, Unit] =
     for {
       _    <- ZIO.succeed(println("Server started"))
       port <- System.envOrElse("PORT", "8080").map(_.toInt)
@@ -49,9 +54,15 @@ object NotesServer {
   lazy val layer: URLayer[SignupEndpoint & LoginEndpoint & GetAllNotesEndpoint & GetNoteEndpoint & CreateNoteEndpoint & UpdateNoteEndpoint & DeleteNoteEndpoint & SearchNoteEndpoint & SortNoteEndpoint, NotesServer] =
     ZLayer.fromFunction(NotesServer.apply _)
 
-  def decodeJwt(token: String): Option[JwtClaim] = Jwt.decode(token, "default private key",Seq(JwtAlgorithm.HS256)).toOption
+  def decodeJwt(token: String): Option[JwtClaim] =
+    Jwt.decode(token, scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"), Seq(JwtAlgorithm.HS256))
+      .toOption
 
-  val jwtAuthMiddleware = Middleware.bearerAuth(decodeJwt(_).isDefined)
+  val jwtAuthMiddleware: HttpMiddleware[Any, Nothing] = Middleware.addHeader("yle", "yle")
+
+
+
+
 
 }
 

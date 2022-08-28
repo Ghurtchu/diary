@@ -2,7 +2,7 @@ package route.handler
 
 import route.interface.*
 import zio.*
-import route.implementation.SignupServiceImpl
+import route.implementation.SignupServiceLive
 import zhttp.http.Response
 import model._
 import route.interface.RecordCreator
@@ -14,7 +14,7 @@ trait SignupHandler {
   def handle(request: Request): Task[Response]
 }
 
-final case class SignupHandlerImpl(signupService: SignupService) extends SignupHandler {
+final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler {
 
   final override def handle(request: Request): Task[Response] = for {
     recordAsJson  <- request.bodyAsString
@@ -31,9 +31,9 @@ final case class SignupHandlerImpl(signupService: SignupService) extends SignupH
 
 }
 
-object SignupHandlerImpl {
+object SignupHandlerLive {
   
-  lazy val layer: URLayer[SignupService, SignupHandlerImpl] =
-    ZLayer.fromFunction(SignupHandlerImpl.apply _)
+  lazy val layer: URLayer[SignupService, SignupHandler] =
+    ZLayer.fromFunction(SignupHandlerLive.apply _)
   
 }

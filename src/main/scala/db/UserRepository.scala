@@ -33,5 +33,5 @@ final case class UserRepository() extends UserCRUD {
 }
 
 object UserRepository {
-  lazy val layer: ULayer[UserRepository] = ZLayer.fromFunction(UserRepository.apply _)
+  lazy val layer: ULayer[UserCRUD] = ZLayer.fromFunction(UserRepository.apply _)
 }

@@ -15,7 +15,7 @@ final case class SecureHashService() extends PasswordHashService {
 
 object SecureHashService {
   
-  lazy val layer: ULayer[SecureHashService] =
+  lazy val layer: ULayer[PasswordHashService] =
     ZLayer.succeed(SecureHashService())
     
 }

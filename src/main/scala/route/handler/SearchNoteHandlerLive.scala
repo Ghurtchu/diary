@@ -1,7 +1,6 @@
 package route.handler
 
 import model.*
-import route.interface.CommonRequestHandler
 import util.*
 import util.search.{SearchNoteService, SearchService}
 import zhttp.http.*
@@ -15,7 +14,7 @@ trait SearchNoteHandler {
   def handle(request: Request): Task[Response]
 }
 
-final case class SearchNoteHandlerImpl(searchNoteService: SearchService[Note]) extends SearchNoteHandler {
+final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) extends SearchNoteHandler {
 
   final override def handle(request: Request): Task[Response] = for {
     title             <- ZIO.succeed(request.url.queryParams("title").head)
@@ -32,12 +31,15 @@ final case class SearchNoteHandlerImpl(searchNoteService: SearchService[Note]) e
 
 }
 
-object SearchNoteHandlerImpl {
-  lazy val layer: URLayer[SearchService[Note], SearchNoteHandlerImpl] = ZLayer.fromFunction(SearchNoteHandlerImpl.apply _)
+object SearchNoteHandlerLive {
+  lazy val layer: URLayer[SearchService[Note], SearchNoteHandler] = ZLayer.fromFunction(SearchNoteHandlerLive.apply _)
 }
 
-sealed trait SearchCriteria {
+sealed trait SearchCriteria { self =>
   def isExact: Boolean
+  def fold[A](ifExact: => A)(ifNonExact: => A): A = self match
+      case Exact    => ifExact
+      case NonExact => ifNonExact
 }
 
 object SearchCriteria {

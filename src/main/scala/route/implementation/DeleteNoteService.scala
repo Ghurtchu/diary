@@ -16,7 +16,7 @@ final case class DeleteNoteService(notesRepository: CRUD[Note]) extends RecordRe
 
 object DeleteNoteService {
   
-  lazy val layer: URLayer[CRUD[Note], DeleteNoteService] = 
+  lazy val layer: URLayer[CRUD[Note], RecordRemover] = 
     ZLayer.fromFunction(DeleteNoteService.apply _)
     
 }

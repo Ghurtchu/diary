@@ -16,7 +16,7 @@ final case class CreateNoteService(private final val notesRepository: CRUD[Note]
 
 object CreateNoteService {
     
-  def layer: URLayer[CRUD[Note], CreateNoteService] =
+  def layer: URLayer[CRUD[Note], RecordCreator[Note]] =
     ZLayer.fromFunction(CreateNoteService.apply _)
 
 }

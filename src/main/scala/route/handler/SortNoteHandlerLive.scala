@@ -11,7 +11,7 @@ trait SortNoteHandler {
   def handle(request: Request): Task[Response]
 }
 
-final case class SortNoteHandlerImpl(sortNoteService: SortService[Note]) extends SortNoteHandler {
+final case class SortNoteHandlerLive(sortNoteService: SortService[Note]) extends SortNoteHandler {
 
   final override def handle(request: Request): Task[Response] = for {
     sortOrder       <- ZIO.succeed {
@@ -28,6 +28,6 @@ final case class SortNoteHandlerImpl(sortNoteService: SortService[Note]) extends
 
 }
 
-object SortNoteHandlerImpl {
-  lazy val layer: URLayer[SortService[Note], SortNoteHandlerImpl] = ZLayer.fromFunction(SortNoteHandlerImpl.apply _)
+object SortNoteHandlerLive {
+  lazy val layer: URLayer[SortService[Note], SortNoteHandler] = ZLayer.fromFunction(SortNoteHandlerLive.apply _)
 }

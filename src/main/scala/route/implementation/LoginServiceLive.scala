@@ -1,10 +1,10 @@
 package route.implementation
 
-import model.{LoginPayload, LoginResponse}
+import model.{LoginPayload, JwtContent}
 import route.interface.{JWT, LoginError, LoginService}
 import zio.{RIO, Task}
 import db.*
-import route.implementation.LoginServiceImpl.layer
+import route.implementation.LoginServiceLive.layer
 import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
 
@@ -13,9 +13,9 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import io.circe.*
 import jawn.parse as jawnParse
 import zio.json._
-import model.LoginResponse._
+import model.JwtContent._
 
-final case class LoginServiceImpl(
+final case class LoginServiceLive(
                       userRepository: UserCRUD,
                       passwordHashService: PasswordHashService
                       ) extends LoginService {
@@ -25,7 +25,7 @@ final case class LoginServiceImpl(
     jwtTokenOrLoginError <- if passwordMatch then {
         val key = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
         val algo = JwtAlgorithm.HS256
-        val Right(claimJson) = jawnParse(maybeUser.map(user => Some(LoginResponse(user.id.get, user.name, user.email)).get).toJsonPretty)
+        val Right(claimJson) = jawnParse(maybeUser.map(user => Some(JwtContent(user.id.get, user.name, user.email)).get).toJsonPretty)
         val jwt = JwtCirce.encode(claimJson, key, algo)
       
         ZIO.succeed(Right(JWT(jwt)))
@@ -33,9 +33,9 @@ final case class LoginServiceImpl(
   } yield jwtTokenOrLoginError
 }
 
-object LoginServiceImpl {
+object LoginServiceLive {
     
-  lazy val layer: URLayer[UserCRUD & PasswordHashService, LoginServiceImpl] = 
-    ZLayer.fromFunction(LoginServiceImpl.apply _)
+  lazy val layer: URLayer[UserCRUD & PasswordHashService, LoginService] = 
+    ZLayer.fromFunction(LoginServiceLive.apply _)
     
 }

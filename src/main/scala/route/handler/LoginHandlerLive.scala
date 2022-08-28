@@ -4,7 +4,7 @@ import zhttp.http.*
 import zio.*
 import zio.json.*
 import db.*
-import model.LoginResponse
+import model.JwtContent
 import model.LoginPayload
 import util.hash.{PasswordHashService, SecureHashService}
 
@@ -20,9 +20,9 @@ trait LoginHandler {
   def handle(request: Request): Task[Response]
 }
 
-final case class LoginHandlerImpl(loginService: LoginService) extends LoginHandler {
+final case class LoginHandlerLive(loginService: LoginService) extends LoginHandler {
   
-  final override def handle(request: Request): Task[Response] = for {
+  override def handle(request: Request): Task[Response] = for {
     loginPayloadEither <- request.bodyAsString.flatMap(lp => ZIO.succeed(lp.fromJson[LoginPayload]))
     response           <- loginPayloadEither.fold(
       _ => ZIO.succeed(Response.text("wrong JSON format").setStatus(Status.BadRequest)),
@@ -38,9 +38,9 @@ final case class LoginHandlerImpl(loginService: LoginService) extends LoginHandl
 
 }
 
-object LoginHandlerImpl {
+object LoginHandlerLive {
   
-  lazy val layer: URLayer[LoginService, LoginHandlerImpl] = 
-    ZLayer.fromFunction(LoginHandlerImpl.apply _)
+  lazy val layer: URLayer[LoginService, LoginHandler] = 
+    ZLayer.fromFunction(LoginHandlerLive.apply _)
   
 }

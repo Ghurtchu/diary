@@ -7,14 +7,13 @@ import route.implementation.UpdateNoteService
 import zhttp.http._
 import zio.*
 import zio.json.*
-import route.interface.ComplexRequestHandler
-import UpdateNoteHandlerImpl.NoteID
+import UpdateNoteHandlerLive.NoteID
 
 trait UpdateNoteHandler {
   def handle(request: Request, noteId: NoteID): Task[Response]
 }
 
-final case class UpdateNoteHandlerImpl(updateNoteService: RecordUpdater[Note]) extends UpdateNoteHandler {
+final case class UpdateNoteHandlerLive(updateNoteService: RecordUpdater[Note]) extends UpdateNoteHandler {
 
   final override def handle(request: Request, noteId: NoteID): Task[Response] = for {
     noteAsJson        <- request.bodyAsString
@@ -27,10 +26,10 @@ final case class UpdateNoteHandlerImpl(updateNoteService: RecordUpdater[Note]) e
 
 }
 
-object UpdateNoteHandlerImpl {
+object UpdateNoteHandlerLive {
   
   type NoteID = Int
   
-  lazy val layer: URLayer[RecordUpdater[Note], UpdateNoteHandlerImpl] = ZLayer.fromFunction(UpdateNoteHandlerImpl.apply _)
+  lazy val layer: URLayer[RecordUpdater[Note], UpdateNoteHandler] = ZLayer.fromFunction(UpdateNoteHandlerLive.apply _)
   
 }

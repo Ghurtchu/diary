@@ -18,6 +18,6 @@ final case class UpdateNoteService(notesRepository: CRUD[Note]) extends RecordUp
 
 object UpdateNoteService {
   
-  lazy val layer: URLayer[CRUD[Note], UpdateNoteService] = ZLayer.fromFunction(UpdateNoteService.apply _)
+  lazy val layer: URLayer[CRUD[Note], RecordUpdater[Note]] = ZLayer.fromFunction(UpdateNoteService.apply _)
 
 }

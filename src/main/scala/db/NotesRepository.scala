@@ -54,6 +54,6 @@ final case class NotesRepository() extends CRUD[Note] {
 
 object NotesRepository {
   
-  lazy val layer: ULayer[NotesRepository] = ZLayer.fromFunction(NotesRepository.apply _)
+  lazy val layer: ULayer[CRUD[Note]] = ZLayer.fromFunction(NotesRepository.apply _)
 
 }

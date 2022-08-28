@@ -12,20 +12,20 @@ final case class SearchNoteService(notesRepository: CRUD[Note]) extends SearchSe
 
   final override def searchByTitle(title: String, criteria: SearchCriteria): Task[Either[String, List[Note]]] = for {
     notes      <- notesRepository.getAll
-    response   <-
-      criteria match {
-        case Exact    => ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
-        case NonExact => ZIO.succeed {
-          val maybeNotes = notes.filter(note => note.title.replace(" ", "").toLowerCase.contains(title.replace(" ","").toLowerCase))
-          if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
-        }
+    response   <- criteria.fold(
+      ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
+      )(
+      ZIO.succeed {
+        val maybeNotes = notes.filter(note => note.title.replace(" ", "").toLowerCase.contains(title.replace(" ", "").toLowerCase))
+        if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
       }
+    )
   } yield response
 
 }
 
 object SearchNoteService {
 
-  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchNoteService] = ZLayer.fromFunction(SearchNoteService.apply _)
+  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchService[Note]] = ZLayer.fromFunction(SearchNoteService.apply _)
 
 }

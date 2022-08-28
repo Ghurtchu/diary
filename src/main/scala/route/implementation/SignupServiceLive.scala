@@ -7,7 +7,7 @@ import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
 import zio.json.*
 
-final case class SignupServiceImpl private (
+final case class SignupServiceLive private(
                          private val passwordHashService: PasswordHashService,
                          private val userRepository: UserCRUD
                        ) extends SignupService {
@@ -28,9 +28,9 @@ final case class SignupServiceImpl private (
 
 }
 
-object SignupServiceImpl {
+object SignupServiceLive {
 
-  def layer: URLayer[PasswordHashService & UserCRUD, SignupServiceImpl] =
-    ZLayer.fromFunction(SignupServiceImpl.apply _)
+  def layer: URLayer[PasswordHashService & UserCRUD, SignupService] =
+    ZLayer.fromFunction(SignupServiceLive.apply _)
 
 }

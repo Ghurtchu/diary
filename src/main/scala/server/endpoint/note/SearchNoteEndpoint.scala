@@ -11,7 +11,7 @@ final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) ex
   
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.GET -> !! / "api" / "notes" / "sort" => searchNoteHandler handle request 
-  } @@ NotesServer.jwtAuthMiddleware
+  } 
   
 }
 

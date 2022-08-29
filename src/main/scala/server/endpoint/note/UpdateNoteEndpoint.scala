@@ -14,7 +14,7 @@ final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) ex
 
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.PUT -> !! / "api" / "notes" / id => updateNoteHandler.handle(request, id.toInt)
-  } @@ NotesServer.jwtAuthMiddleware
+  } 
 
 }
 

@@ -54,15 +54,5 @@ object NotesServer {
   lazy val layer: URLayer[SignupEndpoint & LoginEndpoint & GetAllNotesEndpoint & GetNoteEndpoint & CreateNoteEndpoint & UpdateNoteEndpoint & DeleteNoteEndpoint & SearchNoteEndpoint & SortNoteEndpoint, NotesServer] =
     ZLayer.fromFunction(NotesServer.apply _)
 
-  def decodeJwt(token: String): Option[JwtClaim] =
-    Jwt.decode(token, scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"), Seq(JwtAlgorithm.HS256))
-      .toOption
-
-  val jwtAuthMiddleware: HttpMiddleware[Any, Nothing] = Middleware.addHeader("yle", "yle")
-
-
-
-
-
 }
 

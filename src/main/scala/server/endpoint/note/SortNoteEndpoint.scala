@@ -14,7 +14,7 @@ final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends 
 
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.GET -> !! / "api" / "notes" / "sort" => sortNoteHandler handle request
-  } @@ NotesServer.jwtAuthMiddleware
+  } 
 
 }
 

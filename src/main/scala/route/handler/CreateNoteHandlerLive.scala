@@ -16,19 +16,15 @@ trait CreateNoteHandler {
 final case class CreateNoteHandlerLive(createNoteService: RecordCreator[Note]) extends CreateNoteHandler {
 
   override def handle(request: Request, jwtContent: JwtContent): Task[Response] = for {
-    noteAsJson        <- request.bodyAsString
-    noteEither        <- ZIO.succeed(noteAsJson.fromJson[Note])
-    creationStatus    <- noteEither.fold(
-      err => ZIO.fail(RuntimeException(err)),
-      note => {
+    noteEither     <- request.bodyAsString.map(_.fromJson[Note])
+    creationStatus <- noteEither.fold(
+      parsingError => ZIO.fail(RuntimeException(parsingError)),
+      note         => {
         val noteWithUserId = note.copy(userId = Some(jwtContent.id))
         createNoteService createRecord noteWithUserId
       }
     )
-    response          <- ZIO.succeed(creationStatus.fold(
-      Response.text,
-      Response.text
-    ))
+    response       <- ZIO.succeed(creationStatus.fold(Response.text, Response.text))
   } yield response
 
 }

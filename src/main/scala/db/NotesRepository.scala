@@ -9,7 +9,7 @@ import java.time.Instant
 import java.util.Date
 import scala.collection.mutable.ListBuffer
 
-final case class NotesRepository() extends CRUD[Note] {
+final case class NotesRepository() extends NoteCRUD {
   
   val inMemoryDB: InMemoryDB.type = InMemoryDB
 
@@ -50,10 +50,13 @@ final case class NotesRepository() extends CRUD[Note] {
       }
     }
   } yield creationStatus
+
+  override def getNotesByUserId(userId: Int): UIO[List[Note]] = ZIO.succeed(inMemoryDB.notes.filter(note => note.userId.isDefined && note.userId.get == userId).toList)
+  
 }
 
 object NotesRepository {
   
-  lazy val layer: ULayer[CRUD[Note]] = ZLayer.fromFunction(NotesRepository.apply _)
+  lazy val layer: ULayer[NoteCRUD] = ZLayer.fromFunction(NotesRepository.apply _)
 
 }

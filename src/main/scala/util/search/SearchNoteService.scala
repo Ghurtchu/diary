@@ -1,6 +1,6 @@
 package util.search
 
-import db.{CRUD, NotesRepository}
+import db.{CRUD, NoteCRUD, NotesRepository}
 import model.{Note, User}
 import route.handler.{Exact, NonExact, SearchCriteria}
 import zio.{Task, ZIO, ZLayer}
@@ -8,24 +8,27 @@ import zio.{Task, ZIO, ZLayer}
 import java.time.Instant
 import java.util.Date
 
-final case class SearchNoteService(notesRepository: CRUD[Note]) extends SearchService[Note] {
+final case class SearchNoteService(notesRepository: NoteCRUD) extends SearchService[Note] {
 
-  final override def searchByTitle(title: String, criteria: SearchCriteria): Task[Either[String, List[Note]]] = for {
-    notes      <- notesRepository.getAll
-    response   <- criteria.fold(
-      ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
-      )(
-      ZIO.succeed {
-        val maybeNotes = notes.filter(note => note.title.replace(" ", "").toLowerCase.contains(title.replace(" ", "").toLowerCase))
-        if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
-      }
-    )
+  final override def searchByTitle(title: String, criteria: SearchCriteria, userId: Int): Task[Either[String, List[Note]]] = for {
+    notes    <- notesRepository getNotesByUserId userId
+    response <- criteria.fold(getExactMatches(title, notes))(getNonExactMatches(title, notes))
   } yield response
 
+  private def getNonExactMatches(title: String, notes: List[Note]) = {
+    ZIO.succeed {
+      val maybeNotes = notes.filter(note => note.title.replace(" ", "").toLowerCase.contains(title.replace(" ", "").toLowerCase))
+      if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
+    }
+  }
+
+  private def getExactMatches(title: String, notes: List[Note]) = {
+    ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
+  }
 }
 
 object SearchNoteService {
 
-  lazy val layer: ZLayer[CRUD[Note], Nothing, SearchService[Note]] = ZLayer.fromFunction(SearchNoteService.apply _)
+  lazy val layer: ZLayer[NoteCRUD, Nothing, SearchService[Note]] = ZLayer.fromFunction(SearchNoteService.apply _)
 
 }

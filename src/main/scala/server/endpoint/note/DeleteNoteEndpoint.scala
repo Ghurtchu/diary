@@ -12,10 +12,7 @@ trait DeleteNoteEndpoint extends HasRoute[RequestContextManager]
 final case class DeleteNoteEndpointLive(deleteNoteHandler: DeleteNoteHandler) extends DeleteNoteEndpoint {
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
-    case Method.DELETE -> !! / "api" / "notes" / int(noteId) => for {
-      jwtContent <- ZIO.service[RequestContextManager].flatMap(_.getCtx.map(_.jwtContent.get))
-      response   <- deleteNoteHandler.handle(noteId)
-    } yield response
+    case Method.DELETE -> !! / "api" / "notes" / int(noteId) => deleteNoteHandler.handle(noteId)
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 
 }

@@ -2,16 +2,20 @@ package server.endpoint.note
 
 import route.handler.*
 import server.NotesServer
+import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*
 
-trait SearchNoteEndpoint extends HasRoute[Any]
+trait SearchNoteEndpoint extends HasRoute[RequestContextManager]
 
 final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) extends SearchNoteEndpoint {
   
-  override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
-    case request@Method.GET -> !! / "api" / "notes" / "sort" => searchNoteHandler handle request 
-  } 
+  override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
+    case request@Method.GET -> !! / "api" / "notes" / "search" => for {
+      jwtContent <- ZIO.service[RequestContextManager].flatMap(_.getCtx.map(_.jwtContent))
+      response   <- searchNoteHandler.handle(request, jwtContent.get)
+    } yield response
+  } @@ RequestContextMiddleware.jwtAuthMiddleware
   
 }
 

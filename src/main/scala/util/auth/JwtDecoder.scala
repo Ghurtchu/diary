@@ -17,10 +17,10 @@ final case class JwtDecoderLive() extends JwtDecoder {
       token,
       scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"),
       Seq(JwtAlgorithm.HS256)
-    ).toOption.fold(Left(JwtDecodingError("Wrong token"))) { claim =>
+    ).fold(err => Left(JwtDecodingError(err.getMessage)), claim => {
       val jwtContentEither = claim.content.fromJson[JwtContent]
       jwtContentEither.fold(err => Left(JwtDecodingError(err)), Right(_))
-    }
+    }) 
 }
 
 object JwtDecoderLive {

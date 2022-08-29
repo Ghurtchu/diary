@@ -23,7 +23,7 @@ trait LoginHandler {
 final case class LoginHandlerLive(loginService: LoginService) extends LoginHandler {
   
   override def handle(request: Request): Task[Response] = for {
-    loginPayloadEither <- request.bodyAsString.flatMap(lp => ZIO.succeed(lp.fromJson[LoginPayload]))
+    loginPayloadEither <- request.bodyAsString.flatMap(body => ZIO.succeed(body.fromJson[LoginPayload]))
     response           <- loginPayloadEither.fold(
       _ => ZIO.succeed(Response.text("wrong JSON format").setStatus(Status.BadRequest)),
       loginPayload => for {

@@ -13,8 +13,8 @@ final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler)
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
     case Method.GET -> !! / "api" / "notes" =>
       for {
-        jwtContent <- ZIO.service[RequestContextManager].flatMap(_.getCtx.map(_.jwtContent.get))
-        response   <- getAllNotesHandler.handle(jwtContent)
+        requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
+        response       <- requestContext.getJwtOrFailure.fold(identity, getAllNotesHandler.handle)
     } yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

@@ -12,13 +12,14 @@ import zhttp.http.middleware.Auth
 import JwtValidatorMiddlewareLive.validateJwt
 
 case class RequestContext(
-                           token: Option[String],
                            jwtContent: Option[JwtContent]
-                         )
+                         ) {
+  def getJwtOrFailure: Either[Task[Response], JwtContent] = 
+    jwtContent.fold(Left(ZIO.succeed(Response.text("Auth failed").setStatus(Status.Unauthorized))))(Right(_))
+}
 
 object RequestContext {
-  def initial: RequestContext                  = new RequestContext(None, None)
-  def fromToken(token: String): RequestContext = new RequestContext(Some(token), None)
+  def initial: RequestContext = new RequestContext(None)
 }
 
 trait RequestContextManager {
@@ -64,8 +65,11 @@ final case class JwtValidatorMiddlewareLive(jwtDecoder: JwtDecoder) extends JwtV
         for {
           ctxManager <- ZIO.service[RequestContextManager]
           ctx        <- ctxManager.getCtx
-          jwtContent = jwtDecoder.decode(ctx.token.get)
-          _          <- ctxManager.setCtx(ctx.copy(jwtContent = jwtContent.toOption))
+          jwtContent = jwtDecoder.decode(request.bearerToken.fold("")(identity))
+          _          <- jwtContent.fold(
+            err     => ctxManager.setCtx(ctx.copy(jwtContent = None)),
+            content => ctxManager.setCtx(ctx.copy(jwtContent = Some(content)))
+          )
         } yield request
       }
     }
@@ -80,33 +84,6 @@ object JwtValidatorMiddlewareLive {
 
 object RequestContextMiddleware {
 
-  private final val addJwtToHeader: Middleware[
-    RequestContextManager,
-    Nothing,
-    Request,
-    Response,
-    Request,
-    Response
-  ] = new Middleware[
-    RequestContextManager,
-    Nothing,
-    Request,
-    Response,
-    Request,
-    Response
-  ] {
-    override def apply[R1 <: RequestContextManager, E1 >: Nothing](http: Http[R1, E1, Request, Response]): Http[R1, E1, Request, Response] = {
-     http.contramapZIO[R1, E1, Request] { request =>
-       for {
-         cxtManager <- ZIO.service[RequestContextManager]
-         newCtx     <- ZIO.succeed(RequestContext.fromToken(request.bearerToken.fold("")(identity)))
-         _          <- cxtManager.setCtx(newCtx)
-       } yield request
-     }
-    }
-  }
-
-
   lazy val jwtAuthMiddleware: Middleware[
     RequestContextManager,
     Nothing,
@@ -114,6 +91,6 @@ object RequestContextMiddleware {
     Response,
     Request,
     Response
-  ] = validateJwt >>> addJwtToHeader
+  ] = validateJwt
 
 }

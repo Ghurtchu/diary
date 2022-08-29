@@ -12,8 +12,8 @@ final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) ex
   
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
     case request@Method.GET -> !! / "api" / "notes" / "search" => for {
-      jwtContent <- ZIO.service[RequestContextManager].flatMap(_.getCtx.map(_.jwtContent))
-      response   <- searchNoteHandler.handle(request, jwtContent.get)
+      requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
+      response       <- requestContext.getJwtOrFailure.fold(identity, searchNoteHandler.handle(request, _))
     } yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
   

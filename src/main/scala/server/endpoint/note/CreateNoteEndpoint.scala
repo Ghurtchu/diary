@@ -13,9 +13,9 @@ trait CreateNoteEndpoint extends HasRoute[RequestContextManager]
 final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) extends CreateNoteEndpoint {
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
-    case request@Method.POST -> !! / "api" / "notes" => for {
-      jwtContent <- ZIO.service[RequestContextManager].flatMap(_.getCtx.map(_.jwtContent.get))
-      response   <- createNoteHandler.handle(request, jwtContent)
+    case request @ Method.POST -> !! / "api" / "notes" => for {
+      requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
+      response       <- requestContext.getJwtOrFailure.fold(identity, createNoteHandler.handle(request, _))
     } yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 }

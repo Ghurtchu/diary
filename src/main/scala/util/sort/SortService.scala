@@ -13,7 +13,7 @@ sealed trait SortOrder { self =>
 }
 
 object SortOrder {
-  case object Ascending extends SortOrder
+  case object Ascending  extends SortOrder
   case object Descending extends SortOrder
 }
 

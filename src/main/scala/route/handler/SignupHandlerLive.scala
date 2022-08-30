@@ -17,9 +17,9 @@ trait SignupHandler {
 final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler {
 
   final override def handle(request: Request): Task[Response] = for {
-    recordAsJson  <- request.bodyAsString
-    userPayload   <- ZIO.succeed(recordAsJson.fromJson[User])
-    errorOrToken  <- userPayload.fold(
+    recordAsJson <- request.bodyAsString
+    userPayload  <- ZIO.succeed(recordAsJson.fromJson[User])
+    errorOrToken <- userPayload.fold(
       err     => ZIO.fail(new RuntimeException(err)),
       signupService.signUp
     )

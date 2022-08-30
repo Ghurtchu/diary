@@ -41,10 +41,10 @@ object Main extends ZIOAppDefault {
       UpdateNoteService.layer ++
       CreateNoteService.layer ++
       GetAllNotesService.layer ++
-      GetNoteService.layer ++
+      GetNoteServiceLive.layer ++
       LoginServiceLive.layer ++
       SignupServiceLive.layer ++
-      DeleteNoteService.layer
+      DeleteNoteServiceLive.layer
 
     private lazy val dbLayers = NotesRepository.layer ++ UserRepository.layer
 

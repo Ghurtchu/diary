@@ -26,16 +26,15 @@ trait JwtEncoder[A] {
 
 final case class JwtEncoderLive() extends JwtEncoder[User] {
   override def encode(user: User): JWT = {
-    val key = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
-    val algo = JwtAlgorithm.HS256
+    val key   = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
+    val algo  = JwtAlgorithm.HS256
     val claim = JwtClaim(
       expiration = Some(Instant.now.plusSeconds(DAY_IN_SECONDS).getEpochSecond),
       issuedAt   = Some(Instant.now.getEpochSecond),
       content    = JwtContent(user.id.get, user.name, user.email).toJsonPretty
     )
-    val jwt = JwtCirce.encode(claim, key, algo)
 
-    JWT(jwt)
+    JWT(JwtCirce.encode(claim, key, algo))
   }
 }
 

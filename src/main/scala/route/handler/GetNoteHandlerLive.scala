@@ -3,7 +3,7 @@ package route.handler
 import model.Note
 import route.interface
 import interface._
-import route.implementation.GetNoteService
+import route.implementation.GetNoteServiceLive
 import zhttp.http.Response
 import zio.*
 import zio.json.*
@@ -12,13 +12,13 @@ import GetNoteHandlerLive.NoteID
 
 
 trait GetNoteHandler {
-  def handle(noteId: NoteID): Task[Response]
+  def handle(noteId: NoteID, userId: Int): Task[Response]
 }
 
-final case class GetNoteHandlerLive(getNoteService: RecordRetriever[Note]) extends GetNoteHandler { 
+final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetNoteHandler {
 
-  override def handle(noteId: NoteID): Task[Response] = for {
-    maybeNote      <- getNoteService.retrieveRecord(noteId)
+  override def handle(noteId: NoteID, userId: Int): Task[Response] = for {
+    maybeNote      <- getNoteService.getNote(noteId, userId)
     response       <- maybeNote.fold(
       notFound => ZIO.succeed(Response.text(notFound).setStatus(Status.NotFound)),
       note     => ZIO.succeed(Response.text(note.toJson).setStatus(Status.Ok))
@@ -31,7 +31,7 @@ object GetNoteHandlerLive {
   
   type NoteID = Int
   
-  lazy val layer: URLayer[RecordRetriever[Note], GetNoteHandler] =
+  lazy val layer: URLayer[GetNoteService, GetNoteHandler] =
     ZLayer.fromFunction(GetNoteHandlerLive.apply _)
   
 }

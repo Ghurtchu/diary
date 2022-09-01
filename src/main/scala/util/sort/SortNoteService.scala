@@ -1,6 +1,7 @@
 package util.sort
 
 import db.*
+import db.note.NoteCRUD
 import model.Note
 import route.interface.*
 import util.sort.SortOrder.*
@@ -10,7 +11,7 @@ import zio.*
 
 final case class SortNoteService(notesRepository: NoteCRUD) extends SortService[Note] {
 
-  final def sort(sortOrder: SortOrder, userId: Int): Task[List[Note]] = for {
+  final def sort(sortOrder: SortOrder, userId: Long): Task[List[Note]] = for {
     notes  <- notesRepository getNotesByUserId userId
     sorted <- ZIO.succeed(sortOrder.fold(notes.sortWith(_.title < _.title))(notes.sortWith(_.title > _.title)))
   } yield sorted

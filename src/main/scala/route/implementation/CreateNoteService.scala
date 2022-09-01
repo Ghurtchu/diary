@@ -1,6 +1,7 @@
 package route.implementation
 
-import db.{CRUD, NotesRepository}
+import db.CRUD
+import db.note.NotesRepository
 import model.Note
 import route.interface.RecordCreator
 import zhttp.http.Response

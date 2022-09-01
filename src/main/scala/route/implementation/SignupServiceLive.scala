@@ -1,6 +1,7 @@
 package route.implementation
 
 import db.*
+import db.user.UserCRUD
 import model.*
 import route.interface.{RecordCreator, SignupService}
 import util.hash.{PasswordHashService, SecureHashService}
@@ -19,7 +20,7 @@ final case class SignupServiceLive private(
       else {
         for {
           userWithHashedPass <- ZIO.succeed(user.copy(password = passwordHashService.hash(user.password)))
-          userWithId         <- ZIO.succeed(userWithHashedPass.copy(id = Some(scala.util.Random.nextInt)))
+          userWithId         <- ZIO.succeed(userWithHashedPass.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
           signupStatus       <- userRepository add userWithId
         } yield signupStatus
       } 

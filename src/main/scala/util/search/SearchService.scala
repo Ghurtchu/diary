@@ -5,5 +5,5 @@ import zio.Task
 import route.handler.SearchCriteria
 
 trait SearchService[A] {
-  def searchByTitle(title: String, criteria: SearchCriteria, userId: Int): Task[Either[String, List[A]]]
+  def searchByTitle(title: String, criteria: SearchCriteria, userId: Long): Task[Either[String, List[A]]]
 }

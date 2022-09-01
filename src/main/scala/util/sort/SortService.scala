@@ -3,7 +3,7 @@ package util.sort
 import zio.Task
 
 trait SortService[A] {
-  def sort(sortOrder: SortOrder, userId: Int): Task[List[A]]
+  def sort(sortOrder: SortOrder, userId: Long): Task[List[A]]
 }
 
 sealed trait SortOrder { self =>

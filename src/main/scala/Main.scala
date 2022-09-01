@@ -3,6 +3,8 @@ import route.implementation.*
 import util.search.*
 import zio.*
 import db.*
+import db.note.NotesRepository
+import db.user.UserRepository
 import util.hash.*
 import server.NotesServer
 import server.endpoint.*

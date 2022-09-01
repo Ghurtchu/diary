@@ -12,12 +12,12 @@ import GetNoteHandlerLive.NoteID
 
 
 trait GetNoteHandler {
-  def handle(noteId: NoteID, userId: Int): Task[Response]
+  def handle(noteId: NoteID, userId: Long): Task[Response]
 }
 
 final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetNoteHandler {
 
-  override def handle(noteId: NoteID, userId: Int): Task[Response] = for {
+  override def handle(noteId: NoteID, userId: Long): Task[Response] = for {
     maybeNote      <- getNoteService.getNote(noteId, userId)
     response       <- maybeNote.fold(
       notFound => ZIO.succeed(Response.text(notFound).setStatus(Status.NotFound)),

@@ -4,6 +4,7 @@ import model.{JwtContent, LoginPayload}
 import route.interface.{JWT, LoginError, LoginService}
 import zio.{RIO, Task}
 import db.*
+import db.user.UserCRUD
 import route.implementation.LoginServiceLive.layer
 import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
@@ -15,7 +16,7 @@ import jawn.parse as jawnParse
 import zio.json.*
 import model.JwtContent.*
 import util.auth.JwtEncoder
-import model._
+import model.*
 
 final case class LoginServiceLive(
                       userRepository: UserCRUD,

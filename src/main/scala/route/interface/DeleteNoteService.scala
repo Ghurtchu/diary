@@ -4,5 +4,5 @@ import zhttp.http.Response
 import zio.Task
 
 trait DeleteNoteService {
-  def deleteRecord(noteId: Int, userId: Int): Task[Either[String, String]]
+  def deleteRecord(noteId: Long, userId: Long): Task[Either[String, String]]
 }

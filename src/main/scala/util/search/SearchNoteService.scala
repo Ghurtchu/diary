@@ -1,6 +1,7 @@
 package util.search
 
-import db.{CRUD, NoteCRUD, NotesRepository}
+import db.note.{NoteCRUD, NotesRepository}
+import db.CRUD
 import model.{Note, User}
 import route.handler.{Exact, NonExact, SearchCriteria}
 import zio.{Task, ZIO, ZLayer}
@@ -10,7 +11,7 @@ import java.util.Date
 
 final case class SearchNoteService(notesRepository: NoteCRUD) extends SearchService[Note] {
 
-  final override def searchByTitle(title: String, criteria: SearchCriteria, userId: Int): Task[Either[String, List[Note]]] = for {
+  final override def searchByTitle(title: String, criteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] = for {
     notes    <- notesRepository getNotesByUserId userId
     response <- criteria.fold(getExactMatches(title, notes))(getNonExactMatches(title, notes))
   } yield response

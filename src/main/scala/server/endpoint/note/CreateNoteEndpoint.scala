@@ -18,6 +18,7 @@ final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) ex
       response       <- requestContext.getJwtOrFailure.fold(identity, createNoteHandler.handle(request, _))
     } yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
+  
 }
 
 object CreateNoteEndpointLive {

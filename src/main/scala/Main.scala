@@ -11,7 +11,7 @@ import server.endpoint.*
 import server.endpoint.note.{CreateNoteEndpointLive, DeleteNoteEndpointLive, GetAllNotesEndpointLive, GetNoteEndpointLive, SearchNoteEndpointLive, SortNoteEndpointLive, UpdateNoteEndpointLive}
 import server.endpoint.user.{LoginEndpointLive, SignupEndpointLive}
 import server.middleware.RequestContextManagerLive
-import util.auth.JwtEncoderLive
+import util.auth.{JwtDecoderLive, JwtEncoderLive}
 import util.sort.SortNoteService
 
 object Main extends ZIOAppDefault {
@@ -50,7 +50,7 @@ object Main extends ZIOAppDefault {
 
     private lazy val dbLayers = NotesRepository.layer ++ UserRepository.layer
 
-    private lazy val otherLayers = SecureHashService.layer ++ RequestContextManagerLive.layer ++ JwtEncoderLive.layer
+    private lazy val otherLayers = SecureHashService.layer ++ RequestContextManagerLive.layer ++ JwtEncoderLive.layer ++ JwtDecoderLive.layer
 
     override def run: Task[Unit] =
       ZIO.serviceWithZIO[NotesServer](_.start)

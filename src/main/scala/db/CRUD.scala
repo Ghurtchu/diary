@@ -6,13 +6,13 @@ import CRUD._
 
 trait CRUD[A] {
   
-  def getById(id: Int): Task[Option[A]]
+  def getById(id: Long): Task[Option[A]]
 
-  def getAll: UIO[List[A]]
+  def getAll: Task[List[A]]
 
-  def update(id: Int, a: A): Task[UpdateStatus]
+  def update(id: Long, a: A): Task[UpdateStatus]
 
-  def delete(id: Int): Task[DeletionStatus]
+  def delete(id: Long): Task[DeletionStatus]
 
   def add(a: A): Task[CreationStatus]
   

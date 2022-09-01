@@ -42,7 +42,7 @@ object Main extends ZIOAppDefault {
       SortNoteService.layer ++
       UpdateNoteService.layer ++
       CreateNoteService.layer ++
-      GetAllNotesService.layer ++
+      GetAllNotesServiceLive.layer ++
       GetNoteServiceLive.layer ++
       LoginServiceLive.layer ++
       SignupServiceLive.layer ++

@@ -14,7 +14,7 @@ trait GetNoteEndpoint extends HasRoute[RequestContextManager]
 final case class GetNoteEndpointLive(getNoteHandler: GetNoteHandler) extends GetNoteEndpoint {
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
-    case Method.GET -> !! / "api" / "notes" / int(noteId) => for {
+    case Method.GET -> !! / "api" / "notes" / long(noteId) => for {
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
         response       <- requestContext.getJwtOrFailure.fold(identity, jwtContent => getNoteHandler.handle(noteId, jwtContent.id))
       } yield response

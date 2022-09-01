@@ -29,7 +29,7 @@ final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetN
 
 object GetNoteHandlerLive {
   
-  type NoteID = Int
+  type NoteID = Long
   
   lazy val layer: URLayer[GetNoteService, GetNoteHandler] =
     ZLayer.fromFunction(GetNoteHandlerLive.apply _)

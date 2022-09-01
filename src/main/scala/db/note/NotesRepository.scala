@@ -19,36 +19,75 @@ import org.mongodb.scala.model.Filters._
 
 final case class NotesRepository() extends NoteCRUD {
 
-  val mongo: UIO[MongoDatabase] = MongoDatabaseProvider.get
+  private final lazy val mongo: UIO[MongoDatabase] = MongoDatabaseProvider.get
 
-  override def getById(id: Int): Task[Option[Note]] = ZIO.attempt(None)
+  override def getById(id: Long): Task[Option[Note]] = for {
+    db          <- mongo
+    queryResult <- ZIO.fromFuture { implicit ec =>
+      db.getCollection("notes")
+        .find(equal("id", s"Long($id)"))
+        .first()
+        .toFuture()
+    }
+    maybeNote   <- ZIO.succeed {
+      Option(queryResult).fold(None){ doc =>
+        Some(
+          Note(
+            id        = id,
+            title     = doc("title").asString.getValue,
+            body      = doc("body").asString.getValue,
+            createdAt = doc("createdAt").asString.getValue,
+            userId    = doc("userId").asInt64.getValue
+         )
+        )
+      }
+    }
+  } yield maybeNote
 
-  override def getAll: UIO[List[Note]] = ZIO.succeed(Nil)
+  override def getAll: Task[List[Note]] = for {
+    db          <- mongo
+    queryResult <- ZIO.fromFuture { implicit ec =>
+      db.getCollection("notes")
+        .find()
+        .toFuture()
+    }
+    notes       <- ZIO.succeed {
+      queryResult.map { doc =>
+        Note(
+          id        = doc("id").asInt64.getValue,
+          title     = doc("title").asString.getValue,
+          body      = doc("body").asString.getValue,
+          createdAt = doc("createdAt").asString.getValue,
+          userId    = doc("userId").asInt64.getValue
+        )
+      }.toList
+    }
+  } yield notes
 
-  override def update(id: Int, newNote: Note): Task[UpdateStatus] = ZIO.attempt(Left("TODO"))
+  override def update(id: Long, newNote: Note): Task[UpdateStatus] = ZIO.attempt(Left("TODO"))
 
-  override def delete(noteId: Int): Task[DeletionStatus] = ZIO.attempt(Left("TODO"))
+  override def delete(noteId: Long): Task[DeletionStatus] = ZIO.attempt(Left("TODO"))
 
   override def add(note: Note): Task[CreationStatus] = for {
     noteWithId     <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
     db             <- mongo
-    resultSequence <- ZIO.fromFuture { implicit ec =>
+    queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .insertOne(Document(noteWithId.toJson))
         .toFuture()
     }
-    creationStatus <- ZIO.succeed(if resultSequence.wasAcknowledged() then Right("Note has been added") else Left("Note has not been added"))
+    creationStatus <- ZIO.succeed(if queryResult.wasAcknowledged() then Right("Note has been added") else Left("Note has not been added"))
   } yield creationStatus
 
-  override def getNotesByUserId(userId: Long): UIO[List[Note]] = for {
-    db             <- mongo
-    resultSequence <- ZIO.fromFuture { implicit ec =>
+  override def getNotesByUserId(userId: Long): Task[List[Note]] = for {
+    db          <- mongo
+    queryResult <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(equal("userId", userId))
         .toFuture()
-    }.orDieWith(identity)
-    notes          <- ZIO.succeed {
-      resultSequence.map { doc =>
+    }
+    notes       <- ZIO.succeed {
+      queryResult.map { doc =>
         Note(
           id        = doc("id").asInt64.getValue,
           title     = doc("title").asString.getValue,
@@ -60,7 +99,33 @@ final case class NotesRepository() extends NoteCRUD {
     }
   } yield notes
 
-  override def getNoteByIdAndUserId(id: Long, userId: Long): UIO[Option[Note]] = ZIO.succeed(None)
+  override def getNoteByIdAndUserId(id: Long, userId: Long): Task[Option[Note]] = for {
+    db          <- mongo
+    queryResult <- ZIO.fromFuture { implicit ec =>
+      db.getCollection("notes")
+        .find(
+          and(
+            equal("id", id),
+            equal("userId", userId)
+          )
+        )
+        .first()
+        .toFuture()
+    }
+    notes <- ZIO.succeed {
+      Option(queryResult).fold(None) { doc =>
+        Some(
+          Note(
+          id        = doc("id").asInt64.getValue,
+          title     = doc("title").asString.getValue,
+          body      = doc("body").asString.getValue,
+          createdAt = doc("createdAt").asString.getValue,
+          userId    = userId
+         )
+        )
+      }
+    }
+  } yield notes
 
   override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = ZIO.attempt(Left("TODO"))
 

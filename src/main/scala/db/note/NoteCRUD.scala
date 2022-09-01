@@ -7,9 +7,9 @@ import zio.{Task, UIO}
 
 trait NoteCRUD extends CRUD[Note] {
 
-  def getNotesByUserId(userId: Long): UIO[List[Note]]
+  def getNotesByUserId(userId: Long): Task[List[Note]]
 
-  def getNoteByIdAndUserId(noteId: Long, userId: Long): UIO[Option[Note]]
+  def getNoteByIdAndUserId(noteId: Long, userId: Long): Task[Option[Note]]
 
   def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus]
 

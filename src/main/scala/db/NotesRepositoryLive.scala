@@ -42,10 +42,10 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield notes
 
   override def update(id: Long, newNote: Note): Task[UpdateStatus] = for {
-    db          <- mongo
-    queryResult <- ZIO.fromFuture { implicit ec =>
+    db           <- mongo
+    queryResult  <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
-        .updateOne(equal("id", id), Document(newNote.toJson))
+        .replaceOne(equal("id", id), Document(newNote.toJson))
         .toFuture()
     }
     updateStatus <- queryResult.fold(queryResult.wasAcknowledged, s"Note with id '$id' has been updated successfully", s"Note with id '$id' has not been updated")
@@ -94,8 +94,8 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield note
 
   override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = for {
-    db <- mongo
-    queryResult <- ZIO.fromFuture { implicit ec =>
+    db             <- mongo
+    queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .deleteOne(and(equal("id", noteId), equal("userId", userId)))
         .toFuture()

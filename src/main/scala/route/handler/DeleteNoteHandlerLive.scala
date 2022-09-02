@@ -17,15 +17,15 @@ trait DeleteNoteHandler {
 final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler {
 
   override def handle(noteId: NoteID, userId: Long): Task[Response] = for {
-    deleteStatus      <- deleteNoteService.deleteRecord(noteId, userId)
-    response          <- ZIO.succeed(deleteStatus.fold(Response.text, Response.text))
+    deleteStatus <- deleteNoteService.deleteRecord(noteId, userId)
+    response     <- ZIO.succeed(deleteStatus.fold(Response.text, Response.text))
   } yield response
 
 }
 
 object DeleteNoteHandlerLive {
   
-  type NoteID = Int
+  type NoteID = Long
  
   lazy val layer: URLayer[DeleteNoteService, DeleteNoteHandler] = ZLayer.fromFunction(DeleteNoteHandlerLive.apply _)
   

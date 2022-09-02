@@ -9,9 +9,8 @@ import zio.json.*
 
 final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends UpdateNoteService {
   
-  override def updateNote(id: Long, note: Note): Task[Either[String, String]] = for {
-    updateStatus <- notesRepository.update(id, note)
-  } yield updateStatus
+  override def updateNote(id: Long, note: Note): Task[Either[String, String]] = notesRepository.update(id, note)
+  
 
 }
 

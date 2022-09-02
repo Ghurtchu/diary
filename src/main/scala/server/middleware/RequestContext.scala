@@ -9,13 +9,12 @@ import zio.json.*
 import zhttp.http.*
 import zhttp.service.Server
 import zhttp.http.middleware.Auth
-import JwtValidatorMiddlewareLive.validateJwt
 
-case class RequestContext(
-                           jwtContent: Option[JwtContent]
-                         ) {
+case class RequestContext(jwtContent: Option[JwtContent]) {
+
   def getJwtOrFailure: Either[Task[Response], JwtContent] = 
     jwtContent.fold(Left(ZIO.succeed(Response.text("Auth failed").setStatus(Status.Unauthorized))))(Right(_))
+
 }
 
 object RequestContext {
@@ -41,25 +40,11 @@ object RequestContextManagerLive {
 }
 
 trait JwtValidatorMiddleware {
-  def validate: Middleware[
-    RequestContextManager,
-    Nothing,
-    Request,
-    Response,
-    Request,
-    Response
-  ]
+  def validate: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response]
 }
 
 final case class JwtValidatorMiddlewareLive(jwtDecoder: JwtDecoder) extends JwtValidatorMiddleware {
-  override lazy val validate: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = new Middleware[
-    RequestContextManager,
-    Nothing,
-    Request,
-    Response,
-    Request,
-    Response
-  ] {
+  override lazy val validate: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = new Middleware {
     override def apply[R1 <: RequestContextManager, E1 >: Nothing](http: Http[R1, E1, Request, Response]): Http[R1, E1, Request, Response] = {
       http.contramapZIO { request =>
         for {
@@ -67,7 +52,7 @@ final case class JwtValidatorMiddlewareLive(jwtDecoder: JwtDecoder) extends JwtV
           ctx        <- ctxManager.getCtx
           jwtContent = jwtDecoder.decode(request.bearerToken.fold("")(identity))
           _          <- jwtContent.fold(
-            err     => ctxManager.setCtx(ctx.copy(jwtContent = None)),
+            _       => ctxManager.setCtx(ctx.copy(jwtContent = None)),
             content => ctxManager.setCtx(ctx.copy(jwtContent = Some(content)))
           )
         } yield request
@@ -76,21 +61,8 @@ final case class JwtValidatorMiddlewareLive(jwtDecoder: JwtDecoder) extends JwtV
   }
 }
 
-object JwtValidatorMiddlewareLive {
-
-  lazy val validateJwt: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = JwtValidatorMiddlewareLive(JwtDecoderLive()).validate
-
-}
-
 object RequestContextMiddleware {
 
-  lazy val jwtAuthMiddleware: Middleware[
-    RequestContextManager,
-    Nothing,
-    Request,
-    Response,
-    Request,
-    Response
-  ] = validateJwt
+  final lazy val jwtAuthMiddleware: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = JwtValidatorMiddlewareLive(JwtDecoderLive()).validate
 
 }

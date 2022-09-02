@@ -13,7 +13,7 @@ trait UpdateNoteEndpoint extends HasRoute[Any]
 final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) extends UpdateNoteEndpoint{
 
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
-    case request@Method.PUT -> !! / "api" / "notes" / id => updateNoteHandler.handle(request, id.toInt)
+    case request@Method.PUT -> !! / "api" / "notes" / long(id) => updateNoteHandler.handle(request, id)
   } 
 
 }

@@ -1,13 +1,13 @@
-package db.user
+package db
 
-import db.CRUD
+import db.Repository
 import model.User
 import zio.Task
 
-trait UserCRUD extends CRUD[User] {
-  
+trait UserRepository extends Repository[User] {
+
   def userExists(email: String): Task[Boolean]
 
   def getUserByEmail(email: String): Task[Option[User]]
-  
+
 }

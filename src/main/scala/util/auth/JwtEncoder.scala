@@ -25,6 +25,7 @@ trait JwtEncoder[A] {
 }
 
 final case class JwtEncoderLive() extends JwtEncoder[User] {
+  
   override def encode(user: User): JWT = {
     val key   = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
     val algo  = JwtAlgorithm.HS256
@@ -36,6 +37,7 @@ final case class JwtEncoderLive() extends JwtEncoder[User] {
 
     JWT(JwtCirce.encode(claim, key, algo))
   }
+  
 }
 
 object JwtEncoderLive {

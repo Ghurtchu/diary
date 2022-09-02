@@ -12,7 +12,8 @@ trait JwtDecoder {
 }
 
 final case class JwtDecoderLive() extends JwtDecoder {
-  override def decode(token: String): Either[JwtDecodingError, JwtContent] = 
+  
+  override def decode(token: String): Either[JwtDecodingError, JwtContent] = {
     Jwt.decode(
       token,
       scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"),
@@ -20,7 +21,9 @@ final case class JwtDecoderLive() extends JwtDecoder {
     ).fold(err => Left(JwtDecodingError(err.getMessage)), claim => {
       val jwtContentEither = claim.content.fromJson[JwtContent]
       jwtContentEither.fold(err => Left(JwtDecodingError(err)), Right(_))
-    }) 
+    })
+  }
+    
 }
 
 object JwtDecoderLive {

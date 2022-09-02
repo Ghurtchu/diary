@@ -1,14 +1,13 @@
 package route.implementation
 
 import db.*
-import db.note.NoteCRUD
 import model.Note
 import route.interface.GetAllNotesService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-final case class GetAllNotesServiceLive private(notesRepository: NoteCRUD) extends GetAllNotesService {
+final case class GetAllNotesServiceLive private(notesRepository: NotesRepository) extends GetAllNotesService {
 
   override def getNotesByUserId(userId: Long): Task[List[Note]] = notesRepository getNotesByUserId userId
 
@@ -16,7 +15,7 @@ final case class GetAllNotesServiceLive private(notesRepository: NoteCRUD) exten
 
 object GetAllNotesServiceLive {
 
-  lazy val layer: URLayer[NoteCRUD, GetAllNotesService] =
+  lazy val layer: URLayer[NotesRepository, GetAllNotesService] =
     ZLayer.fromFunction(GetAllNotesServiceLive.apply _)
   
 }

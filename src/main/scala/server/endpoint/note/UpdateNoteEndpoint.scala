@@ -2,7 +2,7 @@ package server.endpoint.note
 
 import model.*
 import route.handler.*
-import route.implementation.UpdateNoteService
+import route.implementation.UpdateNoteServiceLive
 import route.interface.*
 import server.NotesServer
 import zhttp.http.*

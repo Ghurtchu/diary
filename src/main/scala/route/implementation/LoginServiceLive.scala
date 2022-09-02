@@ -4,7 +4,6 @@ import model.{JwtContent, LoginPayload}
 import route.interface.{JWT, LoginError, LoginService}
 import zio.{RIO, Task}
 import db.*
-import db.user.UserCRUD
 import route.implementation.LoginServiceLive.layer
 import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
@@ -19,9 +18,9 @@ import util.auth.JwtEncoder
 import model.*
 
 final case class LoginServiceLive(
-                      userRepository: UserCRUD,
-                      passwordHashService: PasswordHashService,
-                      jwtEncoder: JwtEncoder[User]
+                                   userRepository: UserRepository,
+                                   passwordHashService: PasswordHashService,
+                                   jwtEncoder: JwtEncoder[User]
                       ) extends LoginService {
   final override def login(loginPayload: LoginPayload): RIO[Any, Either[LoginError, JWT]] = for {
     maybeUser            <- userRepository.getUserByEmail(loginPayload.email)
@@ -38,7 +37,7 @@ final case class LoginServiceLive(
 
 object LoginServiceLive {
     
-  lazy val layer: URLayer[UserCRUD & PasswordHashService & JwtEncoder[User], LoginService] = 
+  lazy val layer: URLayer[UserRepository & PasswordHashService & JwtEncoder[User], LoginService] = 
     ZLayer.fromFunction(LoginServiceLive.apply _)
     
 }

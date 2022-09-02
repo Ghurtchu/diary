@@ -1,7 +1,7 @@
 package server.endpoint.note
 
 import route.handler.{CreateNoteHandler, SignupHandler}
-import route.implementation.CreateNoteService
+import route.implementation.CreateNoteServiceLive
 import server.NotesServer
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.*

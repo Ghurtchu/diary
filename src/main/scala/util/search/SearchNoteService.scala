@@ -1,7 +1,6 @@
 package util.search
 
-import db.note.{NoteCRUD, NotesRepository}
-import db.CRUD
+import db.{NotesRepository, NotesRepositoryLive}
 import model.{Note, User}
 import route.handler.{Exact, NonExact, SearchCriteria}
 import zio.{Task, ZIO, ZLayer}
@@ -9,7 +8,7 @@ import zio.{Task, ZIO, ZLayer}
 import java.time.Instant
 import java.util.Date
 
-final case class SearchNoteService(notesRepository: NoteCRUD) extends SearchService[Note] {
+final case class SearchNoteService(notesRepository: NotesRepository) extends SearchService[Note] {
 
   final override def searchByTitle(title: String, criteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] = for {
     notes    <- notesRepository getNotesByUserId userId
@@ -30,6 +29,6 @@ final case class SearchNoteService(notesRepository: NoteCRUD) extends SearchServ
 
 object SearchNoteService {
 
-  lazy val layer: ZLayer[NoteCRUD, Nothing, SearchService[Note]] = ZLayer.fromFunction(SearchNoteService.apply _)
+  lazy val layer: ZLayer[NotesRepository, Nothing, SearchService[Note]] = ZLayer.fromFunction(SearchNoteService.apply _)
 
 }

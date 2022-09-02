@@ -13,7 +13,7 @@ trait CreateNoteHandler {
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
 }
 
-final case class CreateNoteHandlerLive(createNoteService: RecordCreator[Note]) extends CreateNoteHandler {
+final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler {
 
   override def handle(request: Request, jwtContent: JwtContent): Task[Response] = for {
     noteEither     <- request.bodyAsString.map(_.fromJson[Note])
@@ -21,7 +21,7 @@ final case class CreateNoteHandlerLive(createNoteService: RecordCreator[Note]) e
       parsingError => ZIO.fail(RuntimeException(parsingError)),
       note         => {
         val noteWithUserId = note.copy(userId = Some(jwtContent.id))
-        createNoteService createRecord noteWithUserId
+        createNoteService createNote noteWithUserId
       }
     )
     response       <- ZIO.succeed(creationStatus.fold(Response.text, Response.text))
@@ -31,6 +31,6 @@ final case class CreateNoteHandlerLive(createNoteService: RecordCreator[Note]) e
 
 object CreateNoteHandlerLive {
 
-  lazy val layer: URLayer[RecordCreator[Note], CreateNoteHandler] = ZLayer.fromFunction(CreateNoteHandlerLive.apply _)
+  lazy val layer: URLayer[CreateNoteService, CreateNoteHandler] = ZLayer.fromFunction(CreateNoteHandlerLive.apply _)
 
 }

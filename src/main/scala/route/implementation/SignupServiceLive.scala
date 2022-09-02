@@ -1,16 +1,15 @@
 package route.implementation
 
 import db.*
-import db.user.UserCRUD
 import model.*
-import route.interface.{RecordCreator, SignupService}
+import route.interface.{CreateNoteService, SignupService}
 import util.hash.{PasswordHashService, SecureHashService}
 import zio.*
 import zio.json.*
 
 final case class SignupServiceLive private(
                          private val passwordHashService: PasswordHashService,
-                         private val userRepository: UserCRUD
+                         private val userRepository: UserRepository
                        ) extends SignupService {
 
   override def signUp(user: User): Task[Either[String, String]] = for {
@@ -31,7 +30,7 @@ final case class SignupServiceLive private(
 
 object SignupServiceLive {
 
-  def layer: URLayer[PasswordHashService & UserCRUD, SignupService] =
+  def layer: URLayer[PasswordHashService & UserRepository, SignupService] =
     ZLayer.fromFunction(SignupServiceLive.apply _)
 
 }

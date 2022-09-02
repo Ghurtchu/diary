@@ -1,28 +1,24 @@
 package db
 
-import zio.{Task, UIO}
+import db.Repository._
+import zio.*
 
-import CRUD._
-
-trait CRUD[A] {
+trait Repository[A] {
+  
+  def add(newRecord: A): Task[CreationStatus]
   
   def getById(id: Long): Task[Option[A]]
-
-  def getAll: Task[List[A]]
-
-  def update(id: Long, a: A): Task[UpdateStatus]
-
+  
+  def update(id: Long, newRecord: A): Task[UpdateStatus]
+  
   def delete(id: Long): Task[DeletionStatus]
-
-  def add(a: A): Task[CreationStatus]
   
 }
 
-object CRUD {
-
+object Repository {
+  
   type CreationStatus = Either[String, String]
   type UpdateStatus   = Either[String, String]
   type DeletionStatus = Either[String, String]
-
+  
 }
-

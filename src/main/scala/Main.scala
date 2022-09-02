@@ -3,8 +3,6 @@ import route.implementation.*
 import util.search.*
 import zio.*
 import db.*
-import db.note.NotesRepository
-import db.user.UserRepository
 import util.hash.*
 import server.NotesServer
 import server.endpoint.*
@@ -40,15 +38,15 @@ object Main extends ZIOAppDefault {
 
     private lazy val serviceLayers = SearchNoteService.layer ++
       SortNoteService.layer ++
-      UpdateNoteService.layer ++
-      CreateNoteService.layer ++
+      UpdateNoteServiceLive.layer ++
+      CreateNoteServiceLive.layer ++
       GetAllNotesServiceLive.layer ++
       GetNoteServiceLive.layer ++
       LoginServiceLive.layer ++
       SignupServiceLive.layer ++
       DeleteNoteServiceLive.layer
 
-    private lazy val dbLayers = NotesRepository.layer ++ UserRepository.layer
+    private lazy val dbLayers = NotesRepositoryLive.layer ++ UserRepositoryLive.layer
 
     private lazy val otherLayers = SecureHashService.layer ++ RequestContextManagerLive.layer ++ JwtEncoderLive.layer ++ JwtDecoderLive.layer
 

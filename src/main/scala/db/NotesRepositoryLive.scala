@@ -1,24 +1,22 @@
-package db.note
+package db
 
-import org.mongodb.scala.Document
-import db.CRUD.{CreationStatus, DeletionStatus, UpdateStatus}
-import db.InMemoryDB
+import db.Repository._
 import db.mongo.{MongoDatabaseBuilder, MongoDatabaseProvider}
-import db.note.NoteCRUD
+import db._
+import model.Note.*
 import model.{Note, User}
+import org.mongodb.scala.*
+import org.mongodb.scala.model.Filters.*
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
 import zio.*
 import zio.json.*
-import model.Note.*
 
 import java.time.Instant
 import java.util.Date
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
-import org.mongodb.scala._
-import org.mongodb.scala.model.Filters._
 
-
-final case class NotesRepository() extends NoteCRUD {
+final case class NotesRepositoryLive() extends NotesRepository {
 
   private final lazy val mongo: UIO[MongoDatabase] = MongoDatabaseProvider.get
 
@@ -30,7 +28,7 @@ final case class NotesRepository() extends NoteCRUD {
         .first()
         .toFuture()
     }
-    maybeNote <- ZIO.succeed(parseDocumentToNote(document))
+    maybeNote <- ZIO.attempt(parseDocumentToNote(document))
   } yield maybeNote
 
   override def getAll: Task[List[Note]] = for {
@@ -40,7 +38,7 @@ final case class NotesRepository() extends NoteCRUD {
         .find()
         .toFuture()
     }
-    notes     <- ZIO.succeed(parseDocumentsToNoteList(documents))
+    notes     <- ZIO.attempt(parseDocumentsToNoteList(documents))
   } yield notes
 
   override def update(id: Long, newNote: Note): Task[UpdateStatus] = for {
@@ -50,10 +48,7 @@ final case class NotesRepository() extends NoteCRUD {
         .updateOne(equal("id", id), Document(newNote.toJson))
         .toFuture()
     }
-    updateStatus <- ZIO.succeed {
-      if queryResult.wasAcknowledged then Right(s"Note with id '$id' has been updated successfully")
-      else Left(s"Note with id '$id' has not been updated'")
-    }
+    updateStatus <- queryResult.fold(queryResult.wasAcknowledged, s"Note with id '$id' has been updated successfully", s"Note with id '$id' has not been updated")
   } yield updateStatus
 
   override def delete(noteId: Long): Task[DeletionStatus] = for {
@@ -63,10 +58,7 @@ final case class NotesRepository() extends NoteCRUD {
         .deleteOne(equal("id", noteId))
         .toFuture()
     }
-    deletionStatus <- ZIO.succeed{
-      if queryResult.wasAcknowledged then Right(s"Note with id '$noteId' has been deleted")
-      else Left(s"Note with id '$noteId' has not been deleted")
-    }
+    deletionStatus <- queryResult.fold(queryResult.wasAcknowledged, s"Note with id '$noteId' has been deleted", s"Note with id '$noteId' has not been deleted")
   } yield deletionStatus
 
   override def add(note: Note): Task[CreationStatus] = for {
@@ -77,7 +69,7 @@ final case class NotesRepository() extends NoteCRUD {
         .insertOne(Document(noteWithId.toJson))
         .toFuture()
     }
-    creationStatus <- ZIO.succeed(if queryResult.wasAcknowledged() then Right("Note has been added") else Left("Note has not been added"))
+    creationStatus <- queryResult.fold(queryResult.wasAcknowledged, "Note has been added successfully", "Note has not been added")
   } yield creationStatus
 
   override def getNotesByUserId(userId: Long): Task[List[Note]] = for {
@@ -101,7 +93,15 @@ final case class NotesRepository() extends NoteCRUD {
     note     <- ZIO.attempt(parseDocumentToNote(document))
   } yield note
 
-  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = ZIO.attempt(Left("TODO"))
+  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = for {
+    db <- mongo
+    queryResult <- ZIO.fromFuture { implicit ec =>
+      db.getCollection("notes")
+        .deleteOne(and(equal("id", noteId), equal("userId", userId)))
+        .toFuture()
+    }
+    deletionStatus <- queryResult.fold(queryResult.wasAcknowledged, s"Note with id '$noteId' has been deleted", s"Note with id '$noteId' has not been deleted")
+  } yield deletionStatus
 
   private def parseDocumentToNote(document: Document): Option[Note] = {
     Option(document).fold(None) { doc =>
@@ -118,11 +118,11 @@ final case class NotesRepository() extends NoteCRUD {
   }
 
   private def parseDocumentsToNoteList(documents: Seq[Document]) = documents.map(parseDocumentToNote).toList.flatten
-
+  
 }
 
-object NotesRepository {
+object NotesRepositoryLive {
   
-  lazy val layer: ULayer[NoteCRUD] = ZLayer.fromFunction(NotesRepository.apply _)
+  lazy val layer: ULayer[NotesRepository] = ZLayer.fromFunction(NotesRepositoryLive.apply _)
 
 }

@@ -7,7 +7,7 @@ import zhttp.http.Response
 import zio.*
 import zhttp.http._
 import DeleteNoteHandlerLive.NoteID
-import db.note.NotesRepository
+import db.NotesRepositoryLive
 
 
 trait DeleteNoteHandler {

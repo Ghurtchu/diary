@@ -1,12 +1,13 @@
-package db.note
+package db
 
-import db.CRUD
-import db.CRUD.DeletionStatus
+import db.Repository.DeletionStatus
 import model.Note
-import zio.{Task, UIO}
+import zio.Task
 
-trait NoteCRUD extends CRUD[Note] {
+trait NotesRepository extends Repository[Note] {
 
+  def getAll: Task[List[Note]]
+  
   def getNotesByUserId(userId: Long): Task[List[Note]]
 
   def getNoteByIdAndUserId(noteId: Long, userId: Long): Task[Option[Note]]

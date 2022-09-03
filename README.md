@@ -1,5 +1,3 @@
-Currently, the app works on dummy data
-
 plans:
   - add MongoDB (Done)
   - configure services with the help of ZLayers (Done)

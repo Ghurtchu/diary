@@ -1,10 +1,12 @@
 package server
 
+import db.mongo.{DBConfig, DataSource, DataSourceBuilder, MongoDatabaseBuilder}
 import zhttp.http.*
 import zhttp.service.Server
 import zio.*
 import endpoint.*
 import io.netty.handler.codec.http.HttpHeaders
+import org.mongodb.scala.MongoDatabase
 import pdi.jwt.algorithms.JwtUnknownAlgorithm
 import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
 import server.endpoint.note.{CreateNoteEndpoint, DeleteNoteEndpoint, GetAllNotesEndpoint, GetNoteEndpoint, SearchNoteEndpoint, SortNoteEndpoint, UpdateNoteEndpoint}
@@ -39,12 +41,15 @@ final case class NotesServer(
       deleteNoteEndpoint.route
   }
 
-  def start: ZIO[RequestContextManager, Throwable, Unit] =
+  def start: ZIO[RequestContextManager & DataSource & DataSourceBuilder, Throwable, Unit] =
     for {
-      _    <- ZIO.succeed(println("Server started"))
-      port <- System.envOrElse("PORT", "8080").map(_.toInt)
-      _    <- ZIO.succeed(println(s"Accepting requests on port $port"))
-      _    <- Server.start(port, allRoutes)
+      _      <- ZIO.succeed(println("Server started"))
+      port   <- System.envOrElse("PORT", "8080").map(_.toInt)
+      dbPort <- System.envOrElse("MONGO_PORT", "mongodb://localhost:27018")
+      dbName <- System.envOrElse("MONGO_DB_NAME", "notesdb")
+      _      <- ZIO.service[DataSourceBuilder].flatMap(_.initialize(DBConfig(dbPort, dbName)))
+      _      <- ZIO.succeed(println(s"Accepting requests on port $port"))
+      _      <- Server.start(port, allRoutes)
     } yield ()
 
 }

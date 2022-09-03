@@ -1,8 +1,8 @@
 package db
 
-import db.Repository._
-import db.mongo.{MongoDatabaseBuilder, MongoDatabaseProvider}
-import db._
+import db.Repository.*
+import db.mongo.{DatabaseContext, DataSource, MongoDatabaseBuilder}
+import db.*
 import model.Note.*
 import model.{Note, User}
 import org.mongodb.scala.*
@@ -16,12 +16,10 @@ import java.util.Date
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-final case class NotesRepositoryLive() extends NotesRepository {
-
-  private final lazy val mongo: UIO[MongoDatabase] = MongoDatabaseProvider.get
-
+final case class NotesRepositoryLive(databaseContext: DataSource) extends NotesRepository {
+  
   override def getById(id: Long): Task[Option[Note]] = for {
-    db        <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     document  <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(equal("id", id))
@@ -32,7 +30,7 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield maybeNote
 
   override def getAll: Task[List[Note]] = for {
-    db        <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     documents <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find()
@@ -42,7 +40,7 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield notes
 
   override def update(id: Long, newNote: Note): Task[UpdateStatus] = for {
-    db           <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     queryResult  <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .replaceOne(equal("id", id), Document(newNote.toJson))
@@ -52,7 +50,8 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield updateStatus
 
   override def delete(noteId: Long): Task[DeletionStatus] = for {
-    db             <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
+
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .deleteOne(equal("id", noteId))
@@ -62,8 +61,8 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield deletionStatus
 
   override def add(note: Note): Task[CreationStatus] = for {
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     noteWithId     <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
-    db             <- mongo
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .insertOne(Document(noteWithId.toJson))
@@ -73,7 +72,7 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield creationStatus
 
   override def getNotesByUserId(userId: Long): Task[List[Note]] = for {
-    db        <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     documents <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(equal("userId", userId))
@@ -83,7 +82,7 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield notes
 
   override def getNoteByIdAndUserId(id: Long, userId: Long): Task[Option[Note]] = for {
-    db       <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     document <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(and(equal("id", id), equal("userId", userId)))
@@ -94,7 +93,7 @@ final case class NotesRepositoryLive() extends NotesRepository {
   } yield note
 
   override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = for {
-    db             <- mongo
+    db        <- databaseContext.getCtx.map(_.mongoDatabase.get)
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .deleteOne(and(equal("id", noteId), equal("userId", userId)))
@@ -123,6 +122,6 @@ final case class NotesRepositoryLive() extends NotesRepository {
 
 object NotesRepositoryLive {
   
-  lazy val layer: ULayer[NotesRepository] = ZLayer.fromFunction(NotesRepositoryLive.apply _)
+  lazy val layer: URLayer[DataSource, NotesRepository] = ZLayer.fromFunction(NotesRepositoryLive.apply _)
 
 }

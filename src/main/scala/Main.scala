@@ -3,6 +3,7 @@ import route.implementation.*
 import util.search.*
 import zio.*
 import db.*
+import db.mongo.{DataSourceLive, MongoDatabaseBuilder}
 import util.hash.*
 import server.NotesServer
 import server.endpoint.*
@@ -46,7 +47,9 @@ object Main extends ZIOAppDefault {
       SignupServiceLive.layer ++
       DeleteNoteServiceLive.layer
 
-    private lazy val dbLayers = NotesRepositoryLive.layer ++ UserRepositoryLive.layer
+    private lazy val repoLayers = NotesRepositoryLive.layer ++ UserRepositoryLive.layer ++ MongoDatabaseBuilder.layer
+
+    private lazy val dataSourceLayer = DataSourceLive.layer
 
     private lazy val otherLayers = SecureHashService.layer ++ RequestContextManagerLive.layer ++ JwtEncoderLive.layer ++ JwtDecoderLive.layer
 
@@ -57,7 +60,8 @@ object Main extends ZIOAppDefault {
           endpointLayers,
           handlerLayers,
           serviceLayers,
-          dbLayers,
+          repoLayers,
+          dataSourceLayer,
           otherLayers
         )
 

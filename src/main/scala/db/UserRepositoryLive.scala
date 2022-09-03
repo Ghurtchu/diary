@@ -22,7 +22,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
     }
     maybeUser   <- ZIO.attempt(parseDocumentToUser(maybeDoc))
   } yield maybeUser
-  
+
   override def update(id: Long, newUser: User): Task[UpdateStatus] = for {
     db        <- dataSource.get
     queryResult <- ZIO.fromFuture { implicit ec =>

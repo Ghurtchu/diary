@@ -3,11 +3,11 @@ package db.mongo
 import zio.*
 import org.mongodb.scala.*
 
-trait DataSourceBuilder {
+trait DatabaseInitializer {
   def initialize(DBConfig: DBConfig): RIO[DataSource, Unit]
 }
 
-final case class MongoDatabaseBuilder(dataSource: DataSource) extends DataSourceBuilder {
+final case class MongoDatabaseInitializer(dataSource: DataSource) extends DatabaseInitializer {
 
   override def initialize(dbConfig: DBConfig): UIO[Unit] = (for {
     _          <- Console.printLine(s"Attempting to establish the connection with MongoDB on port: ${dbConfig.port} with db ${dbConfig.name}")
@@ -18,8 +18,8 @@ final case class MongoDatabaseBuilder(dataSource: DataSource) extends DataSource
 
 }
 
-object MongoDatabaseBuilder {
+object MongoDatabaseInitializer {
 
-  def layer: URLayer[DataSource, DataSourceBuilder] = ZLayer.fromFunction(MongoDatabaseBuilder.apply _)
+  def layer: URLayer[DataSource, DatabaseInitializer] = ZLayer.fromFunction(MongoDatabaseInitializer.apply _)
 
 }

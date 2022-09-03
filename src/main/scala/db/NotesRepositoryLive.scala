@@ -1,7 +1,7 @@
 package db
 
 import db.Repository.*
-import db.mongo.{DatabaseContext, DataSource, MongoDatabaseBuilder}
+import db.mongo.{DatabaseContext, DataSource, MongoDatabaseInitializer}
 import db.*
 import model.Note.*
 import model.{Note, User}

@@ -3,7 +3,7 @@ import route.implementation.*
 import util.search.*
 import zio.*
 import db.*
-import db.mongo.{DataSourceLive, MongoDatabaseBuilder}
+import db.mongo.{DataSourceLive, MongoDatabaseInitializer}
 import util.hash.*
 import server.NotesServer
 import server.endpoint.*
@@ -47,7 +47,7 @@ object Main extends ZIOAppDefault {
       SignupServiceLive.layer ++
       DeleteNoteServiceLive.layer
 
-    private lazy val repoLayers = NotesRepositoryLive.layer ++ UserRepositoryLive.layer ++ MongoDatabaseBuilder.layer
+    private lazy val repoLayers = NotesRepositoryLive.layer ++ UserRepositoryLive.layer ++ MongoDatabaseInitializer.layer
 
     private lazy val dataSourceLayer = DataSourceLive.layer
 

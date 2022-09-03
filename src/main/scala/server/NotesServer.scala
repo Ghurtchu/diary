@@ -1,6 +1,6 @@
 package server
 
-import db.mongo.{DBConfig, DataSource, DataSourceBuilder, MongoDatabaseBuilder}
+import db.mongo.{DBConfig, DataSource, DatabaseInitializer, MongoDatabaseInitializer}
 import zhttp.http.*
 import zhttp.service.Server
 import zio.*
@@ -41,13 +41,13 @@ final case class NotesServer(
       deleteNoteEndpoint.route
   }
 
-  def start: ZIO[RequestContextManager & DataSource & DataSourceBuilder, Throwable, Unit] =
+  def start: ZIO[RequestContextManager & DataSource & DatabaseInitializer, Throwable, Unit] =
     for {
       _      <- ZIO.succeed(println("Server started"))
       port   <- System.envOrElse("PORT", "8080").map(_.toInt)
       dbPort <- System.envOrElse("MONGO_PORT", "mongodb://localhost:27018")
       dbName <- System.envOrElse("MONGO_DB_NAME", "notesdb")
-      _      <- ZIO.service[DataSourceBuilder].flatMap(_.initialize(DBConfig(dbPort, dbName)))
+      _      <- ZIO.service[DatabaseInitializer].flatMap(_.initialize(DBConfig(dbPort, dbName)))
       _      <- ZIO.succeed(println(s"Accepting requests on port $port"))
       _      <- Server.start(port, allRoutes)
     } yield ()

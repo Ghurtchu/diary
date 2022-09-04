@@ -29,5 +29,5 @@ final case class SortNoteHandlerLive(sortNoteService: SortService[Note]) extends
 }
 
 object SortNoteHandlerLive {
-  lazy val layer: URLayer[SortService[Note], SortNoteHandler] = ZLayer.fromFunction(SortNoteHandlerLive.apply _)
+  lazy val layer: URLayer[SortService[Note], SortNoteHandler] = ZLayer.fromFunction(SortNoteHandlerLive.apply)
 }

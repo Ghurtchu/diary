@@ -16,6 +16,6 @@ final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends
 
 object UpdateNoteServiceLive {
   
-  lazy val layer: URLayer[NotesRepository, UpdateNoteService] = ZLayer.fromFunction(UpdateNoteServiceLive.apply _)
+  lazy val layer: URLayer[NotesRepository, UpdateNoteService] = ZLayer.fromFunction(UpdateNoteServiceLive.apply)
 
 }

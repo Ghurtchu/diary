@@ -16,6 +16,6 @@ final case class GetAllNotesServiceLive private(notesRepository: NotesRepository
 object GetAllNotesServiceLive {
 
   lazy val layer: URLayer[NotesRepository, GetAllNotesService] =
-    ZLayer.fromFunction(GetAllNotesServiceLive.apply _)
+    ZLayer.fromFunction(GetAllNotesServiceLive.apply)
   
 }

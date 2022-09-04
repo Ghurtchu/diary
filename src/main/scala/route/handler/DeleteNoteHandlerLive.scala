@@ -27,6 +27,6 @@ object DeleteNoteHandlerLive {
   
   type NoteID = Long
  
-  lazy val layer: URLayer[DeleteNoteService, DeleteNoteHandler] = ZLayer.fromFunction(DeleteNoteHandlerLive.apply _)
+  lazy val layer: URLayer[DeleteNoteService, DeleteNoteHandler] = ZLayer.fromFunction(DeleteNoteHandlerLive.apply)
   
 }

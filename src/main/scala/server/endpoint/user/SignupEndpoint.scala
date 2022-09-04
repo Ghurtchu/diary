@@ -20,6 +20,6 @@ final case class SignupEndpointLive(signupHandler: SignupHandler) extends Signup
 object SignupEndpointLive {
   
   lazy val layer: URLayer[SignupHandler, SignupEndpoint] =
-    ZLayer.fromFunction(SignupEndpointLive.apply _)
+    ZLayer.fromFunction(SignupEndpointLive.apply)
   
 }

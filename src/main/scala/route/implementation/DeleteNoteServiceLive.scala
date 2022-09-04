@@ -17,6 +17,6 @@ final case class DeleteNoteServiceLive(notesRepository: NotesRepository) extends
 object DeleteNoteServiceLive {
   
   lazy val layer: URLayer[NotesRepository, DeleteNoteService] = 
-    ZLayer.fromFunction(DeleteNoteServiceLive.apply _)
+    ZLayer.fromFunction(DeleteNoteServiceLive.apply)
     
 }

@@ -20,6 +20,6 @@ final case class MongoDatabaseInitializer(dataSource: DataSource) extends Databa
 
 object MongoDatabaseInitializer {
 
-  def layer: URLayer[DataSource, DatabaseInitializer] = ZLayer.fromFunction(MongoDatabaseInitializer.apply _)
+  def layer: URLayer[DataSource, DatabaseInitializer] = ZLayer.fromFunction(MongoDatabaseInitializer.apply)
 
 }

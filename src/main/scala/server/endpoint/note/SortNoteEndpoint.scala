@@ -25,6 +25,6 @@ final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends 
 object SortNoteEndpointLive {
   
   lazy val layer: URLayer[SortNoteHandler, SortNoteEndpoint] =
-    ZLayer.fromFunction(SortNoteEndpointLive.apply _)
+    ZLayer.fromFunction(SortNoteEndpointLive.apply)
   
 }

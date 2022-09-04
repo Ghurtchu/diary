@@ -23,6 +23,6 @@ final case class DeleteNoteEndpointLive(deleteNoteHandler: DeleteNoteHandler) ex
 object DeleteNoteEndpointLive {
   
   lazy val layer: URLayer[DeleteNoteHandler, DeleteNoteEndpoint] =
-    ZLayer.fromFunction(DeleteNoteEndpointLive.apply _)
+    ZLayer.fromFunction(DeleteNoteEndpointLive.apply)
   
 }

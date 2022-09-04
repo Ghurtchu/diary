@@ -31,6 +31,6 @@ final case class SignupServiceLive private(
 object SignupServiceLive {
 
   def layer: URLayer[PasswordHashService & UserRepository, SignupService] =
-    ZLayer.fromFunction(SignupServiceLive.apply _)
+    ZLayer.fromFunction(SignupServiceLive.apply)
 
 }

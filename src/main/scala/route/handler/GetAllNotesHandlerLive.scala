@@ -27,6 +27,6 @@ final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) 
 object GetAllNotesHandlerLive {
   
   lazy val layer: URLayer[GetAllNotesService, GetAllNotesHandler] =
-    ZLayer.fromFunction(GetAllNotesHandlerLive.apply _)
+    ZLayer.fromFunction(GetAllNotesHandlerLive.apply)
   
 }

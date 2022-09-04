@@ -94,6 +94,6 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
 
 object UserRepositoryLive {
 
-  lazy val layer: URLayer[DataSource, UserRepository] = ZLayer.fromFunction(UserRepositoryLive.apply _)
+  lazy val layer: URLayer[DataSource, UserRepository] = ZLayer.fromFunction(UserRepositoryLive.apply)
 
 }

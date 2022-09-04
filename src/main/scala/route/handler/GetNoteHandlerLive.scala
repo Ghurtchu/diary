@@ -32,6 +32,6 @@ object GetNoteHandlerLive {
   type NoteID = Long
   
   lazy val layer: URLayer[GetNoteService, GetNoteHandler] =
-    ZLayer.fromFunction(GetNoteHandlerLive.apply _)
+    ZLayer.fromFunction(GetNoteHandlerLive.apply)
   
 }

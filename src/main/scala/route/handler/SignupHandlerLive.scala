@@ -34,6 +34,6 @@ final case class SignupHandlerLive(signupService: SignupService) extends SignupH
 object SignupHandlerLive {
   
   lazy val layer: URLayer[SignupService, SignupHandler] =
-    ZLayer.fromFunction(SignupHandlerLive.apply _)
+    ZLayer.fromFunction(SignupHandlerLive.apply)
   
 }

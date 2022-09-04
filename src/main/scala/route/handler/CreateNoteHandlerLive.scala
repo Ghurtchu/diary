@@ -31,6 +31,6 @@ final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) ext
 
 object CreateNoteHandlerLive {
 
-  lazy val layer: URLayer[CreateNoteService, CreateNoteHandler] = ZLayer.fromFunction(CreateNoteHandlerLive.apply _)
+  lazy val layer: URLayer[CreateNoteService, CreateNoteHandler] = ZLayer.fromFunction(CreateNoteHandlerLive.apply)
 
 }

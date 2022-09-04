@@ -42,7 +42,7 @@ final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) e
 }
 
 object SearchNoteHandlerLive {
-  lazy val layer: URLayer[SearchService[Note], SearchNoteHandler] = ZLayer.fromFunction(SearchNoteHandlerLive.apply _)
+  lazy val layer: URLayer[SearchService[Note], SearchNoteHandler] = ZLayer.fromFunction(SearchNoteHandlerLive.apply)
 }
 
 sealed trait SearchCriteria { self =>

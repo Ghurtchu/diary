@@ -21,6 +21,6 @@ final case class LoginEndpointLive(loginHandler: LoginHandler) extends LoginEndp
 object LoginEndpointLive {
   
   lazy val layer: URLayer[LoginHandler, LoginEndpoint] =
-    ZLayer.fromFunction(LoginEndpointLive.apply _)
+    ZLayer.fromFunction(LoginEndpointLive.apply)
   
 }

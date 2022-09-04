@@ -18,6 +18,6 @@ final case class GetNoteServiceLive(private final val notesRepository: NotesRepo
 object GetNoteServiceLive {
   
   lazy val layer: URLayer[NotesRepository, GetNoteService] = 
-    ZLayer.fromFunction(GetNoteServiceLive.apply _)
+    ZLayer.fromFunction(GetNoteServiceLive.apply)
   
 }

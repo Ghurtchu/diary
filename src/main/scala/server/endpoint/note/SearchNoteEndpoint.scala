@@ -22,6 +22,6 @@ final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) ex
 object SearchNoteEndpointLive {
   
   lazy val layer: URLayer[SearchNoteHandler, SearchNoteEndpoint] =
-    ZLayer.fromFunction(SearchNoteEndpointLive.apply _)
+    ZLayer.fromFunction(SearchNoteEndpointLive.apply)
   
 }

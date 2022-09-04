@@ -23,6 +23,6 @@ final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler)
 object GetAllNotesEndpointLive {
   
   def layer: URLayer[GetAllNotesHandler, GetAllNotesEndpoint] =
-    ZLayer.fromFunction(GetAllNotesEndpointLive.apply _)
+    ZLayer.fromFunction(GetAllNotesEndpointLive.apply)
 
 }

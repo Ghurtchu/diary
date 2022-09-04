@@ -28,6 +28,6 @@ final case class JwtDecoderLive() extends JwtDecoder {
 
 object JwtDecoderLive {
   
-  def layer: ULayer[JwtDecoder] = ZLayer.fromFunction(JwtDecoderLive.apply _)
+  def layer: ULayer[JwtDecoder] = ZLayer.succeed(JwtDecoderLive())
   
 }

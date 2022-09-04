@@ -21,6 +21,6 @@ final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) ex
 object UpdateNoteEndpointLive {
 
   lazy val layer: URLayer[UpdateNoteHandler, UpdateNoteEndpoint] =
-    ZLayer.fromFunction(UpdateNoteEndpointLive.apply _)
+    ZLayer.fromFunction(UpdateNoteEndpointLive.apply)
 
 }

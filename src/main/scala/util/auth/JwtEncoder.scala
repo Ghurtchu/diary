@@ -44,6 +44,6 @@ object JwtEncoderLive {
 
   val DAY_IN_SECONDS: Long = 60 * 60 * 24
   
-  lazy val layer: ULayer[JwtEncoder[User]] = ZLayer.fromFunction(JwtEncoderLive.apply _)
+  lazy val layer: ULayer[JwtEncoder[User]] = ZLayer.succeed(JwtEncoderLive())
   
 }

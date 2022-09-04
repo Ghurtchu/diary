@@ -122,6 +122,6 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
 
 object NotesRepositoryLive {
   
-  lazy val layer: URLayer[DataSource, NotesRepository] = ZLayer.fromFunction(NotesRepositoryLive.apply _)
+  lazy val layer: URLayer[DataSource, NotesRepository] = ZLayer.fromFunction(NotesRepositoryLive.apply)
 
 }

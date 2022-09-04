@@ -38,6 +38,6 @@ final case class LoginServiceLive(
 object LoginServiceLive {
     
   lazy val layer: URLayer[UserRepository & PasswordHashService & JwtEncoder[User], LoginService] = 
-    ZLayer.fromFunction(LoginServiceLive.apply _)
+    ZLayer.fromFunction(LoginServiceLive.apply)
     
 }

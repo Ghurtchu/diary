@@ -17,6 +17,6 @@ final case class CreateNoteServiceLive(private final val notesRepository: NotesR
 object CreateNoteServiceLive {
     
   def layer: URLayer[NotesRepository, CreateNoteService] =
-    ZLayer.fromFunction(CreateNoteServiceLive.apply _)
+    ZLayer.fromFunction(CreateNoteServiceLive.apply)
 
 }

@@ -57,7 +57,7 @@ final case class NotesServer(
 object NotesServer {
 
   lazy val layer: URLayer[SignupEndpoint & LoginEndpoint & GetAllNotesEndpoint & GetNoteEndpoint & CreateNoteEndpoint & UpdateNoteEndpoint & DeleteNoteEndpoint & SearchNoteEndpoint & SortNoteEndpoint, NotesServer] =
-    ZLayer.fromFunction(NotesServer.apply _)
+    ZLayer.fromFunction(NotesServer.apply)
 
 }
 

@@ -25,6 +25,6 @@ final case class GetNoteEndpointLive(getNoteHandler: GetNoteHandler) extends Get
 object GetNoteEndpointLive {
 
   lazy val layer: URLayer[GetNoteHandler, GetNoteEndpoint] =
-    ZLayer.fromFunction(GetNoteEndpointLive.apply _)
+    ZLayer.fromFunction(GetNoteEndpointLive.apply)
 
 }

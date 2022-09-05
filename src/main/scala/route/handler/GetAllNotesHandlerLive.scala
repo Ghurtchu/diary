@@ -17,11 +17,10 @@ trait GetAllNotesHandler {
 
 final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler {
   
-  override def handle(jwtContent: JwtContent): Task[Response] = for {
-    notes         <- getAllNotesService.getNotesByUserId(jwtContent.id)
-    response      <- ZIO.succeed(Response.text(notes.toJsonPretty))
-  } yield response
-
+  override def handle(jwtContent: JwtContent): Task[Response] =
+    getAllNotesService.getNotesByUserId(jwtContent.id)
+      .map(_.toJsonResponse)
+    
 }
 
 object GetAllNotesHandlerLive {

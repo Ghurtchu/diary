@@ -6,27 +6,21 @@ import route.implementation.DeleteNoteServiceLive
 import zhttp.http.Response
 import zio.*
 import zhttp.http._
-import DeleteNoteHandlerLive.NoteID
 import db.NotesRepositoryLive
 
 
-trait DeleteNoteHandler {
-  def handle(noteId: NoteID, userId: Long): Task[Response]
-}
+trait DeleteNoteHandler:
+  def handle(noteId: Long, userId: Long): Task[Response]
 
-final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler {
 
-  override def handle(noteId: NoteID, userId: Long): Task[Response] = for {
-    deleteStatus <- deleteNoteService.deleteRecord(noteId, userId)
-    response     <- ZIO.succeed(deleteStatus.fold(Response.text, Response.text))
-  } yield response
+final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler:
 
-}
+  override def handle(noteId: Long, userId: Long): Task[Response] = 
+    deleteNoteService.deleteRecord(noteId, userId)
+      .map(_.fold(Response.text, Response.text))
+    
 
-object DeleteNoteHandlerLive {
+
+object DeleteNoteHandlerLive:
   
-  type NoteID = Long
- 
   lazy val layer: URLayer[DeleteNoteService, DeleteNoteHandler] = ZLayer.fromFunction(DeleteNoteHandlerLive.apply)
-  
-}

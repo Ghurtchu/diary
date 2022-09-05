@@ -8,30 +8,18 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 import zhttp.http.Status
-import GetNoteHandlerLive.NoteID
+
+trait GetNoteHandler:
+  def handle(noteId: Long, userId: Long): Task[Response]
 
 
-trait GetNoteHandler {
-  def handle(noteId: NoteID, userId: Long): Task[Response]
-}
+final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetNoteHandler:
 
-final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetNoteHandler {
+  override def handle(noteId: Long, userId: Long): Task[Response] =
+    getNoteService.getNote(noteId, userId)
+      .map(_.toResponse)
 
-  override def handle(noteId: NoteID, userId: Long): Task[Response] = for {
-    maybeNote      <- getNoteService.getNote(noteId, userId)
-    response       <- maybeNote.fold(
-      notFound => ZIO.succeed(Response.text(notFound).setStatus(Status.NotFound)),
-      note     => ZIO.succeed(Response.text(note.toJson).setStatus(Status.Ok))
-    )
-  } yield response
 
-}
+object GetNoteHandlerLive:
 
-object GetNoteHandlerLive {
-  
-  type NoteID = Long
-  
-  lazy val layer: URLayer[GetNoteService, GetNoteHandler] =
-    ZLayer.fromFunction(GetNoteHandlerLive.apply)
-  
-}
+  lazy val layer: URLayer[GetNoteService, GetNoteHandler] = ZLayer.fromFunction(GetNoteHandlerLive.apply)

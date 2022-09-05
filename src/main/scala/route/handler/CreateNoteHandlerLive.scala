@@ -2,9 +2,9 @@ package route.handler
 
 import model.{JwtContent, Note}
 import route.interface.*
-import zhttp.http.Response
+import zhttp.http.HttpError.BadRequest
+import zhttp.http.{Request, Response, Status}
 import zio.*
-import zhttp.http.Request
 import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
@@ -16,17 +16,19 @@ trait CreateNoteHandler {
 final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler {
 
   override def handle(request: Request, jwtContent: JwtContent): Task[Response] = for {
-    noteEither     <- request.bodyAsString.map(_.fromJson[Note])
-    creationStatus <- noteEither.fold(
-      parsingError => ZIO.fail(RuntimeException(parsingError)),
-      note         => {
-        val noteWithUserId = note.copy(userId = Some(jwtContent.id))
-        createNoteService createNote noteWithUserId
-      }
+    noteEither <- request.bodyAsString.map(_.fromJson[Note])
+    response   <- noteEither.fold(
+      _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)),
+      parseNoteCreationStatusToResponse(jwtContent.id, _)
     )
-    response       <- ZIO.succeed(creationStatus.fold(Response.text, Response.text))
   } yield response
 
+  private def parseNoteCreationStatusToResponse(userId: Long, note: Note) = {
+    val noteWithUserId = note.copy(userId = Some(userId))
+
+    createNoteService.createNote(noteWithUserId)
+      .map(_.fold(Response.text, Response.text))
+  }
 }
 
 object CreateNoteHandlerLive {

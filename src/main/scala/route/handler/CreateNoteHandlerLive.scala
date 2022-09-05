@@ -9,30 +9,28 @@ import zio.json.*
 
 import java.net.http.HttpResponse.ResponseInfo
 
-trait CreateNoteHandler {
+trait CreateNoteHandler:
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
-}
 
-final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler {
+final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler:
 
-  override def handle(request: Request, jwtContent: JwtContent): Task[Response] = for {
-    noteEither <- request.bodyAsString.map(_.fromJson[Note])
-    response   <- noteEither.fold(
-      _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)),
-      parseNoteCreationStatusToResponse(jwtContent.id, _)
-    )
-  } yield response
+  override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
+    for 
+      noteEither <- request.bodyAsString.map(_.fromJson[Note])
+      response   <- noteEither.fold(
+        _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)),
+        parseNoteCreationStatusToResponse(jwtContent.id, _))
+    yield response
 
-  private def parseNoteCreationStatusToResponse(userId: Long, note: Note) = {
+  private def parseNoteCreationStatusToResponse(userId: Long, note: Note) =
     val noteWithUserId = note.copy(userId = Some(userId))
 
     createNoteService.createNote(noteWithUserId)
       .map(_.fold(Response.text, Response.text))
-  }
-}
+  
 
-object CreateNoteHandlerLive {
+object CreateNoteHandlerLive:
 
-  lazy val layer: URLayer[CreateNoteService, CreateNoteHandler] = ZLayer.fromFunction(CreateNoteHandlerLive.apply)
+  lazy val layer: URLayer[CreateNoteService, CreateNoteHandler] = 
+    ZLayer.fromFunction(CreateNoteHandlerLive.apply)
 
-}

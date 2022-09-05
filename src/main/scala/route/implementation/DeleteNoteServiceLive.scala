@@ -7,16 +7,14 @@ import route.interface.DeleteNoteService
 import zhttp.http.Response
 import zio.*
 
-final case class DeleteNoteServiceLive(notesRepository: NotesRepository) extends DeleteNoteService {
-  
+final case class DeleteNoteServiceLive(notesRepository: NotesRepository) extends DeleteNoteService:
+
   override def deleteRecord(noteId: Long, userId: Long): Task[Either[String, String]] =
     notesRepository.deleteNoteByIdAndUserId(noteId, userId)
+      .map(_.fold(err => Left(err.msg), Right(_)))
 
-}
+object DeleteNoteServiceLive:
 
-object DeleteNoteServiceLive {
-  
-  lazy val layer: URLayer[NotesRepository, DeleteNoteService] = 
+  lazy val layer: URLayer[NotesRepository, DeleteNoteService] =
     ZLayer.fromFunction(DeleteNoteServiceLive.apply)
-    
-}
+

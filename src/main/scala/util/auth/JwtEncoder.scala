@@ -20,13 +20,12 @@ import model.JwtContent.*
 import util.auth.JwtEncoderLive.DAY_IN_SECONDS
 
 
-trait JwtEncoder[A] {
+trait JwtEncoder[A]:
   def encode(a: A): JWT
-}
 
-final case class JwtEncoderLive() extends JwtEncoder[User] {
+final case class JwtEncoderLive() extends JwtEncoder[User]:
   
-  override def encode(user: User): JWT = {
+  override def encode(user: User): JWT =
     val key   = scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key")
     val algo  = JwtAlgorithm.HS256
     val claim = JwtClaim(
@@ -36,14 +35,11 @@ final case class JwtEncoderLive() extends JwtEncoder[User] {
     )
 
     JWT(JwtCirce.encode(claim, key, algo))
-  }
   
-}
 
-object JwtEncoderLive {
+
+object JwtEncoderLive:
 
   val DAY_IN_SECONDS: Long = 60 * 60 * 24
   
   lazy val layer: ULayer[JwtEncoder[User]] = ZLayer.succeed(JwtEncoderLive())
-  
-}

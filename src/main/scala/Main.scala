@@ -13,7 +13,7 @@ import server.middleware.RequestContextManagerLive
 import util.auth.{JwtDecoderLive, JwtEncoderLive}
 import util.sort.SortNoteService
 
-object Main extends ZIOAppDefault {
+object Main extends ZIOAppDefault:
 
     private lazy val endpointLayers = SignupEndpointLive.layer ++
       CreateNoteEndpointLive.layer ++
@@ -65,4 +65,3 @@ object Main extends ZIOAppDefault {
           otherLayers
         )
 
-}

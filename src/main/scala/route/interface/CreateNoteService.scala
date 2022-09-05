@@ -4,6 +4,6 @@ import zhttp.http.Response
 import zio.Task
 import model.Note
 
-trait CreateNoteService {
+trait CreateNoteService:
   def createNote(note: Note): Task[Either[String, String]]
-}
+

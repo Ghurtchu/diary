@@ -2,9 +2,8 @@ package util.sort
 
 import zio.Task
 
-trait SortService[A] {
+trait SortService[A]:
   def sort(sortOrder: SortOrder, userId: Long): Task[List[A]]
-}
 
 sealed trait SortOrder { self =>
   def fold[A](ifAscending: => A)(ifDescending: => A): A = self match
@@ -12,8 +11,7 @@ sealed trait SortOrder { self =>
     case SortOrder.Descending => ifDescending
 }
 
-object SortOrder {
+object SortOrder:
   case object Ascending  extends SortOrder
   case object Descending extends SortOrder
-}
 

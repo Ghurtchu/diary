@@ -27,9 +27,9 @@ final case class NotesServer(
                            deleteNoteEndpoint: DeleteNoteEndpoint,
                            searchNoteEndpoint: SearchNoteEndpoint,
                            sortNoteEndpoint: SortNoteEndpoint
-                           ) {
+                           ):
 
-  val allRoutes: Http[RequestContextManager, Throwable, Request, Response] = {
+  val allRoutes: Http[RequestContextManager, Throwable, Request, Response] = 
     signupEndpoint.route ++
       loginEndpoint.route ++
       sortNoteEndpoint.route ++
@@ -39,10 +39,10 @@ final case class NotesServer(
       createNoteEndpoint.route ++
       updateNoteEndpoint.route ++
       deleteNoteEndpoint.route
-  }
+  
 
   def start: ZIO[RequestContextManager & DataSource & DatabaseInitializer, Throwable, Unit] =
-    for {
+    for 
       _      <- ZIO.succeed(println("Server started"))
       port   <- System.envOrElse("PORT", "8080").map(_.toInt)
       dbPort <- System.envOrElse("MONGO_PORT", "mongodb://localhost:27018")
@@ -50,14 +50,11 @@ final case class NotesServer(
       _      <- ZIO.service[DatabaseInitializer].flatMap(_.initialize(DBConfig(dbPort, dbName)))
       _      <- ZIO.succeed(println(s"Accepting requests on port $port"))
       _      <- Server.start(port, allRoutes)
-    } yield ()
+    yield ()
 
-}
-
-object NotesServer {
+object NotesServer:
 
   lazy val layer: URLayer[SignupEndpoint & LoginEndpoint & GetAllNotesEndpoint & GetNoteEndpoint & CreateNoteEndpoint & UpdateNoteEndpoint & DeleteNoteEndpoint & SearchNoteEndpoint & SortNoteEndpoint, NotesServer] =
     ZLayer.fromFunction(NotesServer.apply)
 
-}
 

@@ -7,16 +7,14 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-final case class CreateNoteServiceLive(private final val notesRepository: NotesRepository) extends CreateNoteService {
+final case class CreateNoteServiceLive(private final val notesRepository: NotesRepository) extends CreateNoteService:
 
   override def createNote(note: Note): Task[Either[String, String]] = 
     notesRepository.add(note)
 
-}
 
-object CreateNoteServiceLive {
+object CreateNoteServiceLive:
     
-  def layer: URLayer[NotesRepository, CreateNoteService] =
+  val layer: URLayer[NotesRepository, CreateNoteService] =
     ZLayer.fromFunction(CreateNoteServiceLive.apply)
 
-}

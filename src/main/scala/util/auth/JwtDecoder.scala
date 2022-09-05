@@ -7,27 +7,20 @@ import zio.json.*
 
 final case class JwtDecodingError(msg: String)
 
-trait JwtDecoder {
+trait JwtDecoder:
   def decode(token: String): Either[JwtDecodingError, JwtContent]
-}
 
-final case class JwtDecoderLive() extends JwtDecoder {
+
+final case class JwtDecoderLive() extends JwtDecoder:
   
-  override def decode(token: String): Either[JwtDecodingError, JwtContent] = {
-    Jwt.decode(
-      token,
-      scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"),
-      Seq(JwtAlgorithm.HS256)
-    ).fold(err => Left(JwtDecodingError(err.getMessage)), claim => {
+  override def decode(token: String): Either[JwtDecodingError, JwtContent] =
+    Jwt.decode(token, scala.util.Properties.envOrElse("JWT_PRIVATE_KEY", "default private key"), Seq(JwtAlgorithm.HS256))
+      .fold(err => Left(JwtDecodingError(err.getMessage)), claim => {
       val jwtContentEither = claim.content.fromJson[JwtContent]
       jwtContentEither.fold(err => Left(JwtDecodingError(err)), Right(_))
-    })
-  }
-    
-}
+      })
 
-object JwtDecoderLive {
+object JwtDecoderLive:
   
   def layer: ULayer[JwtDecoder] = ZLayer.succeed(JwtDecoderLive())
-  
-}
+

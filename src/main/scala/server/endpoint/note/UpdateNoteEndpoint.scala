@@ -10,17 +10,14 @@ import zio.*
 
 trait UpdateNoteEndpoint extends HasRoute[Any]
 
-final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) extends UpdateNoteEndpoint{
+final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) extends UpdateNoteEndpoint:
 
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.PUT -> !! / "api" / "notes" / long(id) => updateNoteHandler.handle(request, id)
   } 
 
-}
-
-object UpdateNoteEndpointLive {
+object UpdateNoteEndpointLive:
 
   lazy val layer: URLayer[UpdateNoteHandler, UpdateNoteEndpoint] =
     ZLayer.fromFunction(UpdateNoteEndpointLive.apply)
 
-}

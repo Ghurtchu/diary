@@ -11,19 +11,20 @@ import zio.json.*
 import java.time.Instant
 import java.util.Date
 
-trait SearchNoteHandler {
+trait SearchNoteHandler:
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
-}
 
-final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) extends SearchNoteHandler {
 
-  final override def handle(request: Request, jwtContent: JwtContent): Task[Response] = for {
-    queryParams    <- ZIO.succeed(request.url.queryParams)
-    title          <- getTitleFromQueryParams(queryParams)
-    searchCriteria <- getSearchCriteriaFromQueryParams(queryParams)
-    searchResult   <- searchNoteService.searchByTitle(title, searchCriteria, jwtContent.id)
-    response       <- ZIO.succeed(searchResult.fold(Response.text, note => Response.text(note.toJsonPretty)))
-  } yield response
+final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) extends SearchNoteHandler:
+
+  final override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
+    for
+      queryParams    <- ZIO.succeed(request.url.queryParams)
+      title          <- getTitleFromQueryParams(queryParams)
+      searchCriteria <- getSearchCriteriaFromQueryParams(queryParams)
+      searchResult   <- searchNoteService.searchByTitle(title, searchCriteria, jwtContent.id)
+      response       <- ZIO.succeed(searchResult.fold(Response.text, note => Response.text(note.toJsonPretty)))
+    yield response
 
   private def getSearchCriteriaFromQueryParams(queryParams: Map[String, List[String]]) = 
     ZIO.succeed {
@@ -39,11 +40,9 @@ final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) e
         .fold("")(params => if params.isDefinedAt(0) then params.head else "")
     }
 
-}
-
-object SearchNoteHandlerLive {
+object SearchNoteHandlerLive:
   lazy val layer: URLayer[SearchService[Note], SearchNoteHandler] = ZLayer.fromFunction(SearchNoteHandlerLive.apply)
-}
+
 
 sealed trait SearchCriteria { self =>
   def isExact: Boolean
@@ -52,16 +51,13 @@ sealed trait SearchCriteria { self =>
       case NonExact => ifNonExact
 }
 
-object SearchCriteria {
+object SearchCriteria:
+
   def exact: SearchCriteria = Exact
-
   def nonExact: SearchCriteria = NonExact
-}
 
-case object Exact extends SearchCriteria {
+case object Exact extends SearchCriteria:
   final override def isExact: Boolean = true
-}
 
-case object NonExact extends SearchCriteria {
+case object NonExact extends SearchCriteria:
   final override def isExact: Boolean = false
-}

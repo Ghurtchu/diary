@@ -7,15 +7,13 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends UpdateNoteService {
+final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends UpdateNoteService:
   
-  override def updateNote(id: Long, note: Note): Task[Either[String, String]] = notesRepository.update(id, note)
-  
+  override def updateNote(id: Long, note: Note): Task[Either[String, String]] = 
+    notesRepository.update(id, note)
+      .map(_.fold(err => Left(err.msg), Right(_)))
 
-}
-
-object UpdateNoteServiceLive {
+object UpdateNoteServiceLive:
   
   lazy val layer: URLayer[NotesRepository, UpdateNoteService] = ZLayer.fromFunction(UpdateNoteServiceLive.apply)
 
-}

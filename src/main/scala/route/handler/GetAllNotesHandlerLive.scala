@@ -11,21 +11,19 @@ import zio.*
 import zio.json.*
 import zhttp.http.*
 
-trait GetAllNotesHandler {
+trait GetAllNotesHandler:
   def handle(jwtContent: JwtContent): Task[Response]
-}
 
-final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler {
+
+final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler:
   
   override def handle(jwtContent: JwtContent): Task[Response] =
     getAllNotesService.getNotesByUserId(jwtContent.id)
       .map(_.toJsonResponse)
-    
-}
 
-object GetAllNotesHandlerLive {
+object GetAllNotesHandlerLive:
   
   lazy val layer: URLayer[GetAllNotesService, GetAllNotesHandler] =
     ZLayer.fromFunction(GetAllNotesHandlerLive.apply)
   
-}
+

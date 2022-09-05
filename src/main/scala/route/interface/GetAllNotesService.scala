@@ -4,6 +4,6 @@ import model.Note
 import zhttp.http.Response
 import zio.{Task, UIO}
 
-trait GetAllNotesService {
+trait GetAllNotesService:
   def getNotesByUserId(userId: Long): Task[List[Note]]
-}
+

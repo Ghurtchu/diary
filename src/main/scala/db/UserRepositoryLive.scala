@@ -11,9 +11,11 @@ import zio.*
 import zio.json.*
 
 final case class UserRepositoryLive(dataSource: DataSource) extends UserRepository {
+  
+  private final val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
 
   override def getById(id: Long): Task[Option[User]] = for {
-    db        <- dataSource.get
+    db        <- mongo
     maybeDoc <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .find(equal("id", id))
@@ -24,7 +26,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
   } yield maybeUser
 
   override def update(id: Long, newUser: User): Task[UpdateStatus] = for {
-    db        <- dataSource.get
+    db        <- mongo
     queryResult <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .updateOne(equal("id", id), Document(newUser.toJson))
@@ -34,7 +36,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
   } yield updateStatus
 
   override def delete(id: Long): Task[DeletionStatus] = for {
-    db        <- dataSource.get
+    db        <- mongo
     queryResult <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .deleteOne(equal("id", id))
@@ -44,7 +46,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
   } yield deletionStatus
 
   override def add(user: User): Task[CreationStatus] = for {
-    db        <- dataSource.get
+    db        <- mongo
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .insertOne(Document(user.toJson))
@@ -57,7 +59,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
   } yield creationStatus
 
   override def userExists(email: String): Task[Boolean] = for {
-    db        <- dataSource.get
+    db        <- mongo
     resultSequence <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .find(equal("email", email))
@@ -67,7 +69,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
   } yield userExists
 
   override def getUserByEmail(email: String): Task[Option[User]] = for {
-    db        <- dataSource.get
+    db        <- mongo
     document <- ZIO.fromFuture { implicit ec =>
       db.getCollection("user")
         .find(equal("email", email))
@@ -81,9 +83,9 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
     Option(doc).fold(None) { doc =>
       Some(
         User(
-          id = doc("id").asInt64.getValue,
-          name = doc("name").asString.getValue,
-          email = doc("email").asString.getValue,
+          id       = doc("id").asInt64.getValue,
+          name     = doc("name").asString.getValue,
+          email    = doc("email").asString.getValue,
           password = doc("password").asString.getValue
         )
       )

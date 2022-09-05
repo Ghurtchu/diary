@@ -17,9 +17,11 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 final case class NotesRepositoryLive(dataSource: DataSource) extends NotesRepository {
-  
+
+  private final val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
+
   override def getById(id: Long): Task[Option[Note]] = for {
-    db        <- dataSource.get
+    db        <- mongo
     document  <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(equal("id", id))
@@ -30,7 +32,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield maybeNote
 
   override def getAll: Task[List[Note]] = for {
-    db        <- dataSource.get
+    db        <- mongo
     documents <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find()
@@ -40,7 +42,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield notes
 
   override def update(id: Long, newNote: Note): Task[UpdateStatus] = for {
-    db        <- dataSource.get
+    db           <- mongo
     queryResult  <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .replaceOne(equal("id", id), Document(newNote.toJson))
@@ -50,8 +52,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield updateStatus
 
   override def delete(noteId: Long): Task[DeletionStatus] = for {
-    db        <- dataSource.get
-
+    db             <- mongo
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .deleteOne(equal("id", noteId))
@@ -61,7 +62,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield deletionStatus
 
   override def add(note: Note): Task[CreationStatus] = for {
-    db        <- dataSource.get
+    db             <- mongo
     noteWithId     <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
@@ -72,7 +73,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield creationStatus
 
   override def getNotesByUserId(userId: Long): Task[List[Note]] = for {
-    db        <- dataSource.get
+    db        <- mongo
     documents <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(equal("userId", userId))
@@ -82,7 +83,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield notes
 
   override def getNoteByIdAndUserId(id: Long, userId: Long): Task[Option[Note]] = for {
-    db        <- dataSource.get
+    db       <- mongo
     document <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .find(and(equal("id", id), equal("userId", userId)))
@@ -93,7 +94,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
   } yield note
 
   override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DeletionStatus] = for {
-    db        <- dataSource.get
+    db             <- mongo
     queryResult    <- ZIO.fromFuture { implicit ec =>
       db.getCollection("notes")
         .deleteOne(and(equal("id", noteId), equal("userId", userId)))
@@ -116,7 +117,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
     }
   }
 
-  private def parseDocumentsToNoteList(documents: Seq[Document]) = documents.map(parseDocumentToNote).toList.flatten
+  private def parseDocumentsToNoteList(documents: Seq[Document]): List[Note] = documents.map(parseDocumentToNote).toList.flatten
   
 }
 

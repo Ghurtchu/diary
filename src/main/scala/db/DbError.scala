@@ -1,9 +1,7 @@
 package db
 
-sealed trait DbError:
-  def msg: String
+enum DbError(val msg: String):
 
-object DbError:
-  final case class InvalidId(msg: String)     extends DbError
-  final case class NotFound(msg: String)      extends DbError
-  final case class ReasonUnknown(msg: String) extends DbError
+  case InvalidId(override val msg: String)     extends DbError(msg)
+  case NotFound(override val msg: String)      extends DbError(msg)
+  case ReasonUnknown(override val msg: String) extends DbError(msg)

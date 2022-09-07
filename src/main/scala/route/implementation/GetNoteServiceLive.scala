@@ -12,7 +12,7 @@ final case class GetNoteServiceLive(private final val notesRepository: NotesRepo
   override def getNote(noteId: Long, userId: Long): Task[Either[String, Note]] =
     for 
       maybeNote <- notesRepository.getNoteByIdAndUserId(noteId, userId)
-      response  <- ZIO.succeed(maybeNote.fold(Left("Could not find the note with id ${noteId.withQuotes}"))(Right(_)))
+      response  <- ZIO.succeed(maybeNote.fold(Left(s"Could not find the note with id ${noteId.withQuotes}"))(Right(_)))
     yield response
 
 object GetNoteServiceLive:

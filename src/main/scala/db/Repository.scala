@@ -6,16 +6,15 @@ import zio.*
 
 trait Repository[A]:
   
-  def add(newRecord: A): Task[CreationStatus]
+  def add(newRecord: A): Task[DbOperation]
   
   def getById(id: Long): Task[Option[A]]
   
-  def update(id: Long, newRecord: A): Task[Either[DbError, String]]
+  def update(id: Long, newRecord: A): Task[DbOperation]
   
-  def delete(id: Long): Task[Either[DbError, String]]
+  def delete(id: Long): Task[DbOperation]
 
 object Repository:
-  
-  type CreationStatus = Either[String, String]
-  type DeletionStatus = Either[String, String]
+    
+  type DbOperation = Either[DbError, DbSuccess]
 

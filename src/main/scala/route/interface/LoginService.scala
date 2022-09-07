@@ -6,7 +6,7 @@ import route.interface.LoginService._
 
 trait LoginService:
   
-  def login(loginPayload: LoginPayload): RIO[Any, Either[LoginError, JWT]]
+  def login(loginPayload: LoginPayload): Task[Either[LoginError, JWT]]
 
 
 object LoginService:

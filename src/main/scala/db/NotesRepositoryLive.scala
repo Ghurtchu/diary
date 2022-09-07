@@ -44,39 +44,39 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       notes     <- ZIO.attempt(parseDocumentsToNoteList(documents))
     yield notes
 
-  override def update(id: Long, newNote: Note): Task[Either[InvalidId, String]] = 
+  override def update(id: Long, newNote: Note): Task[DbOperation] = 
     for
       db           <- mongo
-      queryResult  <- ZIO.fromFuture { implicit ec =>
+      updateResult <- ZIO.fromFuture { implicit ec =>
         db.getCollection("notes")
           .replaceOne(equal("id", id), Document(newNote.toJson))
           .toFuture()
       }
-      updateStatus <- ZIO.succeed(if queryResult.getModifiedCount != 1 then Left(InvalidId(s"Could not update Note. Note with id: $id does not exist")) else Right(s"Note with id $id has been updated"))
+      updateStatus <- updateResult.fold(updateResult.getModifiedCount == 1, DbSuccess.Updated(s"Note with id $id has been updated"), DbError.InvalidId(s"Note with id $id has not been updated"))
     yield updateStatus
 
-  override def delete(noteId: Long): Task[Either[DbError, String]] = 
+  override def delete(noteId: Long): Task[DbOperation] = 
     for
       db             <- mongo
-      queryRes       <- ZIO.fromFuture { implicit ec =>
+      deleteResult   <- ZIO.fromFuture { implicit ec =>
         db.getCollection("notes")
           .deleteOne(equal("id", noteId))
           .toFuture()
       }
-      deletionStatus <- queryRes.fold(queryRes.getDeletedCount == 1, s"Note with id $noteId has been deleted", InvalidId(s"Could not delete Note. Note with id: $noteId does not exist"))
+      deletionStatus <- deleteResult.fold(deleteResult.getDeletedCount == 1, DbSuccess.Deleted(s"Note with id $noteId has been deleted"), DbError.InvalidId(s"Could not delete Note. Note with id: $noteId does not exist"))
     yield deletionStatus
 
-  override def add(note: Note): Task[CreationStatus] = 
+  override def add(note: Note): Task[DbOperation] = 
     for
-      db             <- mongo
-      noteWithId     <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
-      queryResult    <- ZIO.fromFuture { implicit ec =>
+      db              <- mongo
+      noteWithId      <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
+      insertResult    <- ZIO.fromFuture { implicit ec =>
         db.getCollection("notes")
           .insertOne(Document(noteWithId.toJson))
           .toFuture()
       }
-      creationStatus <- ZIO.succeed(if queryResult.wasAcknowledged then Right("Note has been added successfully") else Left("Note has not been added"))
-    yield creationStatus
+      insertionStatus <- insertResult.fold(insertResult.wasAcknowledged, DbSuccess.Created("Note has been created"), DbError.ReasonUnknown("Note has not been added"))
+    yield insertionStatus
 
   override def getNotesByUserId(userId: Long): Task[List[Note]] = 
     for
@@ -101,15 +101,15 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       note     <- ZIO.attempt(parseDocumentToNote(document))
     yield note
 
-  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[Either[DbError, String]] = 
-    for 
+  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DbOperation] = 
+    for
       db             <- mongo
-      queryResult    <- ZIO.fromFuture { implicit ec =>
+      deleteResult   <- ZIO.fromFuture { implicit ec =>
         db.getCollection("notes")
           .deleteOne(and(equal("id", noteId), equal("userId", userId)))
           .toFuture()
       }
-      deletionStatus <- queryResult.fold(queryResult.getDeletedCount == 1, s"Note with id '$noteId' has been deleted", InvalidId(s"Combination of userId and noteId is wrong, could not delete the note"))
+      deletionStatus <- deleteResult.fold(deleteResult.getDeletedCount == 1, DbSuccess.Deleted(s"Note with id '$noteId' has been deleted"), DbError.InvalidId(s"Combination of userId and noteId is wrong, could not delete the note"))
     yield deletionStatus
 
   private def parseDocumentToNote(document: Document): Option[Note] = 

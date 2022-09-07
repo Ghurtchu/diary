@@ -23,7 +23,7 @@ final case class LoginServiceLive(
                                    passwordHashService: PasswordHashService,
                                    jwtEncoder: JwtEncoder[User]
                       ) extends LoginService:
-  final override def login(loginPayload: LoginPayload): RIO[Any, Either[LoginError, JWT]] =
+  final override def login(loginPayload: LoginPayload): Task[Either[LoginError, JWT]] =
     for
       maybeUser            <- userRepository.getUserByEmail(loginPayload.email)
       passwordMatch        <- maybeUser.fold(ZIO.succeed(false))(user => ZIO.succeed(passwordHashService.validate(loginPayload.password, user.password)))

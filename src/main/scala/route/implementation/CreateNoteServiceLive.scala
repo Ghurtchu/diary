@@ -11,6 +11,7 @@ final case class CreateNoteServiceLive(private final val notesRepository: NotesR
 
   override def createNote(note: Note): Task[Either[String, String]] = 
     notesRepository.add(note)
+      .map(_.foldMap)
 
 
 object CreateNoteServiceLive:

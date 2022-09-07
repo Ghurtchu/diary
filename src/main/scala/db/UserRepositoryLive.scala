@@ -27,18 +27,18 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
       maybeUser   <- ZIO.attempt(parseDocumentToUser(maybeDoc))
     yield maybeUser
 
-  override def update(id: Long, newUser: User): Task[Either[DbError, String]] = 
+  override def update(id: Long, newUser: User): Task[DbOperation] =
     for
       db           <- mongo
-      queryResult  <- ZIO.fromFuture { implicit ec =>
+      updateResult <- ZIO.fromFuture { implicit ec =>
         db.getCollection("user")
-          .updateOne(equal("id", id), Document(newUser.toJson))
+          .replaceOne(equal("id", id), Document(newUser.toJson))
           .toFuture()
       }
-      updateStatus <- queryResult.fold(queryResult.wasAcknowledged, s"User with id '$id' has been updated successfully", InvalidId(s"User with id '$id' has not been updated"))
+      updateStatus <- updateResult.fold(updateResult.getModifiedCount == 1, DbSuccess.Updated(s"User with id '$id' has been updated"), DbError.InvalidId(s"User with id '$id' has not been updated"))
     yield updateStatus
 
-  override def delete(id: Long): Task[Either[DbError, String]] = 
+  override def delete(id: Long): Task[DbOperation] =
     for
       db            <- mongo
       queryResult   <- ZIO.fromFuture { implicit ec =>
@@ -46,18 +46,18 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
           .deleteOne(equal("id", id))
           .toFuture()
       }
-      deletionStatus <- queryResult.fold(queryResult.getDeletedCount == 1, s"User with id $id hsa been deleted", InvalidId(s"Could not delete User. User with id: $id does not exist"))
+      deletionStatus <- queryResult.fold(queryResult.getDeletedCount == 1, DbSuccess.Deleted(s"User with id $id hsa been deleted"), DbError.InvalidId(s"Could not delete User. User with id: $id does not exist"))
     yield deletionStatus
 
-  override def add(user: User): Task[CreationStatus] = 
+  override def add(user: User): Task[DbOperation] =
     for
-      db             <- mongo
-      queryResult    <- ZIO.fromFuture { implicit ec => 
+      db              <- mongo
+      insertionResult <- ZIO.fromFuture { implicit ec =>
         db.getCollection("user")
           .insertOne(Document(user.toJson))
           .toFuture()
       }
-      creationStatus <- ZIO.succeed(if queryResult.wasAcknowledged then Right("User has been added") else Left("User was not added"))
+      creationStatus  <- insertionResult.fold(insertionResult.wasAcknowledged, DbSuccess.Created("User has been created"), DbError.ReasonUnknown("User has not been created"))
     yield creationStatus
 
   override def userExists(email: String): Task[Boolean] =

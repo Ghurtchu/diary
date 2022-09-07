@@ -12,14 +12,16 @@ import zio.json.*
 import zhttp.http.*
 
 trait GetAllNotesHandler:
+
   def handle(jwtContent: JwtContent): Task[Response]
 
 
 final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler:
   
   override def handle(jwtContent: JwtContent): Task[Response] =
-    getAllNotesService.getNotesByUserId(jwtContent.id)
+    getAllNotesService.getNotesByUserId(jwtContent.userId)
       .map(_.toJsonResponse)
+
 
 object GetAllNotesHandlerLive:
   

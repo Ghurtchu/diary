@@ -8,6 +8,7 @@ import zio.*
 
 trait SearchNoteEndpoint extends HasRoute[RequestContextManager]
 
+
 final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) extends SearchNoteEndpoint:
   
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
@@ -17,6 +18,7 @@ final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) ex
         response       <- requestContext.getJwtOrFailure.fold(identity, searchNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
+
 
 object SearchNoteEndpointLive:
   

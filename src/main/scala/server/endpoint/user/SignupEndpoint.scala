@@ -15,6 +15,7 @@ final case class SignupEndpointLive(signupHandler: SignupHandler) extends Signup
     case request@Method.POST -> !! / "api" / "user" / "signup" => signupHandler handle request 
   }
 
+
 object SignupEndpointLive:
   
   lazy val layer: URLayer[SignupHandler, SignupEndpoint] =

@@ -8,6 +8,7 @@ import zio.*
 
 trait GetAllNotesEndpoint extends HasRoute[RequestContextManager]
 
+
 final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler) extends GetAllNotesEndpoint:
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
@@ -17,6 +18,7 @@ final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler)
         response       <- requestContext.getJwtOrFailure.fold(identity, getAllNotesHandler.handle)
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
+
 
 object GetAllNotesEndpointLive:
   

@@ -1,10 +1,15 @@
 package route.interface
 
-import zio._
+import zio.*
 import model.LoginPayload
-
-case class JWT(value: String)
-case class LoginError(value: String)
+import route.interface.LoginService._
 
 trait LoginService:
+  
   def login(loginPayload: LoginPayload): RIO[Any, Either[LoginError, JWT]]
+
+
+object LoginService:
+  
+  case class JWT(value: String)
+  case class LoginError(value: String)

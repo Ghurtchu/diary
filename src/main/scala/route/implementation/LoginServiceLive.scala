@@ -1,7 +1,6 @@
 package route.implementation
 
 import model.{JwtContent, LoginPayload}
-import route.interface.{JWT, LoginError, LoginService}
 import zio.{RIO, Task}
 import db.*
 import route.implementation.LoginServiceLive.layer
@@ -16,6 +15,8 @@ import zio.json.*
 import model.JwtContent.*
 import util.auth.JwtEncoder
 import model.*
+import route.interface.LoginService
+import route.interface.LoginService.*
 
 final case class LoginServiceLive(
                                    userRepository: UserRepository,

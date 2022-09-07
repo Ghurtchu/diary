@@ -2,9 +2,7 @@ package util.auth
 
 import model.User
 import pdi.jwt.JwtAlgorithm
-import route.interface.JWT
 import model.{JwtContent, LoginPayload}
-import route.interface.{JWT, LoginError, LoginService}
 import zio.{RIO, Task}
 import db.*
 import route.implementation.LoginServiceLive.layer
@@ -17,6 +15,7 @@ import io.circe.*
 import jawn.parse as jawnParse
 import zio.json.*
 import model.JwtContent.*
+import route.interface.LoginService.JWT
 import util.auth.JwtEncoderLive.DAY_IN_SECONDS
 
 

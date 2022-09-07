@@ -5,5 +5,6 @@ import zio.Task
 import model.Note
 
 trait CreateNoteService:
+  
   def createNote(note: Note): Task[Either[String, String]]
 

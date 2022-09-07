@@ -16,43 +16,7 @@ case class RequestContext(jwtContent: Option[JwtContent]):
 
 
 object RequestContext:
+
   def initial: RequestContext = new RequestContext(None)
 
-trait RequestContextManager:
-  def setCtx(ctx: RequestContext): UIO[Unit]
-  def getCtx: UIO[RequestContext]
-
-final case class RequestContextManagerLive(ref: FiberRef[RequestContext]) extends RequestContextManager:
-  override def setCtx(ctx: RequestContext): UIO[Unit] = ref set ctx
-  override def getCtx: UIO[RequestContext] = ref.get
-
-object RequestContextManagerLive:
-  def layer: ULayer[RequestContextManager] = ZLayer.scoped {
-    for 
-      ref <- FiberRef.make[RequestContext](RequestContext.initial)
-    yield RequestContextManagerLive(ref)
-  }
-
-trait JwtValidatorMiddleware:
-  def validate: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response]
-
-final case class JwtValidatorMiddlewareLive(jwtDecoder: JwtDecoder) extends JwtValidatorMiddleware:
-  override lazy val validate: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = new Middleware:
-    override def apply[R1 <: RequestContextManager, E1 >: Nothing](http: Http[R1, E1, Request, Response]): Http[R1, E1, Request, Response] = 
-      http.contramapZIO { request =>
-        for 
-          ctxManager <- ZIO.service[RequestContextManager]
-          ctx        <- ctxManager.getCtx
-          jwtContent = jwtDecoder.decode(request.bearerToken.fold("")(identity))
-          _          <- jwtContent.fold(
-            _       => ctxManager.setCtx(ctx.copy(jwtContent = None)),
-            content => ctxManager.setCtx(ctx.copy(jwtContent = Some(content)))
-          )
-        yield request
-      }
-  
-
-object RequestContextMiddleware:
-
-  final lazy val jwtAuthMiddleware: Middleware[RequestContextManager, Nothing, Request, Response, Request, Response] = JwtValidatorMiddlewareLive(JwtDecoderLive()).validate
 

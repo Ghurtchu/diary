@@ -10,6 +10,7 @@ import zio.json.*
 import zhttp.http.Status
 
 trait GetNoteHandler:
+
   def handle(noteId: Long, userId: Long): Task[Response]
 
 

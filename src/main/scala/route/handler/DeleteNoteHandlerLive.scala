@@ -8,8 +8,8 @@ import zio.*
 import zhttp.http._
 import db.NotesRepositoryLive
 
-
 trait DeleteNoteHandler:
+
   def handle(noteId: Long, userId: Long): Task[Response]
 
 
@@ -19,7 +19,6 @@ final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) ext
     deleteNoteService.deleteRecord(noteId, userId)
       .map(_.fold(Response.text, Response.text))
     
-
 
 object DeleteNoteHandlerLive:
   

@@ -10,13 +10,14 @@ import zio.*
 trait SortNoteHandler:
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
 
+
 final case class SortNoteHandlerLive(sortNoteService: SortService[Note]) extends SortNoteHandler:
 
   final override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
     for
       queryParams <- ZIO.succeed(request.url.queryParams)
       sortOrder   <- getSortOrderFromQueryParams(queryParams)
-      ordered     <- sortNoteService.sort(sortOrder, jwtContent.id)
+      ordered     <- sortNoteService.sort(sortOrder, jwtContent.userId)
       response    <- ZIO.succeed(Response.text(ordered.toJsonPretty))
     yield response
 

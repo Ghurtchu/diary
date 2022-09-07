@@ -3,7 +3,7 @@ package route.handler
 import zhttp.http.Request
 import model.*
 import util.*
-import util.search.{SearchNoteService, SearchService}
+import util.search.{SearchCriteria, SearchNoteService, SearchService}
 import zhttp.http.*
 import zio.*
 import zio.json.*
@@ -12,6 +12,7 @@ import java.time.Instant
 import java.util.Date
 
 trait SearchNoteHandler:
+
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
 
 
@@ -22,7 +23,7 @@ final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) e
       queryParams    <- ZIO.succeed(request.url.queryParams)
       title          <- getTitleFromQueryParams(queryParams)
       searchCriteria <- getSearchCriteriaFromQueryParams(queryParams)
-      searchResult   <- searchNoteService.searchByTitle(title, searchCriteria, jwtContent.id)
+      searchResult   <- searchNoteService.searchByTitle(title, searchCriteria, jwtContent.userId)
       response       <- ZIO.succeed(searchResult.fold(Response.text, note => Response.text(note.toJsonPretty)))
     yield response
 
@@ -40,24 +41,8 @@ final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) e
         .fold("")(params => if params.isDefinedAt(0) then params.head else "")
     }
 
+
 object SearchNoteHandlerLive:
+
   lazy val layer: URLayer[SearchService[Note], SearchNoteHandler] = ZLayer.fromFunction(SearchNoteHandlerLive.apply)
 
-
-sealed trait SearchCriteria { self =>
-  def isExact: Boolean
-  def fold[A](ifExact: => A)(ifNonExact: => A): A = self match
-      case Exact    => ifExact
-      case NonExact => ifNonExact
-}
-
-object SearchCriteria:
-
-  def exact: SearchCriteria = Exact
-  def nonExact: SearchCriteria = NonExact
-
-case object Exact extends SearchCriteria:
-  final override def isExact: Boolean = true
-
-case object NonExact extends SearchCriteria:
-  final override def isExact: Boolean = false

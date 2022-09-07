@@ -10,6 +10,7 @@ import zio.*
 
 trait CreateNoteEndpoint extends HasRoute[RequestContextManager]
 
+
 final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) extends CreateNoteEndpoint:
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
@@ -19,6 +20,7 @@ final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) ex
         response       <- requestContext.getJwtOrFailure.fold(identity, createNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
+
 
 object CreateNoteEndpointLive:
 

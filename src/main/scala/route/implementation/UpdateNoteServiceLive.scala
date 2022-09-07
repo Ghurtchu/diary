@@ -9,8 +9,8 @@ import zio.json.*
 
 final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends UpdateNoteService:
   
-  override def updateNote(id: Long, note: Note): Task[Either[String, String]] = 
-    notesRepository.update(id, note)
+  override def updateNote(noteId: Long, note: Note): Task[Either[String, String]] = 
+    notesRepository.update(noteId, note)
       .map(_.fold(err => Left(err.msg), Right(_)))
 
 object UpdateNoteServiceLive:

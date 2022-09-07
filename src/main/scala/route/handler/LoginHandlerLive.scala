@@ -17,6 +17,7 @@ import jawn.parse as jawnParse
 import route.interface._
 
 trait LoginHandler:
+
   def handle(request: Request): Task[Response]
 
 
@@ -35,6 +36,7 @@ final case class LoginHandlerLive(loginService: LoginService) extends LoginHandl
              jwt        => ZIO.succeed(Response.text(s"""{"token": ${jwt.value}""").setStatus(Status.Ok)))
           yield jwtOrError)
     yield response
+
 
 object LoginHandlerLive:
   

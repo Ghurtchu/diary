@@ -11,6 +11,7 @@ import zio.*
 
 trait SortNoteEndpoint extends HasRoute[RequestContextManager]
 
+
 final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends SortNoteEndpoint:
 
   override lazy val route: HttpApp[RequestContextManager, Throwable] = Http.collectZIO[Request] {
@@ -20,6 +21,7 @@ final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends 
         response       <- requestContext.getJwtOrFailure.fold(identity, sortNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
+
 
 object SortNoteEndpointLive:
   

@@ -4,6 +4,7 @@ import zio.*
 import org.mongodb.scala.*
 
 trait DatabaseInitializer:
+
   def initialize(DBConfig: DBConfig): RIO[DataSource, Unit]
 
 

@@ -5,4 +5,5 @@ import zhttp.http.Response
 import zio.Task
 
 trait UpdateNoteService:
-  def updateNote(id: Long, newNote: Note): Task[Either[String, String]]
+  
+  def updateNote(noteId: Long, newNote: Note): Task[Either[String, String]]

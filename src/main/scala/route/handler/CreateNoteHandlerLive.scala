@@ -10,7 +10,9 @@ import zio.json.*
 import java.net.http.HttpResponse.ResponseInfo
 
 trait CreateNoteHandler:
+  
   def handle(request: Request, jwtContent: JwtContent): Task[Response]
+
 
 final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler:
 
@@ -18,8 +20,8 @@ final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) ext
     for 
       noteEither <- request.bodyAsString.map(_.fromJson[Note])
       response   <- noteEither.fold(
-        _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)),
-        parseNoteCreationStatusToResponse(jwtContent.id, _))
+        _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)), 
+        parseNoteCreationStatusToResponse(jwtContent.userId, _))
     yield response
 
   private def parseNoteCreationStatusToResponse(userId: Long, note: Note) =

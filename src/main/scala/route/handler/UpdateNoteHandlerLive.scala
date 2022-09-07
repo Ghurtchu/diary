@@ -16,9 +16,14 @@ final case class UpdateNoteHandlerLive(updateNoteService: UpdateNoteService) ext
 
   final override def handle(request: Request, noteId: Long): Task[Response] = 
     for 
-      noteEither   <- request.bodyAsString.map(_.fromJson[Note])
-      updateStatus <- noteEither.fold(err => ZIO.fail(new RuntimeException(err)), note => updateNoteService.updateNote(noteId, note))
-      response     <- ZIO.succeed(updateStatus.fold(Response.text, Response.text))
+      noteEither <- request.bodyAsString.map(_.fromJson[Note])
+      response   <- noteEither.fold (
+        _    => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)),
+        note => updateNoteService.updateNote(noteId, note).map(_.fold(
+          failure => Response.text(failure).setStatus(Status.BadRequest),
+          success => Response.text(success).setStatus(Status.NoContent)
+        ))
+      )
     yield response
 
 

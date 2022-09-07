@@ -21,7 +21,7 @@ final case class SignupServiceLive private(
           for 
             userWithHashedPass <- ZIO.succeed(user.copy(password = passwordHashService.hash(user.password)))
             userWithId         <- ZIO.succeed(userWithHashedPass.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
-            signupStatus       <- userRepository.add(userWithId).map(_.foldMap)
+            signupStatus       <- userRepository.add(userWithId).map(_.dbOperationMessages)
           yield signupStatus
     yield response
 

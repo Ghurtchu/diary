@@ -17,7 +17,10 @@ final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) ext
 
   override def handle(noteId: Long, userId: Long): Task[Response] = 
     deleteNoteService.deleteRecord(noteId, userId)
-      .map(_.fold(Response.text, Response.text))
+      .map(_.fold(
+        err     => Response.text(err).setStatus(Status.BadRequest),
+        success => Response.text(success).setStatus(Status.Ok)
+      ))
     
 
 object DeleteNoteHandlerLive:

@@ -11,7 +11,7 @@ final case class DeleteNoteServiceLive(notesRepository: NotesRepository) extends
 
   override def deleteRecord(noteId: Long, userId: Long): Task[Either[String, String]] =
     notesRepository.deleteNoteByIdAndUserId(noteId, userId)
-      .map(_.foldMap)
+      .map(_.dbOperationMessages)
 
 object DeleteNoteServiceLive:
 

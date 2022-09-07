@@ -25,18 +25,17 @@ final case class LoginHandlerLive(loginService: LoginService) extends LoginHandl
   
   override def handle(request: Request): Task[Response] = 
     for
-      loginPayloadEither <- request.bodyAsString.flatMap(body => ZIO.succeed(body.fromJson[LoginPayload]))
-      response           <- loginPayloadEither.fold(
-        _ => ZIO.succeed(Response.text("wrong JSON format").setStatus(Status.BadRequest)),
-        loginPayload => 
-          for
-           loginStatus <- loginService.login(loginPayload)
-           jwtOrError  <- loginStatus.fold(
-             loginError => ZIO.succeed(Response.text(loginError.value).setStatus(Status.Unauthorized)),
-             jwt        => ZIO.succeed(Response.text(s"""{"token": ${jwt.value}""").setStatus(Status.Ok)))
-          yield jwtOrError)
+      loginPayloadEither <- request.bodyAsString.map(_.fromJson[LoginPayload])
+      response           <- loginPayloadEither.fold(_ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)), processLoginPayload)
     yield response
-
+    
+  private def processLoginPayload(loginPayload: LoginPayload): Task[Response] =
+    loginService
+      .login(loginPayload)
+      .map(_.fold(
+        err => Response.text(err.value).setStatus(Status.Unauthorized),
+        jwt => Response.text(s"""{"token": ${jwt.value}""").setStatus(Status.Ok))
+      )
 
 object LoginHandlerLive:
   

@@ -19,16 +19,17 @@ final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) ext
   override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
     for 
       noteEither <- request.bodyAsString.map(_.fromJson[Note])
-      response   <- noteEither.fold(
-        _ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)), 
-        parseNoteCreationStatusToResponse(jwtContent.userId, _))
+      response   <- noteEither.fold(_ => ZIO.succeed(Response.text("Invalid Json").setStatus(Status.BadRequest)), mapCreationStatus(jwtContent.userId, _))
     yield response
 
-  private def parseNoteCreationStatusToResponse(userId: Long, note: Note) =
+  private def mapCreationStatus(userId: Long, note: Note): Task[Response] =
     val noteWithUserId = note.copy(userId = Some(userId))
 
     createNoteService.createNote(noteWithUserId)
-      .map(_.fold(Response.text, Response.text))
+      .map(_.fold(
+        err     => Response.text(err).setStatus(Status.BadRequest),
+        success => Response.text(success).setStatus(Status.Created))
+      )
   
 
 object CreateNoteHandlerLive:

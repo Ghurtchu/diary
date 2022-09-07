@@ -1,10 +1,10 @@
 package route.interface
 
-import db.{DbError, DbResponse}
+import db._
 import model.Note
 import zio.*
 
 trait GetNoteService:
   
-  def getNote(noteId: Long, userId: Long): Task[Either[DbResponse, Note]]
+  def getNote(noteId: Long, userId: Long): Task[Either[String, Note]]
 

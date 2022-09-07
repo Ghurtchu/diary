@@ -18,7 +18,7 @@ final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetN
 
   override def handle(noteId: Long, userId: Long): Task[Response] =
     getNoteService.getNote(noteId, userId)
-      .map(_.toResponse)
+      .map(_.notFoundOrFound)
 
 
 object GetNoteHandlerLive:

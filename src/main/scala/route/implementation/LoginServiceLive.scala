@@ -4,7 +4,7 @@ import model.{JwtContent, LoginPayload}
 import zio.{RIO, Task}
 import db.*
 import route.implementation.LoginServiceLive.layer
-import util.hash.{PasswordHashService, SecureHashService}
+import hash.{PasswordHashService, SecureHashService}
 import zio.*
 
 import java.time.Instant
@@ -13,7 +13,7 @@ import io.circe.*
 import jawn.parse as jawnParse
 import zio.json.*
 import model.JwtContent.*
-import util.auth.JwtEncoder
+import auth.JwtEncoder
 import model.*
 import route.interface.LoginService
 import route.interface.LoginService.*

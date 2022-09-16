@@ -6,7 +6,7 @@ import zio.json.*
 import db.*
 import model.JwtContent
 import model.LoginPayload
-import util.hash.{PasswordHashService, SecureHashService}
+import hash.{PasswordHashService, SecureHashService}
 
 import java.time.Instant
 import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}

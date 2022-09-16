@@ -1,10 +1,9 @@
-package util.sort
+package scala.sort
 
 import db.*
 import model.Note
 import route.interface.*
-import util.sort.SortOrder.*
-import util.sort.{SortOrder, SortService}
+import SortOrder.*
 import zio.*
 
 

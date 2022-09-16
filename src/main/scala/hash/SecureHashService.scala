@@ -1,4 +1,4 @@
-package util.hash
+package hash
 
 import io.github.nremond.legacy.SecureHash
 import zio._

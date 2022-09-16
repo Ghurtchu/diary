@@ -113,17 +113,24 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
     yield deletionStatus
 
   private def parseDocumentToNote(document: Document): Option[Note] = 
-    Option(document).fold(None) { doc =>
-      Some(
-        Note(
-          id        = doc("id").asInt64.getValue,
-          title     = doc("title").asString.getValue,
-          body      = doc("body").asString.getValue,
-          createdAt = doc("createdAt").asString.getValue,
-          userId    = doc("userId").asInt64.getValue
-        )
-      )
-    }
+    Option(document).fold(None)(doc => Some(buildNoteWithoutUserId(doc)))
+
+  private def buildFullNote(doc: Document): Note =
+    Note(
+      id        = doc("id").asInt64.getValue,
+      title     = doc("title").asString.getValue,
+      body      = doc("body").asString.getValue,
+      createdAt = doc("createdAt").asString.getValue,
+      userId    = doc("userId").asInt64.getValue
+    )
+
+  private def buildNoteWithoutUserId(doc: Document): Note =
+    Note(
+      id        = doc("id").asInt64.getValue,
+      title     = doc("title").asString.getValue,
+      body      = doc("body").asString.getValue,
+      createdAt = doc("createdAt").asString.getValue
+    )
 
   private def parseDocumentsToNoteList(documents: Seq[Document]): List[Note] = documents.map(parseDocumentToNote).toList.flatten
 

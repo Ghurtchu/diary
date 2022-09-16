@@ -1,6 +1,6 @@
 package server.middleware
 
-import util.auth.JwtDecoderLive
+import auth.JwtDecoderLive
 import zhttp.http.{Middleware, Request, Response}
 
 object RequestContextMiddleware:

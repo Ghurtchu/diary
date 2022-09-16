@@ -1,4 +1,4 @@
-package util.auth
+package auth
 
 import model.JwtContent
 import pdi.jwt.{Jwt, JwtAlgorithm}

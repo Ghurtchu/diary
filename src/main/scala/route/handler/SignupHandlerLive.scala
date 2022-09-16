@@ -27,7 +27,7 @@ final case class SignupHandlerLive(signupService: SignupService) extends SignupH
     signupService
       .signUp(user)
       .map(_.fold(
-        _     => Response.text("Sign up failed").setStatus(Status.BadRequest),
+        Response.text(_).setStatus(Status.Conflict),
         token => Response.text(token).setStatus(Status.Created)
       ))
   

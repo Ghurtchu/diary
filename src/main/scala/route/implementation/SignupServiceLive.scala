@@ -3,7 +3,7 @@ package route.implementation
 import db.*
 import model.*
 import route.interface.{CreateNoteService, SignupService}
-import util.hash.{PasswordHashService, SecureHashService}
+import hash.{PasswordHashService, SecureHashService}
 import zio.*
 import zio.json.*
 

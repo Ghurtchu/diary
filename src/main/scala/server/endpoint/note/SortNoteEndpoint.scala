@@ -5,7 +5,7 @@ import route.handler.*
 import route.interface.*
 import server.NotesServer
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
-import util.sort.SortNoteService
+import sort.SortNoteService
 import zhttp.http.*
 import zio.*
 

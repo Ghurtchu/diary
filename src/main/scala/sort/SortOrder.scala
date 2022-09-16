@@ -1,4 +1,4 @@
-package util.sort
+package scala.sort
 
 enum SortOrder:
 

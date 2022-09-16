@@ -1,4 +1,4 @@
-package util.search
+package search
 
 import zio.Task
 

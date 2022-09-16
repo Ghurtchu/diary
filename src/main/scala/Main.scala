@@ -1,17 +1,17 @@
 import route.handler.*
 import route.implementation.*
-import util.search.*
+import search.*
 import zio.*
 import db.*
 import db.mongo.{DataSourceLive, MongoDatabaseInitializer}
-import util.hash.*
+import hash.*
 import server.NotesServer
 import server.endpoint.*
 import server.endpoint.note.{CreateNoteEndpointLive, DeleteNoteEndpointLive, GetAllNotesEndpointLive, GetNoteEndpointLive, SearchNoteEndpointLive, SortNoteEndpointLive, UpdateNoteEndpointLive}
 import server.endpoint.user.{LoginEndpointLive, SignupEndpointLive}
 import server.middleware.RequestContextManagerLive
-import util.auth.{JwtDecoderLive, JwtEncoderLive}
-import util.sort.SortNoteService
+import auth.{JwtDecoderLive, JwtEncoderLive}
+import sort.SortNoteService
 
 object Main extends ZIOAppDefault:
 

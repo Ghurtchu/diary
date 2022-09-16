@@ -1,4 +1,4 @@
-package util.hash
+package hash
 
 import zio._
 

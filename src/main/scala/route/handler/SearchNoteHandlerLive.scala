@@ -3,7 +3,7 @@ package route.handler
 import zhttp.http.Request
 import model.*
 import util.*
-import util.search.{SearchCriteria, SearchNoteService, SearchService}
+import search.{SearchCriteria, SearchNoteService, SearchService}
 import zhttp.http.*
 import zio.*
 import zio.json.*

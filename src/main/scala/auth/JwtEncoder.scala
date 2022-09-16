@@ -1,4 +1,4 @@
-package util.auth
+package auth
 
 import model.User
 import pdi.jwt.JwtAlgorithm
@@ -6,7 +6,7 @@ import model.{JwtContent, LoginPayload}
 import zio.{RIO, Task}
 import db.*
 import route.implementation.LoginServiceLive.layer
-import util.hash.{PasswordHashService, SecureHashService}
+import hash.{PasswordHashService, SecureHashService}
 import zio.*
 
 import java.time.Instant
@@ -16,7 +16,7 @@ import jawn.parse as jawnParse
 import zio.json.*
 import model.JwtContent.*
 import route.interface.LoginService.JWT
-import util.auth.JwtEncoderLive.DAY_IN_SECONDS
+import JwtEncoderLive.DAY_IN_SECONDS
 
 
 trait JwtEncoder[A]:

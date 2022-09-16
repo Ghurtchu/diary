@@ -1,6 +1,6 @@
 package server.middleware
 
-import util.auth.{JwtDecoder, JwtDecoderLive}
+import auth.{JwtDecoder, JwtDecoderLive}
 import zhttp.http.{Http, Middleware, Request, Response}
 import zio.ZIO
 

@@ -1,4 +1,4 @@
-package util.search
+package search
 
 import db.{NotesRepository, NotesRepositoryLive}
 import model.{Note, User}

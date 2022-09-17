@@ -32,7 +32,6 @@
    }
    ``` 
 ---
-
 2) ### User login
    | Endpoint                              | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
    | ------------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
@@ -45,6 +44,7 @@
      "password": "my-strong-pass"
    }
    ``` 
+---   
 3) ### Display User notes
    | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
    | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
@@ -78,3 +78,66 @@
       }
    ]
    ```
+---
+4) ### Create new Note
+   | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
+   | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
+   | http://localhost:8080/api/notes | POST        | application/json | Note has been created (200)  | Auth failed (401)                 | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Request Body: 
+   ```json
+    3) ### Display User notes
+   | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
+   | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
+   | http://localhost:8080/api/notes | GET         | application/json | Notes in JSON format (200)   | Auth failed (401)                 | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Typical response: 
+   ```json
+   {
+       "title": "why should I learn ZIO?",
+       "body": "cuz [insert 5 million intelligent words here]",
+       "createdAt": "17-09-2022"
+   }
+   ```
+---
+5) ### Get Note by ID
+   | Endpoint                            | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)               |
+   | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
+   | http://localhost:8080/api/notes/:id | GET         | application/json | Note in JSON format (200)    | Auth failed (401) / Note does not exist | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Request Body: 
+   ```json
+    3) ### Display User notes
+   | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
+   | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
+   | http://localhost:8080/api/notes | GET         | application/json | Notes in JSON format (200)   | Auth failed (401)                 | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Typical response: 
+   ```json
+   {
+       "title": "why should I learn ZIO?",
+       "body": "cuz [insert 5 million intelligent words here]",
+       "createdAt": "17-09-2022"
+   }
+   ```
+---

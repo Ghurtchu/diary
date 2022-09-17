@@ -132,24 +132,97 @@
 7) ### Update Note fully
    | Endpoint                            | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)               |
    | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
-   | http://localhost:8080/api/notes/:id | PUT         | application/json | Note in JSON format (200)    | Auth failed (401) / Note does not exist | 
+   | http://localhost:8080/api/notes/:id | PUT         | application/json | Note has been updated (200)  | Auth failed (401) / Note does not exist | 
    
    ##### hint: user the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
    ```
-   #### Typical Response: 
+   #### Request Body: 
    ```json
    {
-       "id": 5321604607032827422,
-       "title": "why should I learn ZIO?",
+      "id": 7043231874327471104,
+      "title": "why should I learn ZIO?!?!?!?!?!",
        "body": "cuz [insert 5 million intelligent words here]",
        "createdAt": "17-09-2022"
    }
    ```
 ---
+8) ### Search for a specific Note 
+   | Endpoint                                             | HTTP Method | Content Type     | HTTP Success (Statuscode)        | HTTP Failure (Statuscode) |
+   | ---------------------------------------------------- | ----------- | ---------------- | -------------------------------- | ------------------------- |
+   | http://localhost:8080/api/notes/search?title={title} | GET         | application/json | Note array in JSON format (200)  | Auth failed (401)         | 
    
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Typical response: 
+   ```json
+    [
+      {
+          "id": 7159997665991673534,
+          "title": "I love Scala",
+          "body": "Scala rocks (most definitely)",
+          "createdAt": "09-16-2022"
+      },
+      {
+          "id": 5746959445480553359,
+          "title": "I kinda like Java",
+          "body": "Java rocks (kinda)",
+          "createdAt": "09-16-2022"
+      },
+      {
+          "id": 3672367746746389626,
+          "title": "I completely hate Python",
+          "body": "Python sucks (yep yep)",
+          "createdAt": "09-16-2022"
+      }
+   ]
+   ```
+---
+9) ### Sort notes by title 
+   | Endpoint                                       | HTTP Method | Content Type     | HTTP Success (Statuscode)        | HTTP Failure (Statuscode) |
+   | ---------------------------------------------- | ----------- | ---------------- | -------------------------------- | ------------------------- |
+   | http://localhost:8080/api/notes/sort?order=asc | GET         | application/json | Note array in JSON format (200)  | Auth failed (401)         | 
    
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Typical response: 
+   ```json
+   [
+     {
+       "id" : 3672367746746389626,
+       "title" : "I completely hate Python",
+       "body" : "Python sucks (yep yep)",
+       "createdAt" : "09-16-2022"
+     },
+     {
+       "id" : 5746959445480553359,
+       "title" : "I kinda like Java",
+       "body" : "Java rocks (kinda)",
+       "createdAt" : "09-16-2022"
+     },
+     {
+       "id" : 7159997665991673534,
+       "title" : "I love Scala",
+       "body" : "Scala rocks",
+       "createdAt" : "09-16-2022"
+     },
+     {
+       "id" : 7043231874327471104,
+       "title" : "why should I learn ZIO?",
+       "body" : "cuz [insert 5 million intelligent words here]",
+       "createdAt" : "17-09-2022"
+     }
+   ]
+   ```
+---
+
 
 

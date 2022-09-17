@@ -91,18 +91,6 @@
    ```
    #### Request Body: 
    ```json
-    3) ### Display User notes
-   | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
-   | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
-   | http://localhost:8080/api/notes | GET         | application/json | Notes in JSON format (200)   | Auth failed (401)                 | 
-   
-   ##### hint: user the real JWT returend upon the successful login
-   #### Headers:
-   ```
-   Authorization: Bearer JWT
-   ```
-   #### Typical response: 
-   ```json
    {
        "title": "why should I learn ZIO?",
        "body": "cuz [insert 5 million intelligent words here]",
@@ -120,24 +108,48 @@
    ```
    Authorization: Bearer JWT
    ```
-   #### Request Body: 
-   ```json
-    3) ### Display User notes
-   | Endpoint                        | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)         |
-   | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
-   | http://localhost:8080/api/notes | GET         | application/json | Notes in JSON format (200)   | Auth failed (401)                 | 
-   
-   ##### hint: user the real JWT returend upon the successful login
-   #### Headers:
-   ```
-   Authorization: Bearer JWT
-   ```
-   #### Typical response: 
+   #### Typical Response: 
    ```json
    {
+       "id": 5321604607032827422,
        "title": "why should I learn ZIO?",
        "body": "cuz [insert 5 million intelligent words here]",
        "createdAt": "17-09-2022"
    }
    ```
 ---
+6) ### Delete Note by ID
+   | Endpoint                            | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)               |
+   | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
+   | http://localhost:8080/api/notes/:id | DELETE      | application/json | Note has been deleted (200)  | Auth failed (401) / Note does not exist | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+---
+7) ### Update Note fully
+   | Endpoint                            | HTTP Method | Content Type     | HTTP Success (Statuscode)    | HTTP Failure (Statuscode)               |
+   | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
+   | http://localhost:8080/api/notes/:id | PUT         | application/json | Note in JSON format (200)    | Auth failed (401) / Note does not exist | 
+   
+   ##### hint: user the real JWT returend upon the successful login
+   #### Headers:
+   ```
+   Authorization: Bearer JWT
+   ```
+   #### Typical Response: 
+   ```json
+   {
+       "id": 5321604607032827422,
+       "title": "why should I learn ZIO?",
+       "body": "cuz [insert 5 million intelligent words here]",
+       "createdAt": "17-09-2022"
+   }
+   ```
+---
+   
+   
+
+

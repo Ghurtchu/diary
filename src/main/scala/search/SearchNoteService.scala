@@ -1,6 +1,6 @@
 package search
 
-import db.{NotesRepository, NotesRepositoryLive}
+import db.note.{NotesRepository, NotesRepositoryLive}
 import model.{Note, User}
 import zio.{Task, ZIO, ZLayer}
 
@@ -9,7 +9,7 @@ import java.util.Date
 
 final case class SearchNoteService(notesRepository: NotesRepository) extends SearchService[Note]:
 
-  final override def searchByTitle(title: String, searchCriteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] = 
+  final override def searchByTitle(title: String, searchCriteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] =
     for 
       notes    <- notesRepository getNotesByUserId userId
       response <- searchCriteria.fold(getExactMatches(title, notes))(getNonExactMatches(title, notes))

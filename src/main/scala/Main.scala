@@ -11,6 +11,9 @@ import server.endpoint.note.{CreateNoteEndpointLive, DeleteNoteEndpointLive, Get
 import server.endpoint.user.{LoginEndpointLive, SignupEndpointLive}
 import server.middleware.RequestContextManagerLive
 import auth.{JwtDecoderLive, JwtEncoderLive}
+import db.note.NotesRepositoryLive
+import db.user.UserRepositoryLive
+
 import sort.SortNoteService
 
 object Main extends ZIOAppDefault:

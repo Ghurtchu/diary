@@ -1,7 +1,7 @@
 package route.implementation
 
 import db.Repository._
-import db.{NotesRepository, NotesRepositoryLive}
+import db.note.{NotesRepository, NotesRepositoryLive}
 import model.Note
 import route.interface.DeleteNoteService
 import zhttp.http.Response

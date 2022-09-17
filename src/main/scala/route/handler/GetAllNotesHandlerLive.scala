@@ -1,6 +1,6 @@
 package route.handler
 
-import db.NotesRepositoryLive
+import db.note.NotesRepositoryLive
 import model.{JwtContent, LoginPayload, Note}
 import pdi.jwt.{Jwt, JwtCirce}
 import route.interface.*

@@ -1,9 +1,9 @@
-package db
+package db.note
 
-import db.Repository.*
-import db.mongo.{DataSource, DatabaseContext, MongoDatabaseInitializer}
 import db.*
 import db.DbError.InvalidId
+import db.Repository.*
+import db.mongo.{DataSource, DatabaseContext, MongoDatabaseInitializer}
 import model.Note.*
 import model.{Note, User}
 import org.mongodb.scala.*

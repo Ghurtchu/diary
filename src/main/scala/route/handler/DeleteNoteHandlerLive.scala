@@ -1,12 +1,12 @@
 package route.handler
 
+import db.note.NotesRepositoryLive
 import route.implementation
 import route.interface._
 import route.implementation.DeleteNoteServiceLive
 import zhttp.http.Response
 import zio.*
 import zhttp.http._
-import db.NotesRepositoryLive
 
 trait DeleteNoteHandler:
 

@@ -1,13 +1,14 @@
-package db
+package db.note
 
-import db.Repository.{DbOperation}
+import db.Repository
+import db.Repository.DbOperation
 import model.Note
 import zio.Task
 
-trait NotesRepository extends Repository[Note]:
+trait NotesRepository extends Repository[Note] :
 
   def getAll: Task[List[Note]]
-  
+
   def getNotesByUserId(userId: Long): Task[List[Note]]
 
   def getNoteByIdAndUserId(noteId: Long, userId: Long): Task[Option[Note]]

@@ -1,6 +1,7 @@
 package route.implementation
 
 import db.*
+import db.user.UserRepository
 import model.*
 import route.interface.{CreateNoteService, SignupService}
 import hash.{PasswordHashService, SecureHashService}

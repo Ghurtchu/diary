@@ -1,6 +1,7 @@
 package route.implementation
 
-import db._
+import db.*
+import db.note.NotesRepository
 import model.Note
 import route.interface.GetNoteService
 import zhttp.http.Response

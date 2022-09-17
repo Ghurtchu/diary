@@ -1,6 +1,6 @@
 package route.implementation
 
-import db.{NotesRepository, NotesRepositoryLive}
+import db.note.{NotesRepository, NotesRepositoryLive}
 import model.Note
 import route.interface.CreateNoteService
 import zhttp.http.Response

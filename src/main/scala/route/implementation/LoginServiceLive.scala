@@ -14,6 +14,7 @@ import jawn.parse as jawnParse
 import zio.json.*
 import model.JwtContent.*
 import auth.JwtEncoder
+import db.user.UserRepository
 import model.*
 import route.interface.LoginService
 import route.interface.LoginService.*

@@ -1,9 +1,9 @@
-package db
+package db.user
 
-import db.Repository._
-import db.mongo.{DataSource, DatabaseContext}
 import db.*
 import db.DbError.InvalidId
+import db.Repository.*
+import db.mongo.{DataSource, DatabaseContext}
 import model.User
 import org.mongodb.scala.*
 import org.mongodb.scala.model.Filters.*

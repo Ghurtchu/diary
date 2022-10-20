@@ -11,7 +11,7 @@ final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends
   
   override def updateNote(noteId: Long, note: Note): Task[Either[String, String]] = 
     notesRepository.update(noteId, note.copy(id = Some(noteId)))
-      .map(_.dbOperationMessages)
+      .map(_.toOperationMessage)
 
 object UpdateNoteServiceLive:
   

@@ -8,7 +8,7 @@ package object implementation:
     def inQuotes: String = s"`$value`"
     
   extension (dbErrorOrSuccess: Either[DbError, DbSuccess])
-    def dbOperationMessages: Either[String, String] =
+    def toOperationMessage: Either[String, String] =
       dbErrorOrSuccess.fold(
         err     => Left(err.msg),
         success => Right(success.msg)

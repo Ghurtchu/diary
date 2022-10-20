@@ -1,13 +1,11 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import route.handler.GetAllNotesHandler
 import server.*
+import server.endpoint.note.protocol.GetAllNotesEndpoint
 import server.middleware.{RequestContext, RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*
-
-trait GetAllNotesEndpoint extends HasRoute[RequestContextManager]
-
 
 final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler) extends GetAllNotesEndpoint:
 
@@ -15,7 +13,7 @@ final case class GetAllNotesEndpointLive(getAllNotesHandler: GetAllNotesHandler)
     case Method.GET -> !! / "api" / "notes" =>
       for
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
-        response       <- requestContext.getJwtOrFailure.fold(identity, getAllNotesHandler.handle)
+        response       <- requestContext.getJwtOrFail.fold(identity, getAllNotesHandler.handle)
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

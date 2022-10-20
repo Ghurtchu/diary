@@ -1,9 +1,8 @@
 package search
 
 enum SearchCriteria:
-
   self =>
-
+  
   case Exact
   case NonExact
   

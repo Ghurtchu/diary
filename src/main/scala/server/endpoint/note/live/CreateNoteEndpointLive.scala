@@ -1,15 +1,13 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import route.handler.{CreateNoteHandler, SignupHandler}
 import route.implementation.CreateNoteServiceLive
 import server.NotesServer
+import server.endpoint.note.protocol.CreateNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.*
 import zhttp.http.*
 import zio.*
-
-trait CreateNoteEndpoint extends HasRoute[RequestContextManager]
-
 
 final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) extends CreateNoteEndpoint:
 
@@ -17,7 +15,7 @@ final case class CreateNoteEndpointLive(createNoteHandler: CreateNoteHandler) ex
     case request @ Method.POST -> !! / "api" / "notes" => 
       for
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx) 
-        response       <- requestContext.getJwtOrFailure.fold(identity, createNoteHandler.handle(request, _))
+        response       <- requestContext.getJwtOrFail.fold(identity, createNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

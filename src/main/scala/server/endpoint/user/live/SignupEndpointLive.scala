@@ -1,13 +1,10 @@
-package server.endpoint.user
+package server.endpoint.user.live
 
 import route.handler.*
 import route.implementation.SignupServiceLive
+import server.endpoint.user.protocol.SignupEndpoint
 import zhttp.http.*
 import zio.*
-
-trait SignupEndpoint:
-  def route: HttpApp[Any, Throwable]
-
 
 final case class SignupEndpointLive(signupHandler: SignupHandler) extends SignupEndpoint:
 

@@ -1,16 +1,15 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import model.*
 import route.handler.*
 import route.interface.*
 import server.NotesServer
+import server.endpoint.note.protocol.SortNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
-import sort.SortNoteService
 import zhttp.http.*
 import zio.*
 
-trait SortNoteEndpoint extends HasRoute[RequestContextManager]
-
+import scala.sort.SortNoteService
 
 final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends SortNoteEndpoint:
 
@@ -18,7 +17,7 @@ final case class SortNoteEndpointLive(sortNoteHandler: SortNoteHandler) extends 
     case request@Method.GET -> !! / "api" / "notes" / "sort" =>
       for
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
-        response       <- requestContext.getJwtOrFailure.fold(identity, sortNoteHandler.handle(request, _))
+        response       <- requestContext.getJwtOrFail.fold(identity, sortNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

@@ -7,12 +7,12 @@ import db.mongo.{DataSourceLive, MongoDatabaseInitializer}
 import hash.*
 import server.NotesServer
 import server.endpoint.*
-import server.endpoint.note.{CreateNoteEndpointLive, DeleteNoteEndpointLive, GetAllNotesEndpointLive, GetNoteEndpointLive, SearchNoteEndpointLive, SortNoteEndpointLive, UpdateNoteEndpointLive}
-import server.endpoint.user.{LoginEndpointLive, SignupEndpointLive}
 import server.middleware.RequestContextManagerLive
 import auth.{JwtDecoderLive, JwtEncoderLive}
 import db.note.NotesRepositoryLive
 import db.user.UserRepositoryLive
+import server.endpoint.note.live.{CreateNoteEndpointLive, DeleteNoteEndpointLive, GetAllNotesEndpointLive, GetNoteEndpointLive, SearchNoteEndpointLive, SortNoteEndpointLive, UpdateNoteEndpointLive}
+import server.endpoint.user.live.{LoginEndpointLive, SignupEndpointLive}
 
 import sort.SortNoteService
 

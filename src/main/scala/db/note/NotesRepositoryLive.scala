@@ -109,20 +109,11 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
           .deleteOne(and(equal("id", noteId), equal("userId", userId)))
           .toFuture()
       }
-      deletionStatus <- deleteResult.fold(deleteResult.getDeletedCount == 1, DbSuccess.Deleted(s"Note with id '$noteId' has been deleted"), DbError.InvalidId(s"Combination of userId and noteId is wrong, could not delete the note"))
+      deletionStatus <- deleteResult.fold(deleteResult.getDeletedCount == 1, DbSuccess.Deleted(s"Note with id '$noteId' has been deleted"), DbError.InvalidId(s"Note with `$noteId` does not exist"))
     yield deletionStatus
 
   private def parseDocumentToNote(document: Document): Option[Note] = 
     Option(document).fold(None)(doc => Some(buildNoteWithoutUserId(doc)))
-
-  private def buildFullNote(doc: Document): Note =
-    Note(
-      id        = doc("id").asInt64.getValue,
-      title     = doc("title").asString.getValue,
-      body      = doc("body").asString.getValue,
-      createdAt = doc("createdAt").asString.getValue,
-      userId    = doc("userId").asInt64.getValue
-    )
 
   private def buildNoteWithoutUserId(doc: Document): Note =
     Note(

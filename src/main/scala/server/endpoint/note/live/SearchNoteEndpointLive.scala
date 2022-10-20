@@ -1,13 +1,11 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import route.handler.*
 import server.NotesServer
+import server.endpoint.note.protocol.SearchNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*
-
-trait SearchNoteEndpoint extends HasRoute[RequestContextManager]
-
 
 final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) extends SearchNoteEndpoint:
   
@@ -15,7 +13,7 @@ final case class SearchNoteEndpointLive(searchNoteHandler: SearchNoteHandler) ex
     case request@Method.GET -> !! / "api" / "notes" / "search" => 
       for
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
-        response       <- requestContext.getJwtOrFailure.fold(identity, searchNoteHandler.handle(request, _))
+        response       <- requestContext.getJwtOrFail.fold(identity, searchNoteHandler.handle(request, _))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

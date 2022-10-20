@@ -1,7 +1,6 @@
 package scala.sort
 
 enum SortOrder:
-
   self =>
 
   case Ascending

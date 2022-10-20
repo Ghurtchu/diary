@@ -1,14 +1,12 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import route.handler.*
 import route.implementation.DeleteNoteServiceLive
 import server.NotesServer
+import server.endpoint.note.protocol.DeleteNoteEndpoint
 import server.middleware.{RequestContext, RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*
-
-trait DeleteNoteEndpoint extends HasRoute[RequestContextManager]
-
 
 final case class DeleteNoteEndpointLive(deleteNoteHandler: DeleteNoteHandler) extends DeleteNoteEndpoint:
 
@@ -16,7 +14,7 @@ final case class DeleteNoteEndpointLive(deleteNoteHandler: DeleteNoteHandler) ex
     case Method.DELETE -> !! / "api" / "notes" / long(noteId) => 
       for
         requestContext <- ZIO.service[RequestContextManager].flatMap(_.getCtx)
-        response       <- requestContext.getJwtOrFailure.fold(identity, jwtContent => deleteNoteHandler.handle(noteId, jwtContent.userId))
+        response       <- requestContext.getJwtOrFail.fold(identity, jwtContent => deleteNoteHandler.handle(noteId, jwtContent.userId))
       yield response
   } @@ RequestContextMiddleware.jwtAuthMiddleware
 

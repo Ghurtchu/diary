@@ -1,15 +1,13 @@
-package server.endpoint.note
+package server.endpoint.note.live
 
 import model.*
 import route.handler.*
 import route.implementation.UpdateNoteServiceLive
 import route.interface.*
 import server.NotesServer
+import server.endpoint.note.protocol.UpdateNoteEndpoint
 import zhttp.http.*
 import zio.*
-
-trait UpdateNoteEndpoint extends HasRoute[Any]
-
 
 final case class UpdateNoteEndpointLive(updateNoteHandler: UpdateNoteHandler) extends UpdateNoteEndpoint:
 

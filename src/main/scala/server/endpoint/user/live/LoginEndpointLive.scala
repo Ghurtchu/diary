@@ -1,14 +1,11 @@
-package server.endpoint.user
+package server.endpoint.user.live
 
 import route.handler.LoginHandler
 import route.implementation.LoginServiceLive
+import server.endpoint.user.protocol.LoginEndpoint
 import server.NotesServer
 import zhttp.http.*
 import zio.*
-
-trait LoginEndpoint:
-  def route: HttpApp[Any, Throwable]
-
 
 final case class LoginEndpointLive(loginHandler: LoginHandler) extends LoginEndpoint:
 

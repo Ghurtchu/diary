@@ -3,11 +3,6 @@ package db.mongo
 import zio.*
 import org.mongodb.scala.*
 
-trait DatabaseInitializer:
-
-  def initialize(DBConfig: DBConfig): RIO[DataSource, Unit]
-
-
 final case class MongoDatabaseInitializer(dataSource: DataSource) extends DatabaseInitializer:
 
   override def initialize(dbConfig: DBConfig): UIO[Unit] =

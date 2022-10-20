@@ -11,8 +11,8 @@ import zhttp.service.Server
 import zhttp.http.middleware.Auth
 
 case class RequestContext(jwtContent: Option[JwtContent]):
-
-  def getJwtOrFailure: Either[Task[Response], JwtContent] = jwtContent.fold(Left(ZIO.succeed(Response.text("Auth failed").setStatus(Status.Unauthorized))))(Right(_))
+  
+  def getJwtOrFail: Either[Task[Response], JwtContent] = jwtContent.fold(Left(ZIO.succeed(Response.text("Auth failed").setStatus(Status.Unauthorized))))(Right(_))
 
 
 object RequestContext:

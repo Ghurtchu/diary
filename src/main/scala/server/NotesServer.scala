@@ -43,13 +43,12 @@ final case class NotesServer(
 
   def start: ZIO[RequestContextManager & DataSource & DatabaseInitializer, Throwable, Unit] =
     for 
-      _      <- ZIO.succeed(println("Server started"))
+      _      <- ZIO.succeed(println("Starting HTTP Server"))
       port   <- System.envOrElse("PORT", "8080").map(_.toInt)
       dbPort <- System.envOrElse("MONGO_PORT", "mongodb://localhost:27018")
-      dbName <- System.envOrElse("MONGO_DB_NAME", "notesdb")
-      _      <- ZIO.service[DatabaseInitializer].flatMap(_.initialize(DBConfig(dbPort, dbName)))
-      _      <- ZIO.succeed(println(s"Accepting requests on port $port"))
-      _      <- Server.start(port, allRoutes)
+      dbName <- System.envOrElse("MONGO_DB_NAME", "notesdb") <* ZIO.succeed(println(s"Attempting to connect to DB"))
+      _      <- ZIO.service[DatabaseInitializer].flatMap(_.initialize(DBConfig(dbPort, dbName))) <* ZIO.succeed(println(s"Connected to DB on port: $dbPort"))
+      _      <- Server.start(port, allRoutes) <* ZIO.succeed(println(s"HTTP Server listening on port $port"))
     yield ()
 
 object NotesServer:

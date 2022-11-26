@@ -1,4 +1,6 @@
 ### This is the backend application which enables users to perform CRUD operations on the notes. A note is a simple data structure which consists of a title, body and a few other fields. The app is built in the style of a RESTful API that enables devs to plug in multiple clients in their favorite language/framework/stack (browser, mobile, desktop etc..)
+
+P.S The app has no integration tests because I have a full time job.. LOL (might add them later)
 ---
 #### Below you will see the typical flow of the app usage:
 1) User registration

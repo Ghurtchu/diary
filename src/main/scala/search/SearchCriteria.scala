@@ -11,6 +11,6 @@ enum SearchCriteria:
     case NonExact => ifNonExact
 
 object SearchCriteria:
-
-  def exact: SearchCriteria = Exact
+  
+  def exact: SearchCriteria    = Exact
   def nonExact: SearchCriteria = NonExact

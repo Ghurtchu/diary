@@ -9,7 +9,7 @@ import java.util.Date
 
 final case class SearchNoteService(notesRepository: NotesRepository) extends SearchService[Note]:
 
-  final override def searchByTitle(title: String, searchCriteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] =
+  override def searchByTitle(title: String, searchCriteria: SearchCriteria, userId: Long): Task[Either[String, List[Note]]] =
     for 
       notes    <- notesRepository getNotesByUserId userId
       response <- searchCriteria.fold(getExactMatches(title, notes))(getNonExactMatches(title, notes))

@@ -7,6 +7,7 @@ import route.implementation.DeleteNoteServiceLive
 import zhttp.http.Response
 import zio.*
 import zhttp.http._
+import RequestHandlerDefinitions.DeleteNoteHandler
 
 final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler:
 

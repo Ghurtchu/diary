@@ -10,11 +10,7 @@ import zhttp.http.Response
 import zio.*
 import zio.json.*
 import zhttp.http.*
-
-trait GetAllNotesHandler:
-
-  def handle(jwtContent: JwtContent): Task[Response]
-
+import RequestHandlerDefinitions.GetAllNotesHandler
 
 final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler:
   

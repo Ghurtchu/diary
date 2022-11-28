@@ -8,11 +8,7 @@ import model.*
 import route.interface.CreateNoteService
 import zio.json.*
 import model.LoginPayload
-
-trait SignupHandler:
-
-  def handle(request: Request): Task[Response]
-
+import RequestHandlerDefinitions.SignupHandler
 
 final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler:
 

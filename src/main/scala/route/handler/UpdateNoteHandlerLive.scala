@@ -7,14 +7,11 @@ import route.implementation.UpdateNoteServiceLive
 import zhttp.http._
 import zio.*
 import zio.json.*
-
-trait UpdateNoteHandler:
-  def handle(request: Request, noteId: Long): Task[Response]
-
+import RequestHandlerDefinitions.UpdateNoteHandler
 
 final case class UpdateNoteHandlerLive(updateNoteService: UpdateNoteService) extends UpdateNoteHandler:
 
-  final override def handle(request: Request, noteId: Long): Task[Response] = 
+  override def handle(request: Request, noteId: Long): Task[Response] = 
     for 
       noteEither <- request.bodyAsString.map(_.fromJson[Note])
       response   <- noteEither.fold (

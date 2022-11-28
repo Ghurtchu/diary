@@ -8,8 +8,6 @@ import zio.*
 import zio.json.*
 import RequestHandlerDefinitions.CreateNoteHandler
 
-import java.net.http.HttpResponse.ResponseInfo
-
 final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler:
 
   override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 

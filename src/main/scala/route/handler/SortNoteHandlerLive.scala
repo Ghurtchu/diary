@@ -6,14 +6,11 @@ import zhttp.http.Request
 import sort.{SortNoteService, SortOrder, SortService}
 import zio.json.*
 import zio.*
-
-trait SortNoteHandler:
-  def handle(request: Request, jwtContent: JwtContent): Task[Response]
-
+import RequestHandlerDefinitions.SortNoteHandler
 
 final case class SortNoteHandlerLive(sortNoteService: SortService[Note]) extends SortNoteHandler:
 
-  final override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
+  override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
     for
       queryParams <- ZIO.succeed(request.url.queryParams)
       sortOrder   <- getSortOrderFromQueryParams(queryParams)

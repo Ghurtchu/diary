@@ -7,14 +7,10 @@ import search.{SearchCriteria, SearchNoteService, SearchService}
 import zhttp.http.*
 import zio.*
 import zio.json.*
+import RequestHandlerDefinitions.SearchNoteHandler
 
 import java.time.Instant
 import java.util.Date
-
-trait SearchNoteHandler:
-
-  def handle(request: Request, jwtContent: JwtContent): Task[Response]
-
 
 final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) extends SearchNoteHandler:
 

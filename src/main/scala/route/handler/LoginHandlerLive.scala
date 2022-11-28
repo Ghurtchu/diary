@@ -15,11 +15,7 @@ import java.time.Instant
 import io.circe.*
 import jawn.parse as jawnParse
 import route.interface._
-
-trait LoginHandler:
-
-  def handle(request: Request): Task[Response]
-
+import RequestHandlerDefinitions.LoginHandler
 
 final case class LoginHandlerLive(loginService: LoginService) extends LoginHandler:
   

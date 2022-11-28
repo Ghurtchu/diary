@@ -7,7 +7,7 @@ final case class SecureHashService() extends PasswordHashService:
   
   private final val underlyingImpl: SecureHash = SecureHash()
   
-  override def hash(hashable: String): String = underlyingImpl createHash hashable
+  override def hash(password: String): String = underlyingImpl createHash password
   
   override def validate(password: String, hashedPassword: String): Boolean = underlyingImpl.validatePassword(password, hashedPassword)
 

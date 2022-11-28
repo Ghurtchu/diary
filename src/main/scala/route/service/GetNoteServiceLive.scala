@@ -2,7 +2,6 @@ package route.service
 
 import db.*
 import db.note.NotesRepository
-import domain.Note
 import zhttp.http.Response
 import zio.*
 import zio.json.*

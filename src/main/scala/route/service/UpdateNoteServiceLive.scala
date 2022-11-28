@@ -1,7 +1,6 @@
 package route.service
 
 import db.note.{NotesRepository, NotesRepositoryLive}
-import domain.Note
 import ServiceDefinitions.UpdateNoteService
 import domain.Domain.Note
 import zhttp.http.Response

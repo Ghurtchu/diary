@@ -2,7 +2,6 @@ package search
 
 import db.note.{NotesRepository, NotesRepositoryLive}
 import domain.Domain.Note
-import domain.{Note, User}
 import zio.{Task, UIO, ZIO, ZLayer}
 
 import java.time.Instant

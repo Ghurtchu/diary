@@ -1,7 +1,6 @@
 package route.service
 
 import domain.Domain.{LoginPayload, Note, User}
-import domain.{LoginPayload, Note, User}
 import route.service.ServiceDefinitions.LoginService.{JWT, LoginError}
 import zio.Task
 

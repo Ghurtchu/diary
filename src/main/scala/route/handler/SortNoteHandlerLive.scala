@@ -1,6 +1,5 @@
 package route.handler
 
-import domain.{JwtContent, Note}
 import zhttp.http.Response
 import zhttp.http.Request
 

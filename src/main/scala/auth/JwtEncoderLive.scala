@@ -1,8 +1,6 @@
 package auth
 
-import domain.User
 import pdi.jwt.JwtAlgorithm
-import domain.{JwtContent, LoginPayload}
 import zio.{RIO, Task}
 import db.*
 import route.service.LoginServiceLive.layer
@@ -14,8 +12,8 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import io.circe.*
 import jawn.parse as jawnParse
 import zio.json.*
-import domain.JwtContent.*
 import JwtEncoderLive.DAY_IN_SECONDS
+import domain.Domain.{JwtContent, LoginPayload, User}
 import route.service.ServiceDefinitions.LoginService.JWT
 
 final case class JwtEncoderLive() extends JwtEncoder[User]:

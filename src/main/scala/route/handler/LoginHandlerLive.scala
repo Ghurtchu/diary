@@ -4,8 +4,6 @@ import zhttp.http.*
 import zio.*
 import zio.json.*
 import db.*
-import domain.JwtContent
-import domain.LoginPayload
 import hash.{PasswordHashService, SecureHashService}
 
 import java.time.Instant

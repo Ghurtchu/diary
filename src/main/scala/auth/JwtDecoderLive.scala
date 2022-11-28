@@ -1,6 +1,6 @@
 package auth
 
-import domain.JwtContent
+import domain.Domain.JwtContent
 import pdi.jwt.{Jwt, JwtAlgorithm}
 import zio.{ULayer, ZLayer}
 import zio.json.*

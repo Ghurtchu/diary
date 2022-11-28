@@ -4,7 +4,6 @@ import zio.*
 import zhttp.http.{Request, Response, Status}
 import domain.*
 import zio.json.*
-import domain.LoginPayload
 import RequestHandlerDefinitions.SignupHandler
 import domain.Domain.User
 import route.service.ServiceDefinitions.SignupService
@@ -12,7 +11,7 @@ import route.service.SignupServiceLive
 
 final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler:
 
-  override def handle(request: Request): Task[Response] = 
+  override def handle(request: Request): Task[Response] =
     for
       userEither <- request.bodyAsString.map(_.fromJson[User])
       response   <- userEither.fold(_ => ZIO.succeed(Response.text("Invalid Json")), mapSignupServiceResultToResponse)

@@ -1,13 +1,15 @@
 package route.handler
 
 import zhttp.http.Request
-import model.*
+import domain.*
+
 import util.*
 import search.{SearchCriteria, SearchNoteService, SearchService}
 import zhttp.http.*
 import zio.*
 import zio.json.*
 import RequestHandlerDefinitions.SearchNoteHandler
+import domain.Domain.{JwtContent, Note}
 
 import java.time.Instant
 import java.util.Date

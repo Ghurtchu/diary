@@ -2,7 +2,7 @@ package route.service
 
 import db.Repository.*
 import db.note.{NotesRepository, NotesRepositoryLive}
-import model.Note
+import domain.Note
 import zhttp.http.Response
 import zio.*
 import ServiceDefinitions.DeleteNoteService

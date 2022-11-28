@@ -1,6 +1,7 @@
 package route.handler
 
-import model.JwtContent
+import domain.Domain.JwtContent
+import domain.JwtContent
 import zhttp.http.{Request, Response}
 import zio.Task
 

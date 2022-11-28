@@ -4,8 +4,8 @@ import db.*
 import db.DbError.InvalidId
 import db.Repository.*
 import db.mongo.{DataSource, DatabaseContext, MongoDatabaseInitializer}
-import model.Note.*
-import model.{Note, User}
+import domain.Note.*
+import domain.{Note, User}
 import org.mongodb.scala.*
 import org.mongodb.scala.model.Filters.*
 import org.mongodb.scala.result.{DeleteResult, InsertOneResult}

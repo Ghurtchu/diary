@@ -2,7 +2,8 @@ package scala.sort
 
 import db.*
 import db.note.NotesRepository
-import model.Note
+import domain.Domain.Note
+import domain.Note
 import zio.*
 
 import scala.sort.SortNoteService.{ascending, descending}

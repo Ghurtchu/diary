@@ -1,9 +1,10 @@
 package server.middleware
 
 import io.netty.handler.codec.http.HttpHeaders
-import model.JwtContent
+import domain.JwtContent
 import pdi.jwt.{Jwt, JwtAlgorithm}
 import auth.{JwtDecoder, JwtDecoderLive}
+import domain.Domain.JwtContent
 import zio.*
 import zio.json.*
 import zhttp.http.*

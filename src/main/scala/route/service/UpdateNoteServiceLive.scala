@@ -1,8 +1,9 @@
 package route.service
 
 import db.note.{NotesRepository, NotesRepositoryLive}
-import model.Note
+import domain.Note
 import ServiceDefinitions.UpdateNoteService
+import domain.Domain.Note
 import zhttp.http.Response
 import zio.*
 import zio.json.*

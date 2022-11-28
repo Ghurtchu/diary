@@ -4,7 +4,7 @@ import db.*
 import db.DbError.InvalidId
 import db.Repository.*
 import db.mongo.{DataSource, DatabaseContext}
-import model.User
+import domain.User
 import org.mongodb.scala.*
 import org.mongodb.scala.model.Filters.*
 import org.mongodb.scala.model.Sorts.*

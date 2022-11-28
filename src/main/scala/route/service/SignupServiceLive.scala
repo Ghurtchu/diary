@@ -3,10 +3,11 @@ package route.service
 import db.*
 import db.user.UserRepository
 import hash.{PasswordHashService, SecureHashService}
-import model.*
+import domain.*
 import zio.*
 import zio.json.*
 import ServiceDefinitions.SignupService
+import domain.Domain.User
 
 final case class SignupServiceLive(
                          private val passwordHashService: PasswordHashService,

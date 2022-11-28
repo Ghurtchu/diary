@@ -1,6 +1,6 @@
 package server.endpoint.note
 
-import model.*
+import domain.*
 import route.handler.*
 import route.handler.RequestHandlerDefinitions.UpdateNoteHandler
 import route.service.UpdateNoteServiceLive

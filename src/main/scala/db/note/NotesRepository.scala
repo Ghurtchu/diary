@@ -2,7 +2,7 @@ package db.note
 
 import db.Repository
 import db.Repository.DBResult
-import model.Note
+import domain.Note
 import zio.Task
 
 trait NotesRepository extends Repository[Note] :

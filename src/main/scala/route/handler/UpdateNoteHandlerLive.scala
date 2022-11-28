@@ -1,10 +1,11 @@
 package route.handler
 
-import model.Note
+import domain.Note
 import zhttp.http.*
 import zio.*
 import zio.json.*
 import RequestHandlerDefinitions.UpdateNoteHandler
+import domain.Domain.Note
 import route.service.ServiceDefinitions.UpdateNoteService
 import route.service.UpdateNoteServiceLive
 

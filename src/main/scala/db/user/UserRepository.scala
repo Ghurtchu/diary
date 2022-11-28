@@ -1,7 +1,7 @@
 package db.user
 
 import db.Repository
-import model.User
+import domain.User
 import zio.Task
 
 trait UserRepository extends Repository[User] :

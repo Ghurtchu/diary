@@ -2,10 +2,11 @@ package route.handler
 
 import zio.*
 import zhttp.http.{Request, Response, Status}
-import model.*
+import domain.*
 import zio.json.*
-import model.LoginPayload
+import domain.LoginPayload
 import RequestHandlerDefinitions.SignupHandler
+import domain.Domain.User
 import route.service.ServiceDefinitions.SignupService
 import route.service.SignupServiceLive
 

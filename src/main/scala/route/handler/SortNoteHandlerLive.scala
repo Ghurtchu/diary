@@ -1,12 +1,14 @@
 package route.handler
 
-import model.{JwtContent, Note}
+import domain.{JwtContent, Note}
 import zhttp.http.Response
 import zhttp.http.Request
+
 import sort.{SortNoteService, SortOrder, SortService}
 import zio.json.*
 import zio.*
 import RequestHandlerDefinitions.SortNoteHandler
+import domain.Domain.{JwtContent, Note}
 
 final case class SortNoteHandlerLive(sortNoteService: SortService[Note]) extends SortNoteHandler:
 

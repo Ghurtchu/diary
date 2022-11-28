@@ -4,8 +4,8 @@ import zhttp.http.*
 import zio.*
 import zio.json.*
 import db.*
-import model.JwtContent
-import model.LoginPayload
+import domain.JwtContent
+import domain.LoginPayload
 import hash.{PasswordHashService, SecureHashService}
 
 import java.time.Instant
@@ -15,6 +15,7 @@ import java.time.Instant
 import io.circe.*
 import jawn.parse as jawnParse
 import RequestHandlerDefinitions.LoginHandler
+import domain.Domain.LoginPayload
 import route.service.ServiceDefinitions.LoginService
 
 final case class LoginHandlerLive(loginService: LoginService) extends LoginHandler:

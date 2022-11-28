@@ -2,11 +2,12 @@ package route.service
 
 import db.*
 import db.note.NotesRepository
-import model.Note
+import domain.Note
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 import ServiceDefinitions.GetAllNotesService
+import domain.Domain.Note
 
 final case class GetAllNotesServiceLive private(private val notesRepository: NotesRepository) extends GetAllNotesService:
 

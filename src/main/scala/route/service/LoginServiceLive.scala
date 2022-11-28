@@ -6,8 +6,9 @@ import db.user.UserRepository
 import hash.{PasswordHashService, SecureHashService}
 import io.circe.*
 import io.circe.jawn.parse as jawnParse
-import model.*
-import model.JwtContent.*
+import domain.*
+import domain.Domain.{LoginPayload, User}
+import domain.JwtContent.*
 import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import route.service.LoginServiceLive.layer
 import zio.*

@@ -1,7 +1,7 @@
 package route.handler
 
 import db.note.NotesRepositoryLive
-import model.{JwtContent, LoginPayload, Note}
+import domain.{JwtContent, LoginPayload, Note}
 import pdi.jwt.{Jwt, JwtCirce}
 import server.NotesServer
 import zhttp.http.Response
@@ -9,6 +9,7 @@ import zio.*
 import zio.json.*
 import zhttp.http.*
 import RequestHandlerDefinitions.GetAllNotesHandler
+import domain.Domain.JwtContent
 import route.service.GetAllNotesServiceLive
 import route.service.ServiceDefinitions.GetAllNotesService
 

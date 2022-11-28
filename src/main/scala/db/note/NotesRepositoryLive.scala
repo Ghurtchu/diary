@@ -19,7 +19,7 @@ import scala.util.Random
 
 final case class NotesRepositoryLive(dataSource: DataSource) extends NotesRepository:
 
-  private final val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
+  private val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
 
   override def getById(id: Long): Task[Option[Note]] = 
     for

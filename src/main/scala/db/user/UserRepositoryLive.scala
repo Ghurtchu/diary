@@ -13,7 +13,7 @@ import zio.json.*
 
 final case class UserRepositoryLive(dataSource: DataSource) extends UserRepository:
 
-  private final val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
+  private val mongo: UIO[MongoDatabase] = dataSource.getCtx.map(_.mongoDatabase.get)
 
   override def getById(id: Long): Task[Option[User]] = 
     for

@@ -15,6 +15,5 @@ final case class JwtDecoderLive() extends JwtDecoder:
       })
 
 object JwtDecoderLive:
-  
-  def layer: ULayer[JwtDecoder] = ZLayer.succeed(JwtDecoderLive())
+  lazy val layer: ULayer[JwtDecoder] = ZLayer.succeed(JwtDecoderLive())
 

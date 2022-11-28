@@ -2,13 +2,13 @@ package route.handler
 
 import model.Note
 import route.interface
-import interface._
-import route.implementation.GetNoteServiceLive
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 import zhttp.http.Status
 import RequestHandlerDefinitions.GetNoteHandler
+import route.service.GetNoteServiceLive
+import route.service.ServiceDefinitions.GetNoteService
 
 final case class GetNoteHandlerLive(getNoteService: GetNoteService) extends GetNoteHandler:
 

@@ -1,14 +1,14 @@
-package route.implementation
+package route.service
 
 import db.*
 import db.note.NotesRepository
 import model.Note
-import route.interface.GetNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
+import ServiceDefinitions.GetNoteService
 
-final case class GetNoteServiceLive(private final val notesRepository: NotesRepository) extends GetNoteService:
+final case class GetNoteServiceLive(private val notesRepository: NotesRepository) extends GetNoteService:
 
   override def getNote(noteId: Long, userId: Long): Task[Either[String, Note]] =
     notesRepository

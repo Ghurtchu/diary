@@ -14,8 +14,8 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
 import java.time.Instant
 import io.circe.*
 import jawn.parse as jawnParse
-import route.interface._
 import RequestHandlerDefinitions.LoginHandler
+import route.service.ServiceDefinitions.LoginService
 
 final case class LoginHandlerLive(loginService: LoginService) extends LoginHandler:
   

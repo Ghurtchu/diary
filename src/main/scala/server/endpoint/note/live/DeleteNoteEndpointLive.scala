@@ -1,7 +1,8 @@
 package server.endpoint.note.live
 
 import route.handler.*
-import route.implementation.DeleteNoteServiceLive
+import route.handler.RequestHandlerDefinitions.DeleteNoteHandler
+import route.service.DeleteNoteServiceLive
 import server.NotesServer
 import server.endpoint.note.protocol.DeleteNoteEndpoint
 import server.middleware.{RequestContext, RequestContextManager, RequestContextMiddleware}

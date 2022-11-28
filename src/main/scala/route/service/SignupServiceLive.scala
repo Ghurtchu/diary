@@ -1,14 +1,14 @@
-package route.implementation
+package route.service
 
 import db.*
 import db.user.UserRepository
-import model.*
-import route.interface.{CreateNoteService, SignupService}
 import hash.{PasswordHashService, SecureHashService}
+import model.*
 import zio.*
 import zio.json.*
+import ServiceDefinitions.SignupService
 
-final case class SignupServiceLive private(
+final case class SignupServiceLive(
                          private val passwordHashService: PasswordHashService,
                          private val userRepository: UserRepository
                        ) extends SignupService:
@@ -22,12 +22,12 @@ final case class SignupServiceLive private(
           for 
             userWithHashedPass <- ZIO.succeed(user.copy(password = passwordHashService.hash(user.password)))
             userWithId         <- ZIO.succeed(userWithHashedPass.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
-            signupStatus       <- userRepository.add(userWithId).map(_.toOperationMessage)
+            signupStatus       <- userRepository.add(userWithId).map(_.toDBResultMessage)
           yield signupStatus
     yield response
 
 object SignupServiceLive:
 
-  def layer: URLayer[PasswordHashService & UserRepository, SignupService] =
+  lazy val layer: URLayer[PasswordHashService & UserRepository, SignupService] =
     ZLayer.fromFunction(SignupServiceLive.apply)
 

@@ -1,30 +1,29 @@
-package route.implementation
+package route.service
 
-import model.{JwtContent, LoginPayload}
-import zio.{RIO, Task}
+import auth.JwtEncoder
 import db.*
-import route.implementation.LoginServiceLive.layer
+import db.user.UserRepository
 import hash.{PasswordHashService, SecureHashService}
+import io.circe.*
+import io.circe.jawn.parse as jawnParse
+import model.*
+import model.JwtContent.*
+import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
+import route.service.LoginServiceLive.layer
 import zio.*
+import zio.json.*
+import zio.ZLayer
 
 import java.time.Instant
-import pdi.jwt.{JwtAlgorithm, JwtCirce, JwtClaim}
-import io.circe.*
-import jawn.parse as jawnParse
-import zio.json.*
-import model.JwtContent.*
-import auth.JwtEncoder
-import db.user.UserRepository
-import model.*
-import route.interface.LoginService
-import route.interface.LoginService.*
+import route.service.ServiceDefinitions.LoginService
+import route.service.ServiceDefinitions.LoginService.{JWT, LoginError}
 
 final case class LoginServiceLive(
-                                   userRepository: UserRepository,
-                                   passwordHashService: PasswordHashService,
-                                   jwtEncoder: JwtEncoder[User]
+                                   private val userRepository: UserRepository,
+                                   private val passwordHashService: PasswordHashService,
+                                   private val jwtEncoder: JwtEncoder[User]
                       ) extends LoginService:
-  final override def login(loginPayload: LoginPayload): Task[Either[LoginError, JWT]] =
+  override def login(loginPayload: LoginPayload): Task[Either[LoginError, JWT]] =
     userRepository
       .getUserByEmail(loginPayload.email)
       .map(_.fold(Left(LoginError("User does not exist")))(user => getJwtOrAuthFailure(loginPayload.password, user)))

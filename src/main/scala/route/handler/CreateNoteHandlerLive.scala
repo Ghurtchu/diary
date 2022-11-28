@@ -1,12 +1,12 @@
 package route.handler
 
 import model.{JwtContent, Note}
-import route.interface.*
 import zhttp.http.HttpError.BadRequest
 import zhttp.http.{Request, Response, Status}
 import zio.*
 import zio.json.*
 import RequestHandlerDefinitions.CreateNoteHandler
+import route.service.ServiceDefinitions.CreateNoteService
 
 final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler:
 

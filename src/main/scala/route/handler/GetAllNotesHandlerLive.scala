@@ -3,14 +3,14 @@ package route.handler
 import db.note.NotesRepositoryLive
 import model.{JwtContent, LoginPayload, Note}
 import pdi.jwt.{Jwt, JwtCirce}
-import route.interface.*
-import route.implementation.GetAllNotesServiceLive
 import server.NotesServer
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 import zhttp.http.*
 import RequestHandlerDefinitions.GetAllNotesHandler
+import route.service.GetAllNotesServiceLive
+import route.service.ServiceDefinitions.GetAllNotesService
 
 final case class GetAllNotesHandlerLive(getAllNotesService: GetAllNotesService) extends GetAllNotesHandler:
   

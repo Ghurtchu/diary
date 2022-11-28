@@ -1,17 +1,17 @@
-package route.implementation
+package route.service
 
 import db.note.{NotesRepository, NotesRepositoryLive}
 import model.Note
-import route.interface.{CreateNoteService, UpdateNoteService}
+import ServiceDefinitions.UpdateNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
 
-final case class UpdateNoteServiceLive(notesRepository: NotesRepository) extends UpdateNoteService:
+final case class UpdateNoteServiceLive(private val notesRepository: NotesRepository) extends UpdateNoteService:
   
   override def updateNote(noteId: Long, note: Note): Task[Either[String, String]] = 
     notesRepository.update(noteId, note.copy(id = Some(noteId)))
-      .map(_.toOperationMessage)
+      .map(_.toDBResultMessage)
 
 object UpdateNoteServiceLive:
   

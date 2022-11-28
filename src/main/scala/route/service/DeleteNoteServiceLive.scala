@@ -1,17 +1,17 @@
-package route.implementation
+package route.service
 
-import db.Repository._
+import db.Repository.*
 import db.note.{NotesRepository, NotesRepositoryLive}
 import model.Note
-import route.interface.DeleteNoteService
 import zhttp.http.Response
 import zio.*
+import ServiceDefinitions.DeleteNoteService
 
-final case class DeleteNoteServiceLive(notesRepository: NotesRepository) extends DeleteNoteService:
+final case class DeleteNoteServiceLive(private val notesRepository: NotesRepository) extends DeleteNoteService:
 
   override def deleteRecord(noteId: Long, userId: Long): Task[Either[String, String]] =
     notesRepository.deleteNoteByIdAndUserId(noteId, userId)
-      .map(_.toOperationMessage)
+      .map(_.toDBResultMessage)
 
 object DeleteNoteServiceLive:
 

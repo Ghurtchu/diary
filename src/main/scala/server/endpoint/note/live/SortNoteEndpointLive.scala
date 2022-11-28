@@ -2,7 +2,7 @@ package server.endpoint.note.live
 
 import model.*
 import route.handler.*
-import route.interface.*
+import route.handler.RequestHandlerDefinitions.SortNoteHandler
 import server.NotesServer
 import server.endpoint.note.protocol.SortNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}

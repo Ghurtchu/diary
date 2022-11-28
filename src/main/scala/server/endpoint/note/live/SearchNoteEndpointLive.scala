@@ -1,6 +1,7 @@
 package server.endpoint.note.live
 
 import route.handler.*
+import route.handler.RequestHandlerDefinitions.SearchNoteHandler
 import server.NotesServer
 import server.endpoint.note.protocol.SearchNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}

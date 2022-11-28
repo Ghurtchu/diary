@@ -1,14 +1,13 @@
 package route.handler
 
-import route.interface.*
 import zio.*
-import route.implementation.SignupServiceLive
 import zhttp.http.{Request, Response, Status}
 import model.*
-import route.interface.CreateNoteService
 import zio.json.*
 import model.LoginPayload
 import RequestHandlerDefinitions.SignupHandler
+import route.service.ServiceDefinitions.SignupService
+import route.service.SignupServiceLive
 
 final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler:
 

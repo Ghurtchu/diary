@@ -1,7 +1,8 @@
 package server.endpoint.user.live
 
 import route.handler.*
-import route.implementation.SignupServiceLive
+import route.handler.RequestHandlerDefinitions.SignupHandler
+import route.service.SignupServiceLive
 import server.endpoint.user.protocol.SignupEndpoint
 import zhttp.http.*
 import zio.*

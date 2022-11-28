@@ -1,13 +1,13 @@
 package route.handler
 
 import db.note.NotesRepositoryLive
-import route.implementation
-import route.interface._
-import route.implementation.DeleteNoteServiceLive
 import zhttp.http.Response
 import zio.*
-import zhttp.http._
+import zhttp.http.*
 import RequestHandlerDefinitions.DeleteNoteHandler
+import route.service
+import route.service.DeleteNoteServiceLive
+import route.service.ServiceDefinitions.DeleteNoteService
 
 final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler:
 

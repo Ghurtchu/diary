@@ -1,17 +1,17 @@
-package route.implementation
+package route.service
 
 import db.note.{NotesRepository, NotesRepositoryLive}
 import model.Note
-import route.interface.CreateNoteService
 import zhttp.http.Response
 import zio.*
 import zio.json.*
+import ServiceDefinitions.CreateNoteService
 
-final case class CreateNoteServiceLive(private final val notesRepository: NotesRepository) extends CreateNoteService:
+final case class CreateNoteServiceLive(private val notesRepository: NotesRepository) extends CreateNoteService:
 
   override def createNote(note: Note): Task[Either[String, String]] = 
     notesRepository.add(note)
-      .map(_.toOperationMessage)
+      .map(_.toDBResultMessage)
 
 
 object CreateNoteServiceLive:

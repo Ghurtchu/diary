@@ -3,7 +3,6 @@ package scala.sort
 import db.*
 import db.note.NotesRepository
 import model.Note
-import route.interface.*
 import zio._
 
 final case class SortNoteService(notesRepository: NotesRepository) extends SortService[Note]:

@@ -1,13 +1,12 @@
 package route.handler
 
 import model.Note
-import route.interface.UpdateNoteService
-import route.implementation.UpdateNoteServiceLive
-
-import zhttp.http._
+import zhttp.http.*
 import zio.*
 import zio.json.*
 import RequestHandlerDefinitions.UpdateNoteHandler
+import route.service.ServiceDefinitions.UpdateNoteService
+import route.service.UpdateNoteServiceLive
 
 final case class UpdateNoteHandlerLive(updateNoteService: UpdateNoteService) extends UpdateNoteHandler:
 

@@ -2,13 +2,15 @@ package route
 
 import db.{DbError, DbSuccess}
 
-package object implementation:
+import scala.util.Either
+
+package object service:
 
   extension[A] (value: A)
     def inQuotes: String = s"`$value`"
     
   extension (dbErrorOrSuccess: Either[DbError, DbSuccess])
-    def toOperationMessage: Either[String, String] =
+    def toDBResultMessage: Either[String, String] =
       dbErrorOrSuccess.fold(
         err     => Left(err.msg),
         success => Right(success.msg)

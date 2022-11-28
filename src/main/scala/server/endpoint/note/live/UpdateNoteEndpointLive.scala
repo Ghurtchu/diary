@@ -2,8 +2,8 @@ package server.endpoint.note.live
 
 import model.*
 import route.handler.*
-import route.implementation.UpdateNoteServiceLive
-import route.interface.*
+import route.handler.RequestHandlerDefinitions.UpdateNoteHandler
+import route.service.UpdateNoteServiceLive
 import server.NotesServer
 import server.endpoint.note.protocol.UpdateNoteEndpoint
 import zhttp.http.*

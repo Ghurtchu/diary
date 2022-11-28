@@ -1,5 +1,4 @@
 import route.handler.*
-import route.implementation.*
 import search.*
 import zio.*
 import db.*
@@ -11,6 +10,7 @@ import server.middleware.RequestContextManagerLive
 import auth.{JwtDecoderLive, JwtEncoderLive}
 import db.note.NotesRepositoryLive
 import db.user.UserRepositoryLive
+import route.service.{CreateNoteServiceLive, DeleteNoteServiceLive, GetAllNotesServiceLive, GetNoteServiceLive, LoginServiceLive, SignupServiceLive, UpdateNoteServiceLive}
 import server.endpoint.note.live.{CreateNoteEndpointLive, DeleteNoteEndpointLive, GetAllNotesEndpointLive, GetNoteEndpointLive, SearchNoteEndpointLive, SortNoteEndpointLive, UpdateNoteEndpointLive}
 import server.endpoint.user.live.{LoginEndpointLive, SignupEndpointLive}
 

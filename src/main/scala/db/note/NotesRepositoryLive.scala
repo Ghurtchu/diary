@@ -44,7 +44,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       notes     <- ZIO.attempt(parseDocumentsToNoteList(documents))
     yield notes
 
-  override def update(id: Long, newNote: Note): Task[DbOperation] = 
+  override def update(id: Long, newNote: Note): Task[DBResult] = 
     for
       db           <- mongo
       updateResult <- ZIO.fromFuture { implicit ec =>
@@ -55,7 +55,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       updateStatus <- updateResult.fold(updateResult.getModifiedCount == 1, DbSuccess.Updated(s"Note with id $id has been updated"), DbError.InvalidId(s"Note with id $id has not been updated"))
     yield updateStatus
 
-  override def delete(noteId: Long): Task[DbOperation] = 
+  override def delete(noteId: Long): Task[DBResult] = 
     for
       db             <- mongo
       deleteResult   <- ZIO.fromFuture { implicit ec =>
@@ -66,7 +66,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       deletionStatus <- deleteResult.fold(deleteResult.getDeletedCount == 1, DbSuccess.Deleted(s"Note with id $noteId has been deleted"), DbError.InvalidId(s"Could not delete Note. Note with id: $noteId does not exist"))
     yield deletionStatus
 
-  override def add(note: Note): Task[DbOperation] = 
+  override def add(note: Note): Task[DBResult] = 
     for
       db              <- mongo
       noteWithId      <- ZIO.succeed(note.copy(id = Some(scala.util.Random.nextLong(Long.MaxValue))))
@@ -101,7 +101,7 @@ final case class NotesRepositoryLive(dataSource: DataSource) extends NotesReposi
       note     <- ZIO.attempt(parseDocumentToNote(document))
     yield note
 
-  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DbOperation] = 
+  override def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DBResult] = 
     for
       db             <- mongo
       deleteResult   <- ZIO.fromFuture { implicit ec =>

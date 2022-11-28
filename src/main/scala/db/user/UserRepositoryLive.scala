@@ -27,7 +27,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
       maybeUser   <- ZIO.attempt(parseDocumentToUser(maybeDoc))
     yield maybeUser
 
-  override def update(id: Long, newUser: User): Task[DbOperation] =
+  override def update(id: Long, newUser: User): Task[DBResult] =
     for
       db           <- mongo
       updateResult <- ZIO.fromFuture { implicit ec =>
@@ -38,7 +38,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
       updateStatus <- updateResult.fold(updateResult.getModifiedCount == 1, DbSuccess.Updated(s"User with id '$id' has been updated"), DbError.InvalidId(s"User with id '$id' has not been updated"))
     yield updateStatus
 
-  override def delete(id: Long): Task[DbOperation] =
+  override def delete(id: Long): Task[DBResult] =
     for
       db            <- mongo
       queryResult   <- ZIO.fromFuture { implicit ec =>
@@ -49,7 +49,7 @@ final case class UserRepositoryLive(dataSource: DataSource) extends UserReposito
       deletionStatus <- queryResult.fold(queryResult.getDeletedCount == 1, DbSuccess.Deleted(s"User with id $id hsa been deleted"), DbError.InvalidId(s"Could not delete User. User with id: $id does not exist"))
     yield deletionStatus
 
-  override def add(user: User): Task[DbOperation] =
+  override def add(user: User): Task[DBResult] =
     for
       db              <- mongo
       insertionResult <- ZIO.fromFuture { implicit ec =>

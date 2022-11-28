@@ -1,7 +1,7 @@
 package db.note
 
 import db.Repository
-import db.Repository.DbOperation
+import db.Repository.DBResult
 import model.Note
 import zio.Task
 
@@ -13,4 +13,4 @@ trait NotesRepository extends Repository[Note] :
 
   def getNoteByIdAndUserId(noteId: Long, userId: Long): Task[Option[Note]]
 
-  def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DbOperation]
+  def deleteNoteByIdAndUserId(noteId: Long, userId: Long): Task[DBResult]

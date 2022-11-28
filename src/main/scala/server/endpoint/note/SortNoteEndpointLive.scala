@@ -1,10 +1,10 @@
-package server.endpoint.note.live
+package server.endpoint.note
 
 import model.*
 import route.handler.*
 import route.handler.RequestHandlerDefinitions.SortNoteHandler
 import server.NotesServer
-import server.endpoint.note.protocol.SortNoteEndpoint
+import server.endpoint.note.NoteEndpointDefinitions.SortNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*

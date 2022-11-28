@@ -1,9 +1,9 @@
-package server.endpoint.user.live
+package server.endpoint.user
 
 import route.handler.RequestHandlerDefinitions.LoginHandler
 import route.service.LoginServiceLive
 import server.NotesServer
-import server.endpoint.user.protocol.LoginEndpoint
+import server.endpoint.user.UserEndpointDefinitions.LoginEndpoint
 import zhttp.http.*
 import zio.*
 

@@ -1,9 +1,9 @@
-package server.endpoint.note.live
+package server.endpoint.note
 
 import route.handler.*
 import route.handler.RequestHandlerDefinitions.SearchNoteHandler
 import server.NotesServer
-import server.endpoint.note.protocol.SearchNoteEndpoint
+import server.endpoint.note.NoteEndpointDefinitions.SearchNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*

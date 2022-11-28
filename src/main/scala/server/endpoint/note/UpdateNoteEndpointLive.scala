@@ -1,11 +1,11 @@
-package server.endpoint.note.live
+package server.endpoint.note
 
 import model.*
 import route.handler.*
 import route.handler.RequestHandlerDefinitions.UpdateNoteHandler
 import route.service.UpdateNoteServiceLive
 import server.NotesServer
-import server.endpoint.note.protocol.UpdateNoteEndpoint
+import server.endpoint.note.NoteEndpointDefinitions.UpdateNoteEndpoint
 import zhttp.http.*
 import zio.*
 

@@ -9,10 +9,9 @@ import io.netty.handler.codec.http.HttpHeaders
 import org.mongodb.scala.MongoDatabase
 import pdi.jwt.algorithms.JwtUnknownAlgorithm
 import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
-import server.endpoint.note.protocol._
-import server.endpoint.user.protocol._
+import server.endpoint.note.NoteEndpointDefinitions.*
+import server.endpoint.user.UserEndpointDefinitions.*
 import server.middleware.RequestContextManager
-import zhttp.html.{Dom, Html}
 import zhttp.http.middleware.HttpMiddleware
 
 import java.io.IOException

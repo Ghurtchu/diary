@@ -1,10 +1,10 @@
-package server.endpoint.note.live
+package server.endpoint.note
 
 import route.handler.*
 import route.handler.RequestHandlerDefinitions.DeleteNoteHandler
 import route.service.DeleteNoteServiceLive
 import server.NotesServer
-import server.endpoint.note.protocol.DeleteNoteEndpoint
+import server.endpoint.note.NoteEndpointDefinitions.DeleteNoteEndpoint
 import server.middleware.{RequestContext, RequestContextManager, RequestContextMiddleware}
 import zhttp.http.*
 import zio.*

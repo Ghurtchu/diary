@@ -1,10 +1,9 @@
-package server.endpoint.note.live
+package server.endpoint.note
 
-import route.handler.RequestHandlerDefinitions.CreateNoteHandler
-import route.handler.RequestHandlerDefinitions._
+import route.handler.RequestHandlerDefinitions.*
 import route.service.CreateNoteServiceLive
 import server.NotesServer
-import server.endpoint.note.protocol.CreateNoteEndpoint
+import server.endpoint.note.NoteEndpointDefinitions.CreateNoteEndpoint
 import server.middleware.{RequestContextManager, RequestContextMiddleware}
 import zhttp.*
 import zhttp.http.*

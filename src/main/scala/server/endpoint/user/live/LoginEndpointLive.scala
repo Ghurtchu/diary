@@ -1,6 +1,5 @@
 package server.endpoint.user.live
 
-import route.handler.LoginHandler
 import route.handler.RequestHandlerDefinitions.LoginHandler
 import route.service.LoginServiceLive
 import server.NotesServer
@@ -13,7 +12,6 @@ final case class LoginEndpointLive(loginHandler: LoginHandler) extends LoginEndp
   override lazy val route: HttpApp[Any, Throwable] = Http.collectZIO[Request] {
     case request@Method.POST -> !! / "api" / "user" / "login" => loginHandler handle request 
   }
-
 
 object LoginEndpointLive:
   

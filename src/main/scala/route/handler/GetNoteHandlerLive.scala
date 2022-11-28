@@ -1,7 +1,6 @@
 package route.handler
 
 import model.Note
-import route.interface
 import zhttp.http.Response
 import zio.*
 import zio.json.*

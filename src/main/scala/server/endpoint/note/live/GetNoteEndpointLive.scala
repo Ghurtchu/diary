@@ -1,7 +1,6 @@
 package server.endpoint.note.live
 
 import model.*
-import route.handler.GetNoteHandler
 import route.handler.RequestHandlerDefinitions.GetNoteHandler
 import server.NotesServer
 import server.endpoint.note.protocol.GetNoteEndpoint

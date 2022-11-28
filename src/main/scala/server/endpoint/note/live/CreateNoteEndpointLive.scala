@@ -1,7 +1,7 @@
 package server.endpoint.note.live
 
 import route.handler.RequestHandlerDefinitions.CreateNoteHandler
-import route.handler.{CreateNoteHandler, SignupHandler}
+import route.handler.RequestHandlerDefinitions._
 import route.service.CreateNoteServiceLive
 import server.NotesServer
 import server.endpoint.note.protocol.CreateNoteEndpoint

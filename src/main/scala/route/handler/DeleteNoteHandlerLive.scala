@@ -8,11 +8,6 @@ import zhttp.http.Response
 import zio.*
 import zhttp.http._
 
-trait DeleteNoteHandler:
-
-  def handle(noteId: Long, userId: Long): Task[Response]
-
-
 final case class DeleteNoteHandlerLive(deleteNoteService: DeleteNoteService) extends DeleteNoteHandler:
 
   override def handle(noteId: Long, userId: Long): Task[Response] = 

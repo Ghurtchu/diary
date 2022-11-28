@@ -6,13 +6,9 @@ import zhttp.http.HttpError.BadRequest
 import zhttp.http.{Request, Response, Status}
 import zio.*
 import zio.json.*
+import RequestHandlerDefinitions.CreateNoteHandler
 
 import java.net.http.HttpResponse.ResponseInfo
-
-trait CreateNoteHandler:
-  
-  def handle(request: Request, jwtContent: JwtContent): Task[Response]
-
 
 final case class CreateNoteHandlerLive(createNoteService: CreateNoteService) extends CreateNoteHandler:
 

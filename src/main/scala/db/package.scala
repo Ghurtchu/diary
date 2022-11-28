@@ -4,7 +4,7 @@ import zio.*
 
 package object db:
 
-  extension [A <: DeleteResult | InsertOneResult | UpdateResult] (a: A)
+  extension [A <: DeleteResult | InsertOneResult | UpdateResult] (self: A)
     def fold(wasAcknowledged: => Boolean, onSuccess: => DbSuccess, onFailure: => DbError): UIO[DbOperation] =
       ZIO.succeed(if wasAcknowledged then Right(onSuccess) else Left(onFailure))
 

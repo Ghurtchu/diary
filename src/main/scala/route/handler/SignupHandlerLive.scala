@@ -11,7 +11,7 @@ import route.service.SignupServiceLive
 
 final case class SignupHandlerLive(signupService: SignupService) extends SignupHandler:
 
-  final override def handle(request: Request): Task[Response] = 
+  override def handle(request: Request): Task[Response] = 
     for
       userEither <- request.bodyAsString.map(_.fromJson[User])
       response   <- userEither.fold(_ => ZIO.succeed(Response.text("Invalid Json")), mapSignupServiceResultToResponse)

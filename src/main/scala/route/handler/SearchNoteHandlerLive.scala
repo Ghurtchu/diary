@@ -14,7 +14,7 @@ import java.util.Date
 
 final case class SearchNoteHandlerLive(searchNoteService: SearchService[Note]) extends SearchNoteHandler:
 
-  final override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
+  override def handle(request: Request, jwtContent: JwtContent): Task[Response] = 
     for
       queryParams    <- ZIO.succeed(request.url.queryParams)
       title          <- getTitleFromQueryParams(queryParams)

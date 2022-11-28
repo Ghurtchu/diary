@@ -20,7 +20,8 @@ final case class SearchNoteService(notesRepository: NotesRepository) extends Sea
       if maybeNotes.nonEmpty then Right(maybeNotes) else Left(s"No matches with title $title")
     }
 
-  private def getExactMatches(title: String, notes: List[Note]): UIO[Either[String, List[Note]]] = ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
+  private def getExactMatches(title: String, notes: List[Note]): UIO[Either[String, List[Note]]] =
+    ZIO.succeed(notes.find(_.title == title).fold(Left(s"No matches with title $title"))(note => Right(note :: Nil)))
   
 
 

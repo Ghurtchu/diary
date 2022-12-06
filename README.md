@@ -52,7 +52,7 @@
    | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
    | http://localhost:8080/api/notes | GET         | application/json | Notes in JSON format (200)   | Auth failed (401)                 | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -86,7 +86,7 @@
    | ------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------- |
    | http://localhost:8080/api/notes | POST        | application/json | Note has been created (200)  | Auth failed (401)                 | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -105,7 +105,7 @@
    | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
    | http://localhost:8080/api/notes/:id | GET         | application/json | Note in JSON format (200)    | Auth failed (401) / Note does not exist | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -125,7 +125,7 @@
    | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
    | http://localhost:8080/api/notes/:id | DELETE      | application/json | Note has been deleted (200)  | Auth failed (401) / Note does not exist | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -136,7 +136,7 @@
    | ----------------------------------- | ----------- | ---------------- | ---------------------------- | --------------------------------------- |
    | http://localhost:8080/api/notes/:id | PUT         | application/json | Note has been updated (200)  | Auth failed (401) / Note does not exist | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -156,7 +156,7 @@
    | ---------------------------------------------------- | ----------- | ---------------- | -------------------------------- | ------------------------- |
    | http://localhost:8080/api/notes/search?title={title} | GET         | application/json | Note array in JSON format (200)  | Auth failed (401)         | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT
@@ -190,7 +190,7 @@
    | ---------------------------------------------- | ----------- | ---------------- | -------------------------------- | ------------------------- |
    | http://localhost:8080/api/notes/sort?order=asc | GET         | application/json | Note array in JSON format (200)  | Auth failed (401)         | 
    
-   ##### hint: user the real JWT returend upon the successful login
+   ##### hint: use the real JWT returend upon the successful login
    #### Headers:
    ```
    Authorization: Bearer JWT

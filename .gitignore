@@ -1,48 +1,43 @@
-idea
-target
-null
+# bloop and metals
+.bloop
+.bsp
+.metals
+project/metals.sbt
+
+# vs code
+.vscode
+
+# scala 3
+.tasty
+
+# sbt
+project/project/
+project/target/
+target/
+
+# eclipse
+build/
 .classpath
-null/
 .project
 .settings
-.bsp
-.history
-.cache*
-.jvmopts
-queries.sql
-LogToFileSpecQuery.sql
-**/bin
-**/.tmpBin
-local.*
-quill_test.db
-codegen_test.db
-codegen_test.h2.mv.db
-codegen_test.h2.trace.db
-Bug.scala
-*.gz
-quill-jdbc/io/
-quill-sql/io/
-MyTest.scala
-MyTest*.scala
-MySparkTest.scala
-MyTestJdbc.scala
-MyJdbcTest.scala
-MySqlTest*.scala
-MyCassandraTest*.scala
-MyCqlTest.scala
-MySparkExample.scala
-quill-core/src/main/resources/logback.xml
-quill-jdbc/src/main/resources/logback.xml
-log.txt*
-tmp
-nohup.out
-.bloop/
-.metals/
-project/.bloop/
-/io/
-/.metadata/
-.bsp/
-.jvmopts
+.worksheet
+bin/
+.cache
+
+# intellij idea
+*.log
+*.iml
+*.ipr
+*.iws
+.idea
+
+# mac
 .DS_Store
-.vscode
+
+# other?
 .history
+.scala_dependencies
+.cache-main
+
+# general
+*.class
